@@ -1,0 +1,239 @@
+.analytics-dashboard {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .time-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+  }
+  
+  .stat-change {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  
+  .stat-change.positive {
+    color: var(--success);
+  }
+  
+  .stat-change.negative {
+    color: var(--error);
+  }
+  
+  .analytics-content {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 20px;
+  }
+  
+  .chart-container {
+    grid-column: 1 / span 2;
+  }
+  
+  .department-chart {
+    grid-column: 1;
+  }
+  
+  .insights-card {
+    grid-column: 2;
+  }
+  
+  .chart-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .chart-toggle {
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  .chart-toggle.active {
+    background-color: var(--primary-red);
+    color: white;
+    border-color: var(--primary-red);
+  }
+  
+  .chart-placeholder {
+    padding: 20px;
+  }
+  
+  .chart-visual {
+    height: 240px;
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 200px;
+  }
+  
+  .chart-bar {
+    width: 20px;
+    background-color: var(--primary-red);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+  }
+  
+  .bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--dark-gray);
+  }
+  
+  .chart-labels {
+    display: flex;
+    justify-content: space-around;
+    font-size: 12px;
+    color: var(--dark-gray);
+  }
+  
+  .chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--dark-gray);
+  }
+  
+  .legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+  }
+  
+  .legend-color.active {
+    background-color: var(--primary-red);
+  }
+  
+  .legend-color.completed {
+    background-color: var(--primary-yellow);
+  }
+  
+  .department-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .department-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .department-info {
+    width: 150px;
+  }
+  
+  .department-info h3 {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  
+  .department-count {
+    font-size: 12px;
+    color: var(--dark-gray);
+  }
+  
+  .department-bar-container {
+    flex: 1;
+    height: 12px;
+    background-color: #eee;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  
+  .department-bar {
+    height: 100%;
+    background-color: var(--primary-yellow);
+  }
+  
+  .insights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .insight-item {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .insight-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
+  .insight-icon.positive {
+    background-color: rgba(42, 157, 143, 0.1);
+    color: var(--success);
+  }
+  
+  .insight-icon.negative {
+    background-color: rgba(231, 111, 81, 0.1);
+    color: var(--error);
+  }
+  
+  .insight-content h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  
+  .insight-content p {
+    font-size: 13px;
+    color: var(--dark-gray);
+    line-height: 1.4;
+  }
+  
+  @media (max-width: 768px) {
+    .analytics-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .chart-container, .department-chart, .insights-card {
+      grid-column: 1;
+    }
+    
+    .header-actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    
+    .time-select {
+      width: 100%;
+    }
+  }

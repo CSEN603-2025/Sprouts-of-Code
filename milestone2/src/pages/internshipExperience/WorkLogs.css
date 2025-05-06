@@ -1,0 +1,171 @@
+.work-logs {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .logs-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  
+  .summary-item {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .summary-item h3 {
+    color: var(--dark-gray);
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .summary-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-red);
+  }
+  
+  .logs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .log-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .log-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .log-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-black);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-right: 16px;
+  }
+  
+  .log-day {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  
+  .log-month {
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  
+  .log-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .log-hours {
+    font-weight: 600;
+    color: var(--primary-black);
+  }
+  
+  .status-badge.approved {
+    background-color: var(--success);
+    color: white;
+  }
+  
+  .status-badge.pending {
+    background-color: var(--primary-yellow);
+    color: var(--primary-black);
+  }
+  
+  .status-badge.rejected {
+    background-color: var(--error);
+    color: white;
+  }
+  
+  .log-content {
+    padding: 16px;
+  }
+  
+  .log-section {
+    margin-bottom: 16px;
+  }
+  
+  .log-section h3 {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin-bottom: 8px;
+  }
+  
+  .log-section p {
+    font-size: 15px;
+    color: var(--primary-black);
+    line-height: 1.5;
+  }
+  
+  .log-feedback {
+    padding: 16px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #eee;
+  }
+  
+  .log-feedback h3 {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin-bottom: 8px;
+  }
+  
+  .log-feedback p {
+    font-size: 15px;
+    color: var(--primary-black);
+    font-style: italic;
+  }
+  
+  .log-actions {
+    padding: 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid #eee;
+  }
+  
+  /* Modal and Form */
+  .form-row {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .logs-summary {
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .form-row {
+      flex-direction: column;
+    }
+    
+    .log-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }

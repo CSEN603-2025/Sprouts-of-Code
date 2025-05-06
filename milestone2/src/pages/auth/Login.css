@@ -1,0 +1,92 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 480px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .login-header {
+    background-color: var(--primary-black);
+    color: white;
+    padding: 24px;
+    text-align: center;
+  }
+  
+  .login-header h1 {
+    color: var(--primary-yellow);
+    margin-bottom: 8px;
+    font-size: 24px;
+  }
+  
+  .login-header p {
+    opacity: 0.8;
+    font-size: 14px;
+  }
+  
+  .login-form {
+    padding: 24px;
+  }
+  
+  .login-form h2 {
+    color: var(--primary-black);
+    margin-bottom: 24px;
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  .error-message {
+    background-color: var(--light-red);
+    color: var(--primary-red);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  
+  .login-button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+  }
+  
+  .demo-accounts {
+    background-color: #f9f9f9;
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+  }
+  
+  .demo-accounts h3 {
+    color: var(--primary-black);
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .account-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .account-item {
+    font-size: 14px;
+  }
+  
+  .account-item strong {
+    color: var(--primary-red);
+  }
+  
+  .account-item p {
+    margin: 4px 0 0;
+    color: #666;
+  }

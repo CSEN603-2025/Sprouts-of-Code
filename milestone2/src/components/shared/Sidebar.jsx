@@ -1,0 +1,72 @@
+import { Link, useLocation } from 'react-router-dom'
+import './Sidebar.css'
+
+const Sidebar = ({ user }) => {
+  const location = useLocation()
+  
+  // Define menu items based on user role
+  const getMenuItems = () => {
+    if (!user) return []
+    
+    switch (user.role) {
+      case 'student':
+        return [
+          { label: 'Dashboard', path: '/student', icon: '📊' },
+          { label: 'My Profile', path: '/student/profile', icon: '👤' },
+          { label: 'Applications', path: '/student/applications', icon: '📝' },
+          { label: 'Internships', path: '/internship', icon: '💼' },
+          { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
+          { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
+        ]
+      case 'employer':
+        return [
+          { label: 'Dashboard', path: '/employer', icon: '📊' },
+          { label: 'Company Profile', path: '/employer/profile', icon: '🏢' },
+          { label: 'Job Postings', path: '/employer/jobs', icon: '📋' },
+          { label: 'Applications', path: '/employer/applications', icon: '📝' },
+          { label: 'Interns', path: '/employer/interns', icon: '👥' },
+        ]
+      case 'admin':
+        return [
+          { label: 'Dashboard', path: '/admin', icon: '📊' },
+          { label: 'Students', path: '/admin/students', icon: '👨‍🎓' },
+          { label: 'Employers', path: '/admin/employers', icon: '🏢' },
+          { label: 'Internships', path: '/admin/internships', icon: '💼' },
+          { label: 'Analytics', path: '/analytics', icon: '📈' },
+          { label: 'Reports', path: '/analytics/reports', icon: '📊' },
+          { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
+        ]
+      default:
+        return []
+    }
+  }
+  
+  const menuItems = getMenuItems()
+  
+  if (!user) return null
+  
+  return (
+    <div className="sidebar">
+      <div className="sidebar-header">
+        <div className="role-badge">{user.role.toUpperCase()}</div>
+      </div>
+      
+      <ul className="sidebar-menu">
+        {menuItems.map((item, index) => (
+          <li key={index} className={location.pathname === item.path ? 'active' : ''}>
+            <Link to={item.path}>
+              <span className="menu-icon">{item.icon}</span>
+              <span className="menu-label">{item.label}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      
+      <div className="sidebar-footer">
+        <p>© 2023 Sprouts of Code</p>
+      </div>
+    </div>
+  )
+}
+
+export default Sidebar

@@ -1,0 +1,72 @@
+.sidebar {
+    width: 250px;
+    background-color: white;
+    height: 100%;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar-header {
+    padding: 20px 16px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .role-badge {
+    display: inline-block;
+    background-color: var(--primary-red);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  
+  .sidebar-menu {
+    flex: 1;
+    padding: 16px 0;
+    list-style-type: none;
+  }
+  
+  .sidebar-menu li {
+    margin-bottom: 4px;
+  }
+  
+  .sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  
+  .sidebar-menu li a:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .sidebar-menu li.active a {
+    background-color: #f5f5f5;
+    border-left: 3px solid var(--primary-red);
+    color: var(--primary-red);
+  }
+  
+  .menu-icon {
+    margin-right: 12px;
+    font-size: 18px;
+  }
+  
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+    }
+  }

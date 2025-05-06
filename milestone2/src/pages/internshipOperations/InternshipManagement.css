@@ -1,0 +1,151 @@
+.internship-management {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  .filter-bar {
+    display: flex;
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .filter-options {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .filter-button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-button:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .filter-button.active {
+    background-color: var(--primary-red);
+    color: white;
+    border-color: var(--primary-red);
+  }
+  
+  .internships-table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .internships-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .internships-table th {
+    text-align: left;
+    padding: 16px;
+    background-color: #f9f9f9;
+    color: var(--primary-black);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  .internships-table td {
+    padding: 16px;
+    border-top: 1px solid #eee;
+    font-size: 14px;
+  }
+  
+  .progress-container {
+    width: 120px;
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: var(--primary-red);
+  }
+  
+  .progress-text {
+    position: absolute;
+    right: 0;
+    top: -4px;
+    font-size: 12px;
+    color: var(--primary-black);
+  }
+  
+  .status-badge.active {
+    background-color: var(--success);
+    color: white;
+  }
+  
+  .status-badge.pending {
+    background-color: var(--primary-yellow);
+    color: var(--primary-black);
+  }
+  
+  .status-badge.completed {
+    background-color: var(--dark-gray);
+    color: white;
+  }
+  
+  .table-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .action-button {
+    background: none;
+    border: none;
+    color: var(--primary-red);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+  }
+  
+  .action-button:hover {
+    text-decoration: underline;
+  }
+  
+  .action-button.danger {
+    color: var(--error);
+  }
+  
+  .no-results {
+    padding: 32px;
+    text-align: center;
+    color: var(--dark-gray);
+  }
+  
+  @media (max-width: 768px) {
+    .filter-bar {
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .filter-options {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    
+    .internships-table {
+      display: block;
+      overflow-x: auto;
+    }
+  }

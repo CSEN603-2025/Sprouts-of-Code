@@ -1,0 +1,201 @@
+.internship-dashboard {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.internship-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.internship-title h1 {
+  color: var(--primary-black);
+  margin-bottom: 8px;
+}
+
+.company-name {
+  color: var(--dark-gray);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.internship-period {
+  color: var(--dark-gray);
+  font-size: 14px;
+}
+
+.internship-header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.internship-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.tasks-section {
+  grid-column: 1;
+  grid-row: span 2;
+}
+
+.supervisor-section, .activities-section {
+  grid-column: 2;
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.task-item {
+  padding: 16px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid transparent;
+}
+
+.task-item.completed {
+  border-left-color: var(--success);
+}
+
+.task-item.in-progress {
+  border-left-color: var(--primary-yellow);
+}
+
+.task-item.pending {
+  border-left-color: var(--dark-gray);
+}
+
+.task-info h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: var(--primary-black);
+}
+
+.task-due {
+  color: var(--dark-gray);
+  font-size: 13px;
+}
+
+.status-badge.completed {
+  background-color: var(--success);
+  color: white;
+}
+
+.status-badge.in-progress {
+  background-color: var(--primary-yellow);
+  color: var(--primary-black);
+}
+
+.status-badge.pending {
+  background-color: var(--dark-gray);
+  color: white;
+}
+
+.supervisor-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.supervisor-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-black);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.supervisor-details h3 {
+  margin-bottom: 4px;
+  color: var(--primary-black);
+}
+
+.supervisor-title {
+  color: var(--dark-gray);
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.supervisor-contact {
+  color: var(--primary-red);
+  font-size: 13px;
+}
+
+.supervisor-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.activities-list {
+  margin-top: 16px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  font-size: 20px;
+}
+
+.activity-info h3 {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: var(--primary-black);
+}
+
+.activity-date {
+  color: var(--dark-gray);
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .internship-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .internship-header-actions {
+    width: 100%;
+  }
+  
+  .internship-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .tasks-section, .supervisor-section, .activities-section {
+    grid-column: 1;
+  }
+}
