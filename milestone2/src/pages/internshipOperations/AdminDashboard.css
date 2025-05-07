@@ -1,6 +1,12 @@
 .admin-dashboard {
     max-width: 1100px;
     margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .admin-dashboard h2 {
+    color: #333;
+    margin-bottom: 2rem;
   }
   
   .dashboard-content {
@@ -135,6 +141,45 @@
     font-weight: 500;
     color: var(--primary-black);
     text-align: center;
+  }
+  
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .dashboard-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+  }
+  
+  .dashboard-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .view-pending-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .view-pending-btn:hover {
+    background-color: #dc2f3d;
   }
   
   @media (max-width: 768px) {

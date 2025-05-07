@@ -8,6 +8,8 @@ import Sidebar from './components/shared/Sidebar'
 
 // Auth pages
 import Login from './pages/auth/Login'
+import CompanyRegistration from './pages/auth/CompanyRegistration'
+import SubmissionSuccess from './pages/auth/SubmissionSuccess'
 
 // Developer 1 - Access & Student Onboarding
 import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
@@ -24,10 +26,15 @@ import WorkLogs from './pages/internshipExperience/WorkLogs'
 // Developer 4 - SCAD Internship Operations
 import AdminDashboard from './pages/internshipOperations/AdminDashboard'
 import InternshipManagement from './pages/internshipOperations/InternshipManagement'
+import PendingCompanies from './pages/internshipOperations/PendingCompanies'
 
 // Developer 5 - Analytics & Reporting
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
 import Reports from './pages/analytics/Reports'
+
+// Context
+import { CompanyProvider } from './context/CompanyContext'
+import { InternshipProvider } from './context/InternshipContext'
 
 // Create a user context
 const UserContext = createContext(null)
@@ -67,77 +74,88 @@ function App() {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      <BrowserRouter>
-        <Routes>
-          {/* Public route */}
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+    <CompanyProvider>
+      <InternshipProvider>
+        <UserContext.Provider value={{ user, setUser }}>
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<Login onLogin={handleLogin} />} />
+              <Route path="/register-company" element={<CompanyRegistration />} />
+              <Route path="/submission-success" element={<SubmissionSuccess />} />
 
-          {/* Developer 1 - Access & Student Onboarding */}
-          <Route path="/student" element={
-            <ProtectedRoute>
-              <StudentDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/student/profile" element={
-            <ProtectedRoute>
-              <ProfileSetup />
-            </ProtectedRoute>
-          } />
+              {/* Developer 1 - Access & Student Onboarding */}
+              <Route path="/student" element={
+                <ProtectedRoute>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/student/profile" element={
+                <ProtectedRoute>
+                  <ProfileSetup />
+                </ProtectedRoute>
+              } />
 
-          {/* Developer 2 - Employer Interface */}
-          <Route path="/employer" element={
-            <ProtectedRoute>
-              <EmployerDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/employer/jobs" element={
-            <ProtectedRoute>
-              <JobPostings />
-            </ProtectedRoute>
-          } />
+              {/* Developer 2 - Employer Interface */}
+              <Route path="/employer" element={
+                <ProtectedRoute>
+                  <EmployerDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/employer/jobs" element={
+                <ProtectedRoute>
+                  <JobPostings />
+                </ProtectedRoute>
+              } />
 
-          {/* Developer 3 - Student Internship Experience */}
-          <Route path="/internship" element={
-            <ProtectedRoute>
-              <InternshipDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/internship/logs" element={
-            <ProtectedRoute>
-              <WorkLogs />
-            </ProtectedRoute>
-          } />
+              {/* Developer 3 - Student Internship Experience */}
+              <Route path="/internship" element={
+                <ProtectedRoute>
+                  <InternshipDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/internship/logs" element={
+                <ProtectedRoute>
+                  <WorkLogs />
+                </ProtectedRoute>
+              } />
 
-          {/* Developer 4 - SCAD Internship Operations */}
-          <Route path="/admin" element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/internships" element={
-            <ProtectedRoute>
-              <InternshipManagement />
-            </ProtectedRoute>
-          } />
+              {/* Developer 4 - SCAD Internship Operations */}
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/internships" element={
+                <ProtectedRoute>
+                  <InternshipManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/pending-companies" element={
+                <ProtectedRoute>
+                  <PendingCompanies />
+                </ProtectedRoute>
+              } />
 
-          {/* Developer 5 - Analytics & Reporting */}
-          <Route path="/analytics" element={
-            <ProtectedRoute>
-              <AnalyticsDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/analytics/reports" element={
-            <ProtectedRoute>
-              <Reports />
-            </ProtectedRoute>
-          } />
+              {/* Developer 5 - Analytics & Reporting */}
+              <Route path="/analytics" element={
+                <ProtectedRoute>
+                  <AnalyticsDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/analytics/reports" element={
+                <ProtectedRoute>
+                  <Reports />
+                </ProtectedRoute>
+              } />
 
-          {/* Default route */}
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
+              {/* Default route */}
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
+          </BrowserRouter>
+        </UserContext.Provider>
+      </InternshipProvider>
+    </CompanyProvider>
   )
 }
 

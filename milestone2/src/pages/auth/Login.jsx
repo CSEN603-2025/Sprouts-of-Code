@@ -31,19 +31,29 @@ const MOCK_USERS = {
 }
 
 const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
   const [error, setError] = useState('')
   const navigate = useNavigate()
   
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     setError('')
     
     // Check if user exists
-    const user = MOCK_USERS[email]
+    const user = MOCK_USERS[formData.email]
     
-    if (user && user.password === password) {
+    if (user && user.password === formData.password) {
       // Login successful
       const { password, ...userData } = user // Remove password from user data
       onLogin(userData)
@@ -68,43 +78,46 @@ const Login = ({ onLogin }) => {
   }
   
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
-          <h1>Sprouts of Code</h1>
-          <p>Internship Management System</p>
-        </div>
-        
-        <form className="login-form" onSubmit={handleSubmit}>
-          <h2>Login</h2>
-          
-          {error && <div className="error-message">{error}</div>}
-          
+    <div className="login-page">
+      <div className="login-container">
+        <h2>Welcome Back</h2>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
+
+          <button type="submit" className="login-btn">Login</button>
           
-          <button type="submit" className="btn btn-primary login-button">
-            Login
-          </button>
+          <div className="register-company">
+            <p>New to the platform?</p>
+            <button 
+              type="button" 
+              className="register-company-btn"
+              onClick={() => navigate('/register-company')}
+            >
+              Register a new Company
+            </button>
+          </div>
         </form>
         
         <div className="demo-accounts">

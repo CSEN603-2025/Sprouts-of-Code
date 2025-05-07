@@ -1,0 +1,168 @@
+.pending-companies {
+  padding: 2rem;
+}
+
+.pending-companies h2 {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.no-companies {
+  text-align: center;
+  padding: 3rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-companies h2 {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.no-companies p {
+  color: #888;
+}
+
+.companies-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.company-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.company-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.company-header h3 {
+  color: #333;
+  margin: 0;
+}
+
+.company-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.approve-btn,
+.reject-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.approve-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.reject-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.approve-btn:hover,
+.reject-btn:hover {
+  transform: scale(1.1);
+}
+
+.company-details {
+  margin-bottom: 1rem;
+}
+
+.detail-group {
+  margin-bottom: 0.5rem;
+}
+
+.detail-group label {
+  color: #666;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.detail-group span {
+  color: #333;
+}
+
+.company-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  background-color: transparent;
+}
+
+.company-logo label {
+  color: #ffffff;
+  font-weight: 500;
+  margin-bottom: 0;
+  min-width: 110px;
+  align-self: flex-start;
+  background-color: #203454;
+  border-radius: 8px;
+  margin-left:8rem;
+}
+
+.company-logo-img-box {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f4f4;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.company-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  background: none;
+  border: none;
+}
+
+.company-documents {
+  margin-top: 1rem;
+}
+
+.company-documents label {
+  display: block;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.company-documents ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.company-documents li {
+  color: #333;
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+} 

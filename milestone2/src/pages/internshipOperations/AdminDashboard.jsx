@@ -1,14 +1,20 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useCompany } from '../../context/CompanyContext'
+import { useInternships } from '../../context/InternshipContext'
 import './AdminDashboard.css'
 
 const AdminDashboard = () => {
+  const navigate = useNavigate()
+  const { pendingCompanies } = useCompany()
+  const { internships } = useInternships()
+
   // Dummy stats data
   const stats = {
     students: 245,
     employers: 38,
-    activeInternships: 87,
-    pendingApprovals: 12
+    activeInternships: internships.filter(internship => internship.status === 'active').length,
+    pendingApprovals: pendingCompanies.length // Update to use actual count
   }
   
   // Dummy recent activities
@@ -17,13 +23,6 @@ const AdminDashboard = () => {
     { id: 2, type: 'student', message: 'John Smith completed profile registration', time: '4 hours ago' },
     { id: 3, type: 'employer', message: 'DataSystems Inc. posted 3 new job positions', time: '1 day ago' },
     { id: 4, type: 'internship', message: 'Sarah Johnson completed internship at WebTech', time: '2 days ago' }
-  ])
-  
-  // Dummy pending approvals
-  const [pendingApprovals, setPendingApprovals] = useState([
-    { id: 1, type: 'employer', name: 'CloudNet Solutions', status: 'pending', date: '2023-06-15' },
-    { id: 2, type: 'job', name: 'Software Developer Intern - TechCorp', status: 'pending', date: '2023-06-14' },
-    { id: 3, type: 'internship', name: 'Marketing Intern - BrandWave', status: 'pending', date: '2023-06-12' }
   ])
   
   return (
@@ -52,7 +51,7 @@ const AdminDashboard = () => {
         <div className="stat-card">
           <h3>Pending Approvals</h3>
           <div className="stat-number">{stats.pendingApprovals}</div>
-          <Link to="/admin/approvals" className="stat-link">View all</Link>
+          <Link to="/admin/pending-companies" className="stat-link">View all</Link>
         </div>
       </div>
       
@@ -60,28 +59,36 @@ const AdminDashboard = () => {
         <div className="card pending-approvals">
           <div className="card-header">
             <h2 className="card-title">Pending Approvals</h2>
-            <Link to="/admin/approvals" className="btn btn-outline">View All</Link>
+            <Link to="/admin/pending-companies" className="btn btn-outline">View All</Link>
           </div>
           
           <div className="approvals-list">
-            {pendingApprovals.map(item => (
-              <div key={item.id} className="approval-item">
-                <div className="approval-info">
-                  <div className="approval-type">
-                    {item.type === 'employer' && '🏢'}
-                    {item.type === 'job' && '📋'}
-                    {item.type === 'internship' && '📝'}
-                  </div>
-                  <div className="approval-details">
-                    <h3>{item.name}</h3>
-                    <p className="approval-date">Submitted: {item.date}</p>
-                  </div>
-                </div>
-                <div className="approval-actions">
-                  <button className="btn btn-outline">Review</button>
-                </div>
+            {pendingCompanies.length === 0 ? (
+              <div className="no-approvals">
+                <p>No pending company registrations</p>
               </div>
-            ))}
+            ) : (
+              pendingCompanies.map(company => (
+                <div key={company.id} className="approval-item">
+                  <div className="approval-info">
+                    <div className="approval-type">🏢</div>
+                    <div className="approval-details">
+                      <h3>{company.companyName}</h3>
+                      <p className="approval-date">Industry: {company.industry}</p>
+                      <p className="approval-date">Size: {company.companySize}</p>
+                    </div>
+                  </div>
+                  <div className="approval-actions">
+                    <button 
+                      className="btn btn-outline"
+                      onClick={() => navigate('/admin/pending-companies')}
+                    >
+                      Review
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
         
