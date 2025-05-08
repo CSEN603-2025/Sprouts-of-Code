@@ -1,17 +1,53 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import './Navbar.css'
+import { FaBell } from 'react-icons/fa'
+import IconButton from '@mui/material/IconButton'
+import Badge from '@mui/material/Badge'
+import Menu from '@mui/material/Menu'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import NotificationsIcon from '@mui/icons-material/Notifications'
 
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
 
 const Navbar = ({ user, onLogout }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
   
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen)
   }
   
+  useEffect(() => {
+    if (user && user.role === 'employer') {
+      // Fetch notifications from backend here
+      // For now, use mock data:
+      setNotifications([
+        { id: 1, message: "Your application was accepted!", read: false },
+        { id: 2, message: "New applicant for your internship.", read: false },
+        { id: 3, message: "New applicant for your internship.", read: false },
+        
+        
+
+      ])
+    }
+  }, [user])
+
+  const unreadCount = notifications.filter(n => !n.read).length
+
+  const handleBellClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -51,6 +87,59 @@ const Navbar = ({ user, onLogout }) => {
         ) : null}
         
         <div className="navbar-right">
+          {user && user.role === 'employer' && (
+            <>
+              <IconButton
+                aria-label="show notifications"
+                color="primary"
+                onClick={handleBellClick}
+                sx={{
+                  backgroundColor: '#fff',
+                  borderRadius: '50%',
+                  boxShadow: 2,
+                  marginRight: 2,
+                  '&:hover': {
+                    backgroundColor: '#f0f0f0',
+                  },
+                }}
+              >
+                <Badge badgeContent={unreadCount} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    width: '350px',
+                    padding: 0,
+                  },
+                }}
+              >
+                <List sx={{ maxHeight: 300, overflow: 'auto', width: '100%' }}>
+                  {notifications.length === 0 ? (
+                    <ListItem>
+                      <ListItemText primary="No notifications" />
+                    </ListItem>
+                  ) : (
+                    notifications.map((n) => (
+                      <ListItem
+                        key={n.id}
+                        sx={{
+                          backgroundColor: n.read ? '#fff' : '#e3f2fd',
+                          borderBottom: '1px solid #eee',
+                        }}
+                      >
+                        <ListItemText primary={n.message} />
+                      </ListItem>
+                    ))
+                  )}
+                </List>
+              </Menu>
+            </>
+          )}
           {user ? (
             <div className="profile-dropdown">
               <button className="profile-button" onClick={toggleDropdown}>
@@ -64,7 +153,32 @@ const Navbar = ({ user, onLogout }) => {
               
               {dropdownOpen && (
                 <div className="dropdown-menu">
-                  <Link to="/profile" className="dropdown-item">My Profile</Link>
+                  {/* Dynamic menu items based on user role */}
+                  {user.role === 'student' && (
+                    <>
+                      <Link to="/student/profile" className="dropdown-item">My Profile</Link>
+                      <Link to="/student/applications" className="dropdown-item">My Applications</Link>
+                      <Link to="/student/certificates" className="dropdown-item">My Certificates</Link>
+                    </>
+                  )}
+                  
+                  {user.role === 'employer' && (
+                    <>
+                      <Link to="/employer/profile" className="dropdown-item">Company Profile</Link>
+                      <Link to="/employer/jobs" className="dropdown-item">Job Postings</Link>
+                      <Link to="/employer/applications" className="dropdown-item">Applications</Link>
+                    </>
+                  )}
+                  
+                  {user.role === 'admin' && (
+                    <>
+                      <Link to="/admin/settings" className="dropdown-item">System Settings</Link>
+                      <Link to="/admin/users" className="dropdown-item">User Management</Link>
+                      <Link to="/admin/reports" className="dropdown-item">Reports</Link>
+                    </>
+                  )}
+                  
+                  {/* Common menu items for all roles */}
                   <Link to="/settings" className="dropdown-item">Settings</Link>
                   <button onClick={onLogout} className="dropdown-item logout">
                     Logout
