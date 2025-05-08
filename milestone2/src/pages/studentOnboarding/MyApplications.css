@@ -71,18 +71,23 @@
   }
   
   .group-title.pending {
-    color: var(--primary-yellow);
-    border-bottom-color: var(--primary-yellow);
+    color: #6c757d;
+    border-bottom-color: #6c757d;
   }
   
-  .group-title.approved {
-    color: var(--success);
-    border-bottom-color: var(--success);
+  .group-title.finalized {
+    color: #0d6efd;
+    border-bottom-color: #0d6efd;
+  }
+  
+  .group-title.accepted {
+    color: #198754;
+    border-bottom-color: #198754;
   }
   
   .group-title.rejected {
-    color: var(--error);
-    border-bottom-color: var(--error);
+    color: #dc3545;
+    border-bottom-color: #dc3545;
   }
   
   .applications-grid {
@@ -96,6 +101,7 @@
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 4px solid;
     overflow: hidden;
   }
   
@@ -105,15 +111,19 @@
   }
   
   .application-card.pending {
-    border-left-color: var(--warning);
+    border-left-color: #6c757d;
   }
   
-  .application-card.approved {
-    border-left-color: var(--success);
+  .application-card.finalized {
+    border-left-color: #0d6efd;
+  }
+  
+  .application-card.accepted {
+    border-left-color: #198754;
   }
   
   .application-card.rejected {
-    border-left-color: var(--error);
+    border-left-color: #dc3545;
   }
   
   .card-header {
@@ -148,18 +158,23 @@
   }
   
   .status-badge.pending {
-    background-color: var(--warning);
-    color: white;
+    background-color: white;
+    color: #6c757d;
   }
   
-  .status-badge.approved {
-    background-color: var(--success);
-    color: white;
+  .status-badge.finalized {
+    background-color: white;
+    color: #0d6efd;
+  }
+  
+  .status-badge.accepted {
+    background-color: white;
+    color: #198754;
   }
   
   .status-badge.rejected {
-    background-color: var(--error);
-    color: white;
+    background-color: white;
+    color: #dc3545;
   }
   
   .header-details {
@@ -288,3 +303,61 @@
       grid-template-columns: 1fr;
     }
   }
+
+  /* src/pages/studentOnboarding/MyApplications.css */
+
+/* ... (keep existing styles) ... */
+
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .status-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .status-filter {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    color: var(--dark-gray);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .status-filter:hover {
+    background-color: #e9ecef;
+  }
+  
+  .status-filter.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .page-header {
+    padding: 30px 20px;
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .page-header h1 {
+    margin: 0;
+    color: var(--primary-black);
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  /* ... (keep the rest of the styles the same) ... */
