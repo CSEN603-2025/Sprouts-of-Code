@@ -7,6 +7,7 @@ const ProfileSetup = () => {
     email: 'student@example.com',
     phone: '',
     major: '',
+    semester: '',
     graduationYear: '',
     skills: '',
     bio: '',
@@ -42,10 +43,19 @@ const ProfileSetup = () => {
   
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setProfile({
-      ...profile,
-      [name]: value
-    })
+    
+    if (name === 'semester') {
+      setProfile({
+        ...profile,
+        [name]: value,
+        major: ''
+      })
+    } else {
+      setProfile({
+        ...profile,
+        [name]: value
+      })
+    }
   }
   
   const handleInternshipChange = (idx, e) => {
@@ -141,6 +151,65 @@ const ProfileSetup = () => {
     };
   }, [showSuccessModal]);
   
+  const getMajorOptions = (semester) => {
+    switch (semester) {
+      case '1':
+      case '2':
+        return [
+          'Engineering',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      case '3':
+        return [
+          'IET and MET',
+          'Mechatronics',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      case '4':
+        return [
+          'IET',
+          'MET',
+          'Mechatronics',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '10':
+        return [
+          'Electronics',
+          'Networks',
+          'Communications',
+          'Computer Science',
+          'DMET',
+          'Mechatronics',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      default:
+        return [];
+    }
+  };
+  
+  const semesters = Array.from({ length: 10 }, (_, i) => i + 1);
+  
   return (
     <div className="profile-setup">
       <div className="page-header">
@@ -209,35 +278,67 @@ const ProfileSetup = () => {
                 />
               </div>
               
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="semester">Current Semester *</label>
+                <select
+                  id="semester"
+                  name="semester"
+                  value={profile.semester}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select Semester</option>
+                  {semesters.map((sem) => (
+                    <option key={sem} value={sem}>
+                      Semester {sem}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="form-group">
                 <label htmlFor="major">Major/Field of Study *</label>
-                <input
-                  type="text"
+                <select
                   id="major"
                   name="major"
                   value={profile.major}
                   onChange={handleInputChange}
                   required
-                />
+                  disabled={!profile.semester}
+                >
+                  <option value="">Select Major</option>
+                  {getMajorOptions(profile.semester).map((major) => (
+                    <option key={major} value={major}>
+                      {major}
+                    </option>
+                  ))}
+                </select>
+                {!profile.semester && (
+                  <div className="form-hint">Please select a semester first</div>
+                )}
               </div>
             </div>
             
-            <div className="form-group">
-              <label htmlFor="graduationYear">Expected Graduation Year *</label>
-              <select
-                id="graduationYear"
-                name="graduationYear"
-                value={profile.graduationYear}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Year</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-              </select>
+              
+              <div className="form-group">
+                <label htmlFor="graduationYear"> Graduation Year *</label>
+                <select
+                  id="graduationYear"
+                  name="graduationYear"
+                  value={profile.graduationYear}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select Year</option>
+                  <option value="2023">2023</option>
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                </select>
+              </div>
             </div>
           </div>
           
