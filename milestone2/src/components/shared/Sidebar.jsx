@@ -14,7 +14,7 @@ const Sidebar = ({ user }) => {
           { label: 'Dashboard', path: '/student', icon: '📊' },
           { label: 'My Profile', path: '/student/profile', icon: '👤' },
           { label: 'Applications', path: '/student/applications', icon: '📝' },
-          { label: 'Internships', path: '/internship', icon: '💼' },
+          { label: 'Internships', path: '/student/internships', icon: '💼' },
           { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
           { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
         ]

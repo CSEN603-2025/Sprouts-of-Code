@@ -115,7 +115,7 @@ function App() {
               } />
 
               {/* Developer 3 - Student Internship Experience */}
-              <Route path="/internship" element={
+              <Route path="/student/internships" element={
                 <ProtectedRoute>
                   <InternshipDashboard />
                 </ProtectedRoute>
