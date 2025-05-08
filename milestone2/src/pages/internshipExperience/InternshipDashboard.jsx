@@ -55,6 +55,7 @@ const InternshipDashboard = () => {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [dateFilter, setDateFilter] = useState('all')
+  const [startDateFilter, setStartDateFilter] = useState('')
 
   // Filter internships based on search, status, and date
   const filteredInternships = internships.filter(internship => {
@@ -64,7 +65,12 @@ const InternshipDashboard = () => {
     const matchesDate = dateFilter === 'all' || 
                        (dateFilter === 'current' && internship.status === 'current') ||
                        (dateFilter === 'completed' && internship.status === 'completed')
-    return matchesSearch && matchesStatus && matchesDate
+    
+    // Add date filtering
+    const matchesStartDate = !startDateFilter || 
+                           internship.startDate >= startDateFilter
+
+    return matchesSearch && matchesStatus && matchesDate && matchesStartDate
   })
 
   // Group internships by status
@@ -109,15 +115,14 @@ const InternshipDashboard = () => {
               </button>
             </div>
             <div className="date-filters">
-              <select 
-                className="date-filter"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-              >
-                <option value="all">All Dates</option>
-                <option value="current">Current Internships</option>
-                <option value="completed">Completed Internships</option>
-              </select>
+  
+              <input
+                type="date"
+                className="date-input"
+                value={startDateFilter}
+                onChange={(e) => setStartDateFilter(e.target.value)}
+                placeholder="Filter by start date"
+              />
             </div>
           </div>
         </div>
