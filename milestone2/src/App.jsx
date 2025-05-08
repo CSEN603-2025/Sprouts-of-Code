@@ -14,6 +14,7 @@ import SubmissionSuccess from './pages/auth/SubmissionSuccess'
 // Developer 1 - Access & Student Onboarding
 import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
 import ProfileSetup from './pages/studentOnboarding/ProfileSetup'
+import MyApplications from './pages/studentOnboarding/MyApplications'
 
 // Developer 2 - Employer Interface
 import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
@@ -93,6 +94,11 @@ function App() {
               <Route path="/student/profile" element={
                 <ProtectedRoute>
                   <ProfileSetup />
+                </ProtectedRoute>
+              } />
+              <Route path="/student/applications" element={
+                <ProtectedRoute>
+                  <MyApplications />
                 </ProtectedRoute>
               } />
 
