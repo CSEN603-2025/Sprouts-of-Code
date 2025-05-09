@@ -17,6 +17,7 @@ const Sidebar = ({ user }) => {
           { label: 'Internships', path: '/student/internships', icon: '💼' },
           { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
           { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
+          { label: 'Profile Viewers', path: '/student/profile-viewers', icon: '👁️', pro: true }
         ]
       case 'employer':
         return [
@@ -57,6 +58,7 @@ const Sidebar = ({ user }) => {
             <Link to={item.path}>
               <span className="menu-icon">{item.icon}</span>
               <span className="menu-label">{item.label}</span>
+              {item.pro && <span className="pro-badge">PRO</span>}
             </Link>
           </li>
         ))}
