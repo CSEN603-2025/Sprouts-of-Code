@@ -18,7 +18,7 @@ const Sidebar = ({ user }) => {
           { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
           { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
           { label: 'Profile Viewers', path: '/student/profile-viewers', icon: '👁️', pro: true },
-          { label: 'Online Assessments', path: '/student/assessments', icon: '📝' },
+          { label: 'Online Assessments', path: '/student/assessments', icon: '📝' , pro: true},
         ]
       case 'employer':
         return [

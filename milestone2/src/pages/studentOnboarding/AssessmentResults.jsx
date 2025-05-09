@@ -6,6 +6,8 @@ const AssessmentResults = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [assessment, setAssessment] = useState(null);
+  const [isPosting, setIsPosting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Dummy data for assessment results
   useEffect(() => {
@@ -19,6 +21,7 @@ const AssessmentResults = () => {
       incorrectAnswers: 5,
       timeTaken: '45 minutes',
       completedDate: '2024-03-15',
+      isPosted: false, // Add this field to track if score is posted
       questions: [
         {
           id: 1,
@@ -31,6 +34,26 @@ const AssessmentResults = () => {
       ]
     });
   }, [id]);
+
+  const handlePostScore = async () => {
+    setIsPosting(true);
+    try {
+      // In a real application, this would be an API call
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      
+      // Update the assessment's posted status
+      setAssessment(prev => ({
+        ...prev,
+        isPosted: true
+      }));
+      
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error('Error posting score:', error);
+    } finally {
+      setIsPosting(false);
+    }
+  };
 
   if (!assessment) {
     return <div>Loading...</div>;
@@ -72,6 +95,24 @@ const AssessmentResults = () => {
             </div>
           </div>
         </div>
+
+        {/* Add the post score section */}
+        <div className="post-score-section">
+          {assessment.isPosted ? (
+            <div className="posted-badge">
+              <i className="fas fa-check-circle"></i>
+              <span>Score Posted on Profile</span>
+            </div>
+          ) : (
+            <button 
+              className={`btn btn-primary ${isPosting ? 'loading' : ''}`}
+              onClick={handlePostScore}
+              disabled={isPosting}
+            >
+              {isPosting ? 'Posting...' : 'Post Score on Profile'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="questions-review">
@@ -103,6 +144,25 @@ const AssessmentResults = () => {
           ))}
         </div>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="success-icon">
+              <i className="fas fa-check-circle"></i>
+            </div>
+            <h2>Score Posted Successfully!</h2>
+            <p>Your assessment score has been added to your profile.</p>
+            <button 
+              className="btn btn-primary"
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
