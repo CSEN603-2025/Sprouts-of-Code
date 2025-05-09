@@ -1,0 +1,269 @@
+.assessment-results {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.results-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--primary-black);
+}
+
+.results-summary {
+  margin-bottom: 40px;
+}
+
+.score-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.score-details {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item .label {
+  color: var(--dark-gray);
+  font-size: 14px;
+}
+
+.detail-item .value {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary-black);
+}
+
+.questions-review {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.questions-review h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: var(--primary-black);
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.question-item {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.question-item.correct {
+  border-left: 4px solid #198754;
+}
+
+.question-item.incorrect {
+  border-left: 4px solid #dc3545;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.question-number {
+  font-weight: 600;
+  color: var(--primary-black);
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.correct {
+  background-color: #e8f5e9;
+  color: #198754;
+}
+
+.status-badge.incorrect {
+  background-color: #fbe9e7;
+  color: #dc3545;
+}
+
+.question-text {
+  margin: 0 0 16px 0;
+  color: var(--primary-black);
+  line-height: 1.5;
+}
+
+.answer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.answer-item {
+  display: flex;
+  gap: 8px;
+}
+
+.answer-item .label {
+  color: var(--dark-gray);
+  font-size: 14px;
+  min-width: 100px;
+}
+
+.answer-item .value {
+  color: var(--primary-black);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .score-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .score-details {
+    grid-template-columns: 1fr;
+  }
+
+  .answer-item {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .answer-item .label {
+    min-width: auto;
+  }
+}
+
+.post-score-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.posted-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #e8f5e9;
+  color: #198754;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.posted-badge i {
+  font-size: 16px;
+}
+
+.btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s linear infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.success-icon {
+  font-size: 48px;
+  color: #198754;
+  margin-bottom: 16px;
+}
+
+.modal-content h2 {
+  margin: 0 0 16px 0;
+  color: var(--primary-black);
+}
+
+.modal-content p {
+  margin: 0 0 24px 0;
+  color: var(--dark-gray);
+}
+
+.modal-content .btn {
+  min-width: 120px;
+}
