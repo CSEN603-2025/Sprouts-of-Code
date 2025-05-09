@@ -32,6 +32,7 @@ import WorkLogs from './pages/internshipExperience/WorkLogs'
 import AdminDashboard from './pages/internshipOperations/AdminDashboard'
 import InternshipManagement from './pages/internshipOperations/InternshipManagement'
 import PendingCompanies from './pages/internshipOperations/PendingCompanies'
+import ViewStudentProfile from './pages/internshipOperations/ViewStudentProfile'
 
 // Developer 5 - Analytics & Reporting
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
@@ -164,6 +165,11 @@ function App() {
               <Route path="/admin/pending-companies" element={
                 <ProtectedRoute>
                   <PendingCompanies />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/students/:studentId" element={
+                <ProtectedRoute>
+                  <ViewStudentProfile />
                 </ProtectedRoute>
               } />
 
