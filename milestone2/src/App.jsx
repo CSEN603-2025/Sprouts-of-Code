@@ -15,6 +15,10 @@ import SubmissionSuccess from './pages/auth/SubmissionSuccess'
 import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
 import ProfileSetup from './pages/studentOnboarding/ProfileSetup'
 import MyApplications from './pages/studentOnboarding/MyApplications'
+import ProfileViewers from './pages/studentOnboarding/ProfileViewers'
+import OnlineAssessments from './pages/studentOnboarding/OnlineAssessments'
+import TakeAssessment from './pages/studentOnboarding/TakeAssessment'
+import AssessmentResults from './pages/studentOnboarding/AssessmentResults'
 
 // Developer 2 - Employer Interface
 import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
@@ -99,6 +103,26 @@ function App() {
               <Route path="/student/applications" element={
                 <ProtectedRoute>
                   <MyApplications />
+                </ProtectedRoute>
+              } />
+              <Route path="/student/profile-viewers" element={
+                <ProtectedRoute>
+                  <ProfileViewers />
+                </ProtectedRoute>
+              } />
+              <Route path="/student/assessments" element={
+                <ProtectedRoute>
+                  <OnlineAssessments />
+                </ProtectedRoute>
+              } />
+              <Route path="/student/assessments/:id" element={
+                <ProtectedRoute>
+                  <TakeAssessment />
+                </ProtectedRoute>
+              } />
+              <Route path="/student/assessment-results/:id" element={
+                <ProtectedRoute>
+                  <AssessmentResults />
                 </ProtectedRoute>
               } />
 
