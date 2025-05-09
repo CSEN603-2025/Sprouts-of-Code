@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './StudentDashboard.css'
+import Paper from '@mui/material/Paper';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+
 
 const StudentDashboard = () => {
   // Dummy data for student dashboard
@@ -10,6 +18,35 @@ const StudentDashboard = () => {
     { id: 3, company: 'InnovateTech', position: 'Mobile Developer', status: 'rejected', date: '2023-05-05' }
   ])
   
+// ... inside StudentDashboard component ...
+const [suggestedCompanies] = useState([
+  {
+    id: 1,
+    name: "TechNova",
+    industry: "Software",
+    reason: "Matches your interest in Frontend Development",
+    recommendedBy: "2 past interns",
+    logo: "https://via.placeholder.com/40"
+  },
+  {
+    id: 2,
+    name: "GreenEnergy",
+    industry: "Renewable Energy",
+    reason: "Popular among students interested in sustainability",
+    recommendedBy: "5 past interns",
+    logo: "https://via.placeholder.com/40"
+  },
+  {
+    id: 3,
+    name: "FinWise",
+    industry: "Finance",
+    reason: "Recommended by past interns",
+    recommendedBy: "3 past interns",
+    logo: "https://via.placeholder.com/40"
+  },
+  // ... more companies ...
+]);
+
   return (
     <div className="student-dashboard">
       <div className="dashboard-header">
@@ -60,6 +97,36 @@ const StudentDashboard = () => {
             ))}
           </div>
         </div>
+        
+        <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
+  <Typography variant="h6" gutterBottom>
+    Suggested Companies
+  </Typography>
+  <List sx={{ maxHeight: 220, overflow: 'auto' }}>
+    {suggestedCompanies.map(company => (
+      <ListItem key={company.id} alignItems="flex-start">
+        <ListItemAvatar>
+          <Avatar src={company.logo} alt={company.name} />
+        </ListItemAvatar>
+        <ListItemText
+          primary={company.name}
+          secondary={
+            <>
+              <Typography component="span" variant="body2" color="text.primary">
+                {company.industry}
+              </Typography>
+              {" — " + company.reason}
+              <br />
+              <Typography component="span" variant="caption" color="text.secondary">
+                {company.recommendedBy}
+              </Typography>
+            </>
+          }
+        />
+      </ListItem>
+    ))}
+  </List>
+</Paper>
         
         <div className="card">
           <div className="card-header">
