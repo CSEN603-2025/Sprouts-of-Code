@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './ProfileSetup.css'
 
 const ProfileSetup = () => {
@@ -7,26 +7,208 @@ const ProfileSetup = () => {
     email: 'student@example.com',
     phone: '',
     major: '',
+    semester: '',
     graduationYear: '',
     skills: '',
     bio: '',
     linkedin: '',
-    github: ''
+    github: '',
+    jobInterests: '',
+    internships: [
+      {
+        company: 'TechNova',
+        role: 'Frontend Developer',
+        duration: 'Jun 2022 - Aug 2022',
+        responsibilities: 'Developed UI components using React and Redux.',
+        isEditing: false
+      },
+      {
+        company: 'GreenEnergy',
+        role: 'Data Analyst',
+        duration: 'Jan 2023 - Mar 2023',
+        responsibilities: 'Analyzed renewable energy data and created reports.',
+        isEditing: false
+      }
+    ],
+    activities: [
+      {
+        name: 'Hackathon',
+        description: 'Participated in a hackathon to develop a mobile app for a local charity.',
+        isEditing: false
+      }
+    ]
   })
+  
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
   
   const handleInputChange = (e) => {
     const { name, value } = e.target
+    
+    if (name === 'semester') {
+      setProfile({
+        ...profile,
+        [name]: value,
+        major: ''
+      })
+    } else {
+      setProfile({
+        ...profile,
+        [name]: value
+      })
+    }
+  }
+  
+  const handleInternshipChange = (idx, e) => {
+    const { name, value } = e.target
+    const updated = [...profile.internships]
+    updated[idx][name] = value
+    setProfile({ ...profile, internships: updated })
+  }
+  
+  const addInternship = () => {
     setProfile({
       ...profile,
-      [name]: value
+      internships: [...profile.internships, { company: '', role: '', duration: '', responsibilities: '', isEditing: true }]
     })
+  }
+  
+  const removeInternship = (idx) => {
+    const updated = profile.internships.filter((_, i) => i !== idx)
+    setProfile({ ...profile, internships: updated })
+  }
+  
+  const toggleEditInternship = (idx) => {
+    const updated = [...profile.internships]
+    updated[idx].isEditing = !updated[idx].isEditing
+    setProfile({ ...profile, internships: updated })
+  }
+  
+  const saveInternship = (idx) => {
+    const updated = [...profile.internships]
+    updated[idx].isEditing = false
+    setProfile({ ...profile, internships: updated })
+    // In a real app, send this to your backend
+    console.log('Saving internship:', updated[idx])
+  }
+  
+  const handleActivityChange = (idx, e) => {
+    const { name, value } = e.target
+    const updated = [...profile.activities]
+    updated[idx][name] = value
+    setProfile({ ...profile, activities: updated })
+  }
+  
+  const addActivity = () => {
+    setProfile({
+      ...profile,
+      activities: [...profile.activities, { name: '', description: '', isEditing: true }]
+    })
+  }
+  
+  const removeActivity = (idx) => {
+    const updated = profile.activities.filter((_, i) => i !== idx)
+    setProfile({ ...profile, activities: updated })
+  }
+  
+  const toggleEditActivity = (idx) => {
+    const updated = [...profile.activities]
+    updated[idx].isEditing = !updated[idx].isEditing
+    setProfile({ ...profile, activities: updated })
+  }
+  
+  const saveActivity = (idx) => {
+    const updated = [...profile.activities]
+    updated[idx].isEditing = false
+    setProfile({ ...profile, activities: updated })
+    // In a real app, send this to your backend
+    console.log('Saving activity:', updated[idx])
   }
   
   const handleSubmit = (e) => {
     e.preventDefault()
     // In a real app, this would update the profile via API
-    alert('Profile updated successfully!')
+    setShowSuccessModal(true)
   }
+  
+  const handleEscapeKey = (e) => {
+    if (e.key === 'Escape' && showSuccessModal) {
+      setShowSuccessModal(false);
+      window.location.href = '/dashboard';
+    }
+  };
+  
+  const handleOverlayClick = (e) => {
+    if (e.target.className === 'modal-overlay') {
+      setShowSuccessModal(false);
+      window.location.href = '/dashboard';
+    }
+  };
+  
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [showSuccessModal]);
+  
+  const getMajorOptions = (semester) => {
+    switch (semester) {
+      case '1':
+      case '2':
+        return [
+          'Engineering',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      case '3':
+        return [
+          'IET and MET',
+          'Mechatronics',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      case '4':
+        return [
+          'IET',
+          'MET',
+          'Mechatronics',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '10':
+        return [
+          'Electronics',
+          'Networks',
+          'Communications',
+          'Computer Science',
+          'DMET',
+          'Mechatronics',
+          'Architecture',
+          'Pharmacy',
+          'Management',
+          'Business Informatics',
+          'Law'
+        ];
+      default:
+        return [];
+    }
+  };
+  
+  const semesters = Array.from({ length: 10 }, (_, i) => i + 1);
   
   return (
     <div className="profile-setup">
@@ -96,35 +278,67 @@ const ProfileSetup = () => {
                 />
               </div>
               
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="semester">Current Semester *</label>
+                <select
+                  id="semester"
+                  name="semester"
+                  value={profile.semester}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select Semester</option>
+                  {semesters.map((sem) => (
+                    <option key={sem} value={sem}>
+                      Semester {sem}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="form-group">
                 <label htmlFor="major">Major/Field of Study *</label>
-                <input
-                  type="text"
+                <select
                   id="major"
                   name="major"
                   value={profile.major}
                   onChange={handleInputChange}
                   required
-                />
+                  disabled={!profile.semester}
+                >
+                  <option value="">Select Major</option>
+                  {getMajorOptions(profile.semester).map((major) => (
+                    <option key={major} value={major}>
+                      {major}
+                    </option>
+                  ))}
+                </select>
+                {!profile.semester && (
+                  <div className="form-hint">Please select a semester first</div>
+                )}
               </div>
             </div>
             
-            <div className="form-group">
-              <label htmlFor="graduationYear">Expected Graduation Year *</label>
-              <select
-                id="graduationYear"
-                name="graduationYear"
-                value={profile.graduationYear}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Year</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-              </select>
+              
+              <div className="form-group">
+                <label htmlFor="graduationYear"> Graduation Year *</label>
+                <select
+                  id="graduationYear"
+                  name="graduationYear"
+                  value={profile.graduationYear}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select Year</option>
+                  <option value="2023">2023</option>
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                </select>
+              </div>
             </div>
           </div>
           
@@ -156,6 +370,159 @@ const ProfileSetup = () => {
                 placeholder="Write a brief description about yourself"
               />
             </div>
+          </div>
+          
+          <div className="form-section">
+            <h3>Job Interests</h3>
+            <div className="form-group">
+              <label htmlFor="jobInterests">Job Interests</label>
+              <input
+                type="text"
+                id="jobInterests"
+                name="jobInterests"
+                value={profile.jobInterests}
+                onChange={handleInputChange}
+                placeholder="e.g. Frontend Development, Data Science, Product Management"
+              />
+              <div className="form-hint">Separate interests with commas</div>
+            </div>
+          </div>
+          
+          <div className="form-section">
+            <h3>Previous Internships & Part-time Jobs</h3>
+            {profile.internships.map((intern, idx) => (
+              <div key={idx} className="dynamic-entry">
+                {intern.isEditing ? (
+                  <>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Company Name</label>
+                        <input
+                          type="text"
+                          name="company"
+                          value={intern.company}
+                          onChange={e => handleInternshipChange(idx, e)}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Role/Position</label>
+                        <input
+                          type="text"
+                          name="role"
+                          value={intern.role}
+                          onChange={e => handleInternshipChange(idx, e)}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Duration</label>
+                        <input
+                          type="text"
+                          name="duration"
+                          value={intern.duration}
+                          onChange={e => handleInternshipChange(idx, e)}
+                          placeholder="e.g. Jun 2022 - Aug 2022"
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label>Responsibilities</label>
+                      <textarea
+                        name="responsibilities"
+                        value={intern.responsibilities}
+                        onChange={e => handleInternshipChange(idx, e)}
+                        rows="2"
+                      />
+                    </div>
+                    <div className="form-actions">
+                      <button type="button" className="btn btn-outline" onClick={() => removeInternship(idx)}>Remove</button>
+                      <button type="button" className="btn btn-primary" onClick={() => saveInternship(idx)}>Save</button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Company Name</label>
+                        <div>{intern.company}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Role/Position</label>
+                        <div>{intern.role}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Duration</label>
+                        <div>{intern.duration}</div>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label>Responsibilities</label>
+                      <div>{intern.responsibilities}</div>
+                    </div>
+                    <div className="form-actions">
+                      <button type="button" className="btn btn-outline" onClick={() => toggleEditInternship(idx)}>Edit</button>
+                      <button type="button" className="btn btn-outline" onClick={() => removeInternship(idx)}>Remove</button>
+                    </div>
+                  </>
+                )}
+                <hr />
+              </div>
+            ))}
+            <button type="button" className="btn btn-secondary" onClick={addInternship}>Add Internship/Job</button>
+          </div>
+          
+          <div className="form-section">
+            <h3>College Activities</h3>
+            {profile.activities.map((activity, idx) => (
+              <div key={idx} className="dynamic-entry">
+                {activity.isEditing ? (
+                  <>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Activity Name</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={activity.name}
+                          onChange={e => handleActivityChange(idx, e)}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Description</label>
+                        <input
+                          type="text"
+                          name="description"
+                          value={activity.description}
+                          onChange={e => handleActivityChange(idx, e)}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-actions">
+                      <button type="button" className="btn btn-outline" onClick={() => removeActivity(idx)}>Remove</button>
+                      <button type="button" className="btn btn-primary" onClick={() => saveActivity(idx)}>Save</button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Activity Name</label>
+                        <div>{activity.name}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Description</label>
+                        <div>{activity.description}</div>
+                      </div>
+                    </div>
+                    <div className="form-actions">
+                      <button type="button" className="btn btn-outline" onClick={() => toggleEditActivity(idx)}>Edit</button>
+                      <button type="button" className="btn btn-outline" onClick={() => removeActivity(idx)}>Remove</button>
+                    </div>
+                  </>
+                )}
+                <hr />
+              </div>
+            ))}
+            <button type="button" className="btn btn-secondary" onClick={addActivity}>Add Activity</button>
           </div>
           
           <div className="form-section">
@@ -193,6 +560,28 @@ const ProfileSetup = () => {
           </div>
         </form>
       </div>
+
+      {showSuccessModal && (
+        <div className="modal-overlay" onClick={handleOverlayClick}>
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Profile Updated Successfully!</h2>
+              <p>Your profile has been updated. You can now view your updated information.</p>
+              <div className="modal-actions">
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    window.location.href = '/dashboard';
+                  }}
+                >
+                  Go to Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
