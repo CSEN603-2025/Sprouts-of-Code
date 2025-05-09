@@ -14,6 +14,10 @@ const ProfileSetup = () => {
     linkedin: '',
     github: '',
     jobInterests: '',
+    documents: {
+      cv: null,
+      additionalDocuments: []
+    },
     internships: [
       {
         company: 'TechNova',
@@ -123,6 +127,58 @@ const ProfileSetup = () => {
     // In a real app, send this to your backend
     console.log('Saving activity:', updated[idx])
   }
+  
+  const handleFileUpload = (e, type) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please upload only PDF or Word documents');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size should not exceed 5MB');
+      return;
+    }
+
+    if (type === 'cv') {
+      // If CV already exists, don't allow new upload
+      if (profile.documents.cv) {
+        alert('Please remove the existing CV before uploading a new one');
+        e.target.value = ''; // Reset the input
+        return;
+      }
+      setProfile(prev => ({
+        ...prev,
+        documents: {
+          ...prev.documents,
+          cv: file
+        }
+      }));
+    } else {
+      setProfile(prev => ({
+        ...prev,
+        documents: {
+          ...prev.documents,
+          additionalDocuments: [...prev.documents.additionalDocuments, file]
+        }
+      }));
+    }
+  };
+
+  const removeDocument = (index) => {
+    setProfile(prev => ({
+      ...prev,
+      documents: {
+        ...prev.documents,
+        additionalDocuments: prev.documents.additionalDocuments.filter((_, i) => i !== index)
+      }
+    }));
+  };
   
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -552,6 +608,70 @@ const ProfileSetup = () => {
                   placeholder="https://github.com/yourusername"
                 />
               </div>
+            </div>
+          </div>
+          
+          <div className="form-section">
+            <h3>Documents</h3>
+            
+            <div className="form-group">
+              <label htmlFor="cv">CV/Resume *</label>
+              <div className="file-upload-container">
+                {!profile.documents.cv ? (
+                  <input
+                    type="file"
+                    id="cv"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => handleFileUpload(e, 'cv')}
+                    required
+                  />
+                ) : (
+                  <div className="file-info">
+                    <span>{profile.documents.cv.name}</span>
+                    <button 
+                      type="button" 
+                      className="btn btn-outline btn-sm"
+                      onClick={() => setProfile(prev => ({
+                        ...prev,
+                        documents: { ...prev.documents, cv: null }
+                      }))}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="form-hint">Upload your CV/Resume (PDF or Word format, max 5MB)</div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="additionalDocuments">Additional Documents</label>
+              <div className="file-upload-container">
+                <input
+                  type="file"
+                  id="additionalDocuments"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => handleFileUpload(e, 'additional')}
+                />
+                <div className="form-hint">Upload certificates, cover letters, or other relevant documents</div>
+              </div>
+              
+              {profile.documents.additionalDocuments.length > 0 && (
+                <div className="additional-documents-list">
+                  {profile.documents.additionalDocuments.map((doc, index) => (
+                    <div key={index} className="file-info">
+                      <span>{doc.name}</span>
+                      <button 
+                        type="button" 
+                        className="btn btn-outline btn-sm"
+                        onClick={() => removeDocument(index)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           
