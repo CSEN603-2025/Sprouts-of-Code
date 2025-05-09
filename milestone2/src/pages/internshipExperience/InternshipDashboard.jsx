@@ -10,7 +10,7 @@ const InternshipDashboard = () => {
       position: 'Frontend Developer',
       status: 'current',
       startDate: '2023-06-01',
-      endDate: '2023-09-01',
+      endDate: '2023-07-01',
       description: 'Developing user interfaces using React and Redux',
       responsibilities: 'React, JavaScript, HTML/CSS',
       location: 'Cairo, Egypt',
@@ -25,7 +25,7 @@ const InternshipDashboard = () => {
       position: 'Data Analyst',
       status: 'completed',
       startDate: '2023-01-01',
-      endDate: '2023-04-01',
+      endDate: '2023-01-31',
       description: 'Analyzing data and creating reports',
       responsibilities: 'Python, SQL, Data Analysis',
       location: 'Remote',
@@ -40,7 +40,7 @@ const InternshipDashboard = () => {
       position: 'Frontend Developer',
       status: 'completed',
       startDate: '2023-06-01',
-      endDate: '2023-09-01',
+      endDate: '2023-07-01',
       description: 'Developing user interfaces using React and Redux',
       responsibilities: 'React, JavaScript, HTML/CSS',
       location: 'Cairo, Egypt',
@@ -78,6 +78,55 @@ const InternshipDashboard = () => {
     current: filteredInternships.filter(internship => internship.status === 'current'),
     completed: filteredInternships.filter(internship => internship.status === 'completed')
   }
+
+  const calculateTotalDuration = () => {
+    let totalMonths = 0;
+    let totalDays = 0;
+    
+    // Calculate duration for each internship
+    groupedInternships.completed.forEach(internship => {
+      const start = new Date(internship.startDate);
+      const end = new Date(internship.endDate);
+      
+      // Calculate months difference
+      const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + 
+                        (end.getMonth() - start.getMonth());
+      
+      // Calculate remaining days
+      const startDay = start.getDate();
+      const endDay = end.getDate();
+      const daysDiff = endDay - startDay;
+      
+      totalMonths += monthsDiff;
+      totalDays += daysDiff;
+    });
+
+    // Convert extra days to months if possible
+    if (totalDays >= 30) {
+      const additionalMonths = Math.floor(totalDays / 30);
+      totalMonths += additionalMonths;
+      totalDays = totalDays % 30;
+    }
+
+    // Convert remaining days to weeks
+    const weeks = Math.floor(totalDays / 7);
+    const remainingDays = totalDays % 7;
+
+    // Format the string
+    let durationString = '';
+    if (totalMonths > 0) {
+      durationString += `${totalMonths} ${totalMonths === 1 ? 'month' : 'months'}`;
+    }
+    if (weeks > 0) {
+      if (durationString) durationString += ' and ';
+      durationString += `${weeks} ${weeks === 1 ? 'week' : 'weeks'}`;
+    }
+    if (remainingDays > 0 && !totalMonths && !weeks) {
+      durationString += `${remainingDays} ${remainingDays === 1 ? 'day' : 'days'}`;
+    }
+
+    return durationString || '0 days';
+  };
 
   return (
     <div className="internship-dashboard">
@@ -275,6 +324,12 @@ const InternshipDashboard = () => {
           </div>
         )}
       </div>
+      {/* Duration Completed Stat Card - Temporarily Commented Out
+      <div className="stat-card">
+        <h3>Duration Completed</h3>
+        <div className="stat-number">{calculateTotalDuration()}</div>
+      </div>
+      */}
     </div>
   )
 }
