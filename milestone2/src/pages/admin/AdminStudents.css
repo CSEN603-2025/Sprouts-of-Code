@@ -109,3 +109,11 @@
   background: #007bff;
   color: #fff;
 } 
+.filter-bar {
+  margin: 1rem 0;
+}
+
+.filter-bar select {
+  padding: 0.4rem;
+  margin-left: 0.5rem;
+}
