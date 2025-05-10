@@ -10,21 +10,25 @@ const Sidebar = ({ user }) => {
     
     switch (user.role) {
       case 'student':
-        return [
+        const baseItems = [
           { label: 'Dashboard', path: '/student', icon: '📊' },
           { label: 'My Profile', path: '/student/profile', icon: '👤' },
           { label: 'Applications', path: '/student/applications', icon: '📝' },
           { label: 'Internships', path: '/student/internships', icon: '💼' },
           { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
           { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
-          { label: 'Profile Viewers', path: '/student/profile-viewers', icon: '👁️', pro: true },
-          { label: 'Online Assessments', path: '/student/assessments', icon: '📝' , pro: true},
-        ]
+        ];
+        if (user.isPro) {
+          baseItems.push(
+            { label: 'Profile Viewers', path: '/student/profile-viewers', icon: '👁️', pro: true },
+            { label: 'Online Assessments', path: '/student/assessments', icon: '📝', pro: true }
+          );
+        }
+        return baseItems;
       case 'employer':
         return [
           { label: 'Dashboard', path: '/employer', icon: '📊' },
-          { label: 'Company Profile', path: '/employer/profile', icon: '🏢' },
-          { label: 'Job Postings', path: '/employer/jobs', icon: '📋' },
+          { label: 'Internships', path: '/employer/internships', icon: '📋' },
           { label: 'Applications', path: '/employer/applications', icon: '📝' },
           { label: 'Interns', path: '/employer/interns', icon: '👥' },
         ]
@@ -33,8 +37,9 @@ const Sidebar = ({ user }) => {
           { label: 'Dashboard', path: '/admin', icon: '📊' },
           { label: 'Students', path: '/admin/students', icon: '👨‍🎓' },
           { label: 'Employers', path: '/admin/employers', icon: '🏢' },
-          { label: 'Internships', path: '/admin/internships', icon: '💼' },
+          { label: 'Internships', path: '/admin/internship-management', icon: '💼' },
           { label: 'Analytics', path: '/analytics', icon: '📈' },
+          { label: 'Evaluations', path: '/admin/evaluations', icon: '📝' },
           { label: 'Reports', path: '/analytics/reports', icon: '📊' },
           { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
         ]
@@ -66,7 +71,7 @@ const Sidebar = ({ user }) => {
       </ul>
       
       <div className="sidebar-footer">
-        <p>© 2023 Sprouts of Code</p>
+        <p>© 2025 Sprouts of Code</p>
       </div>
     </div>
   )

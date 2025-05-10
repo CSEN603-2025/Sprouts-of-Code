@@ -1,9 +1,15 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { dummyInternships } from '../data/dummyData';
 
 const InternshipContext = createContext();
 
 export const InternshipProvider = ({ children }) => {
   const [internships, setInternships] = useState([]);
+
+  useEffect(() => {
+    // Initialize with dummy data
+    setInternships(dummyInternships);
+  }, []);
 
   // Create
   const addInternship = (internship) => {

@@ -1,0 +1,207 @@
+/* AdminEmployers.css */
+.admin-list-page {
+  padding: 2rem;
+}
+
+.admin-list-page h1 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.admin-list-page p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.employer-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.employer-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.employer-card:hover {
+  transform: translateY(-2px);
+}
+
+.employer-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.company-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #f5f5f5;
+  padding: 0.25rem;
+}
+
+.employer-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.employer-info {
+  margin-bottom: 1.5rem;
+}
+
+.employer-info p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.employer-info strong {
+  color: #333;
+}
+
+.employer-card .btn {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.employer-card .btn:hover {
+  background: #007bff;
+  color: #fff;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-logo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-logo img {
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f5f5f5;
+  padding: 0.5rem;
+}
+
+.modal-details {
+  display: grid;
+  gap: 1rem;
+}
+
+.detail-group {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.detail-group label {
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-group span {
+  color: #333;
+}
+
+.documents-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.documents-list li {
+  padding: 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-outline {
+  background: none;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.btn-outline:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+} 
