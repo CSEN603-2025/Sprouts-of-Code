@@ -1,33 +1,29 @@
 import { createContext, useContext, useState } from 'react';
+import { dummyData } from '../data/dummyData';
 
 const CompanyContext = createContext();
 
 export const CompanyProvider = ({ children }) => {
-  const [pendingCompanies, setPendingCompanies] = useState([]);
+  const [companies, setCompanies] = useState(dummyData.companies);
 
-  const addCompany = (company) => {
-    setPendingCompanies(prev => [...prev, { ...company, id: Date.now(), status: 'pending' }]);
+  const addApprovedCompany = (company) => {
+    setCompanies(prev => [...prev, company]);
   };
 
   const removeCompany = (companyId) => {
-    setPendingCompanies(prev => prev.filter(company => company.id !== companyId));
+    setCompanies(prev => prev.filter(company => company.id !== companyId));
   };
 
-  const approveCompany = (companyId) => {
-    setPendingCompanies(prev => prev.filter(company => company.id !== companyId));
-  };
-
-  const rejectCompany = (companyId) => {
-    setPendingCompanies(prev => prev.filter(company => company.id !== companyId));
+  const getCompanyById = (companyId) => {
+    return companies.find(company => company.id === companyId);
   };
 
   return (
     <CompanyContext.Provider value={{
-      pendingCompanies,
-      addCompany,
+      companies,
+      addApprovedCompany,
       removeCompany,
-      approveCompany,
-      rejectCompany
+      getCompanyById
     }}>
       {children}
     </CompanyContext.Provider>

@@ -1,141 +1,142 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import './Login.css'
 
-// Mock user data
-const MOCK_USERS = {
-  'student@example.com': {
-    id: '1',
-    email: 'student@example.com',
-    password: 'password',
-    name: 'John Student',
-    role: 'student',
-    profilePic: 'https://via.placeholder.com/150?text=S'
-  },
-  'employer@example.com': {
-    id: '2',
-    email: 'employer@example.com',
-    password: 'password',
-    name: 'Jane Employer',
-    role: 'employer',
-    profilePic: 'https://via.placeholder.com/150?text=E'
-  },
-  'admin@example.com': {
-    id: '3',
-    email: 'admin@example.com',
-    password: 'password',
-    name: 'Admin User',
-    role: 'admin',
-    profilePic: 'https://via.placeholder.com/150?text=A'
-  }
-}
 
-const Login = ({ onLogin }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  })
+const Login = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
+  const { login } = useAuth()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    
-    // Check if user exists
-    const user = MOCK_USERS[formData.email]
-    
-    if (user && user.password === formData.password) {
-      // Login successful
-      const { password, ...userData } = user // Remove password from user data
-      onLogin(userData)
-      
-      // Redirect based on role
-      switch (user.role) {
-        case 'student':
-          navigate('/student')
-          break
-        case 'employer':
-          navigate('/employer')
-          break
-        case 'admin':
-          navigate('/admin')
-          break
-        default:
-          navigate('/')
+    setIsLoading(true)
+
+    try {
+      const result = await login(email, password)
+      if (result.success) {
+        const { user } = result
+        if (user.role === 'admin') navigate('/admin')
+        else if (user.role === 'employer') navigate('/employer')
+        else if (user.role === 'student') navigate('/student')
+        else navigate('/')
+      } else {
+        setError(result.error)
       }
-    } else {
-      setError('Invalid email or password')
+    } catch (err) {
+      setError('An error occurred during login. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
-  
+
   return (
     <div className="login-page">
       <div className="login-container">
-        <h2>Welcome Back</h2>
-        <form onSubmit={handleSubmit}>
+        <div className="login-header">
+          <h1>Welcome Back</h1>
+          <p>Sign in to your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
               required
             />
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '5px',
+                  fontSize: '1.2rem'
+                }}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  // Open eye SVG
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z" stroke="#222" strokeWidth="2" fill="none"/>
+                    <circle cx="12" cy="12" r="4" stroke="#222" strokeWidth="2" fill="none"/>
+                  </svg>
+                ) : (
+                  // Eye with slash SVG
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z" stroke="#222" strokeWidth="2" fill="none"/>
+                    <circle cx="12" cy="12" r="4" stroke="#222" strokeWidth="2" fill="none"/>
+                    <line x1="4" y1="20" x2="20" y2="4" stroke="#222" strokeWidth="2"/>
+                  </svg>
+                )}
+              </button>
+            </div>
+            <div className="password-hint">
+              For demo purposes, use "password" as the password
+            </div>
           </div>
 
-          <button type="submit" className="login-btn">Login</button>
-          
-          <div className="register-company">
-            <p>New to the platform?</p>
-            <button 
-              type="button" 
-              className="register-company-btn"
-              onClick={() => navigate('/register-company')}
-            >
-              Register a new Company
-            </button>
-          </div>
+          <button 
+            type="submit" 
+            className="btn btn-primary login-button"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing in...' : 'Sign In'}
+          </button>
         </form>
-        
-        <div className="demo-accounts">
-          <h3>Demo Accounts</h3>
-          <div className="account-list">
-            <div className="account-item">
-              <strong>Student:</strong>
-              <p>student@example.com / password</p>
-            </div>
-            <div className="account-item">
-              <strong>Employer:</strong>
-              <p>employer@example.com / password</p>
-            </div>
-            <div className="account-item">
-              <strong>Admin:</strong>
-              <p>admin@example.com / password</p>
-            </div>
-          </div>
+
+        <div className="register-company">
+          <p>Are you a company looking to post internships?</p>
+          <button 
+            className="register-company-btn"
+            onClick={() => navigate('/company-registration')}
+          >
+            Register Your Company
+          </button>
+        </div>
+
+        <div className="login-footer">
+          <p>Demo Accounts:</p>
+          <ul>
+            <li>Admin: admin@demo.com / admin123</li>
+            <li>Company: Use any company email from the list</li>
+            <li>Student: Use any student email from the list</li>
+          </ul>
         </div>
       </div>
     </div>

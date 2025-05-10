@@ -1,0 +1,111 @@
+/* AdminStudents.css */
+.admin-list-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-list-page h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.admin-list-page p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.student-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.student-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.student-card:hover {
+  transform: translateY(-5px);
+}
+
+.student-card h3 {
+  margin: 0;
+  color: #333;
+}
+
+.student-card p {
+  color: #666;
+  margin: 10px 0;
+}
+
+.student-card .btn {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.student-card .btn:hover {
+  background: #007bff;
+  color: #fff;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-content h2 {
+  margin: 0;
+  color: #333;
+}
+
+.modal-content p {
+  color: #666;
+  margin: 10px 0;
+}
+
+.modal-content .btn {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.modal-content .btn:hover {
+  background: #007bff;
+  color: #fff;
+} 

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCompany } from '../../context/CompanyContext';
+import { usePendingCompany } from '../../context/PendingCompanyContext';
 import './CompanyRegistration.css';
 
 const CompanyRegistration = () => {
   const navigate = useNavigate();
-  const { addCompany } = useCompany();
+  const { addCompany } = usePendingCompany();
   const [formData, setFormData] = useState({
     companyName: '',
     industry: '',
