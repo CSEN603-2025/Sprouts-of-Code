@@ -39,6 +39,7 @@ const Sidebar = ({ user }) => {
           { label: 'Employers', path: '/admin/employers', icon: '🏢' },
           { label: 'Internships', path: '/admin/internship-management', icon: '💼' },
           { label: 'Analytics', path: '/analytics', icon: '📈' },
+          { label: 'Evaluations', path: '/admin/evaluations', icon: '📝' },
           { label: 'Reports', path: '/analytics/reports', icon: '📊' },
           { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
         ]

@@ -4,6 +4,7 @@ import { useCompany } from '../../context/CompanyContext'
 import { usePendingCompany } from '../../context/PendingCompanyContext'
 import { useInternships } from '../../context/InternshipContext'
 import { useStudent } from '../../context/StudentContext'
+import { useEvaluation } from '../../context/EvaluationContext'
 import './AdminDashboard.css'
 
 const AdminDashboard = () => {
@@ -12,13 +13,15 @@ const AdminDashboard = () => {
   const { pendingCompanies } = usePendingCompany()
   const { internships } = useInternships()
   const { students } = useStudent()
+  const { evaluations } = useEvaluation()
 
   // Calculate stats from real data
   const stats = {
     students: students.length,
     employers: companies.length,
     totalInternships: internships.length,
-    pendingApprovals: pendingCompanies.length
+    pendingApprovals: pendingCompanies.length,
+    evaluations: evaluations.length
   }
   
   // Dummy recent activities
@@ -56,6 +59,11 @@ const AdminDashboard = () => {
           <h3>Pending Approvals</h3>
           <div className="stat-number">{stats.pendingApprovals}</div>
           <Link to="/admin/pending-companies" className="stat-link">View all</Link>
+        </div>
+        <div className="stat-card">
+          <h3>Evaluations</h3>
+          <div className="stat-number">{stats.evaluations}</div>
+          <Link to="/admin/evaluations" className="stat-link">View all</Link>
         </div>
       </div>
       

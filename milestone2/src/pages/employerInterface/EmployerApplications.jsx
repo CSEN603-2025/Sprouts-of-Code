@@ -5,10 +5,16 @@ import { useStudent } from '../../context/StudentContext';
 import { useCompany } from '../../context/CompanyContext'
 import './EmployerApplications.css';
 
+const statusOptions = [
+  { value: 'completed', label: 'Finalized' },
+  { value: 'undergoing', label: 'Accepted' },
+  { value: 'rejected', label: 'Rejected' }
+];
+
 const EmployerApplications = () => {
   const { user } = useAuth();
-  const { internships } = useInternships();
-  const { students } = useStudent();
+  const { internships, updateInternship } = useInternships();
+  const { students, updateStudent } = useStudent();
   const { companies } = useCompany();
   const [selectedInternship, setSelectedInternship] = useState(null);
 
@@ -42,6 +48,45 @@ const EmployerApplications = () => {
       });
   };
 
+  // Handle status change
+  const handleStatusChange = (studentId, internshipId, newStatus) => {
+    const internship = internships.find(i => i.id === internshipId);
+    if (internship) {
+      const newApplicants = internship.applicants.map(app =>
+        app.studentId === studentId ? { ...app, status: newStatus } : app
+      );
+      updateInternship(internshipId, { applicants: newApplicants });
+    }
+    // Update in StudentContext
+    const student = students.find(s => s.id === studentId);
+    if (student) {
+      const newAppliedInternships = student.appliedInternships.map(app =>
+        app.internshipId === internshipId ? { ...app, status: newStatus } : app
+      );
+      updateStudent(studentId, { appliedInternships: newAppliedInternships });
+    }
+    //console.log(internships[0].applicants);
+  };
+
+  const undergoingInterns = [];
+  if (company) {
+    companyInternships.forEach(internship => {
+      if (internship.companyId === company.id && Array.isArray(internship.applicants)) {
+        internship.applicants.forEach(applicant => {
+          if (applicant.status === 'undergoing') {
+            const student = students.find(s => s.id === applicant.studentId);
+            if (student) {
+              undergoingInterns.push({
+                ...student,
+                internshipPosition: internship.position
+              });
+            }
+          }
+        });
+      }
+    });
+  }
+
   return (
     <div className="employer-applications">
       <h1>Student Applications</h1>
@@ -66,7 +111,23 @@ const EmployerApplications = () => {
                       <p><strong>University:</strong> {application.studentUniversity}</p>
                       <p><strong>Major:</strong> {application.studentMajor}</p>
                       <p><strong>Graduation Year:</strong> {application.graduationYear}</p>
-                      <p><strong>Status:</strong> <span className={`status ${application.status}`}>{application.status}</span></p>
+                      <div style={{ marginTop: '0.5rem' }}>
+                        <label htmlFor={`status-select-${internship.id}-${application.studentName}`}>Change Status: </label>
+                        <select
+                          id={`status-select-${internship.id}-${application.studentName}`}
+                          onChange={e => handleStatusChange(
+                            parseInt(application.studentId),
+                            internship.id,
+                            e.target.value
+                          )}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>Select status</option>
+                          {statusOptions.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 ))}

@@ -129,4 +129,127 @@
 .status.rejected {
   background: #ffebee;
   color: #c62828;
+}
+
+.interns-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.custom-checkbox {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #333;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 2px solid #4a90e2;
+  border-radius: 4px;
+  transition: background 0.2s, border 0.2s;
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #4a90e2;
+  border-color: #357abd;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-checkbox .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 4px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.intern-search-bar {
+  padding: 0.7rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 60%;
+  transition: border-color 0.2s;
+}
+
+.intern-search-bar:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.interns-dropdown {
+  padding: 0.7rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fff;
+  color: #333;
+  width: 210px;
+  transition: border-color 0.2s;
+  margin-left: 1rem;
+}
+
+.interns-dropdown:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.finalize-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.finalize-btn:hover {
+  background: #219150;
 } 
