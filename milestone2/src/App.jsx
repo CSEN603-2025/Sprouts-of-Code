@@ -1,199 +1,224 @@
-import { useState, useContext, createContext } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { CompanyProvider } from './context/CompanyContext'
+import { PendingCompanyProvider } from './context/PendingCompanyContext'
+import { StudentProvider } from './context/StudentContext'
+import { InternshipProvider } from './context/InternshipContext'
+import Layout from './components/layout/Layout'
 
-// Shared components
-import Navbar from './components/shared/Navbar'
-import Sidebar from './components/shared/Sidebar'
-
-// Auth pages
+// Auth Pages
 import Login from './pages/auth/Login'
-import CompanyRegistration from './pages/auth/CompanyRegistration'
-import SubmissionSuccess from './pages/auth/SubmissionSuccess'
 
-// Developer 1 - Access & Student Onboarding
-import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
-import ProfileSetup from './pages/studentOnboarding/ProfileSetup'
-import MyApplications from './pages/studentOnboarding/MyApplications'
-import ProfileViewers from './pages/studentOnboarding/ProfileViewers'
-import OnlineAssessments from './pages/studentOnboarding/OnlineAssessments'
-import TakeAssessment from './pages/studentOnboarding/TakeAssessment'
-import AssessmentResults from './pages/studentOnboarding/AssessmentResults'
-
-// Developer 2 - Employer Interface
-import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
-import JobPostings from './pages/employerInterface/JobPostings'
-
-// Developer 3 - Student Internship Experience
-import InternshipDashboard from './pages/internshipExperience/InternshipDashboard'
-import WorkLogs from './pages/internshipExperience/WorkLogs'
-
-// Developer 4 - SCAD Internship Operations
+// Admin Pages
 import AdminDashboard from './pages/internshipOperations/AdminDashboard'
-import InternshipManagement from './pages/internshipOperations/InternshipManagement'
+import CompanyRegistration from './pages/auth/CompanyRegistration'
 import PendingCompanies from './pages/internshipOperations/PendingCompanies'
-import ViewStudentProfile from './pages/internshipOperations/ViewStudentProfile'
+import AdminStudents from './pages/admin/AdminStudents'
+import AdminEmployers from './pages/admin/AdminEmployers'
+import AdminInternships from './pages/admin/AdminInternships'
+import InternshipManagement from './pages/internshipOperations/InternshipManagement'
 
-// Developer 5 - Analytics & Reporting
+// Employer Pages
+import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
+import InternshipOperations from './pages/employerInterface/InternshipOperations'
+import EmployerProfile from './pages/employerInterface/EmployerProfile'
+
+// Student Pages
+import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
+import StudentOnboarding from './pages/studentOnboarding/StudentOnboarding'
+import InternshipExperience from './pages/internshipexperience/InternshipExperience'
+
+// Analytics Pages
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
 import Reports from './pages/analytics/Reports'
 
-// Context
-import { CompanyProvider } from './context/CompanyContext'
-import { InternshipProvider } from './context/InternshipContext'
+import './App.css'
 
-// Create a user context
-const UserContext = createContext(null)
-
-function App() {
-  const [user, setUser] = useState(null)
-
-  // Handle login
-  const handleLogin = (userData) => {
-    setUser(userData)
+// Protected Route component
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { user, isAuthenticated } = useAuth()
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />
   }
-
-  // Handle logout
-  const handleLogout = () => {
-    setUser(null)
+  
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/" />
   }
+  
+  return <Layout>{children}</Layout>
+}
 
-  // Layout component that includes Navbar and Sidebar
-  const Layout = ({ children }) => (
-    <div className="app-container">
-      <Navbar user={user} onLogout={handleLogout} />
-      <div className="content-container">
-        <Sidebar user={user} />
-        <main className="main-content">
-          {children}
-        </main>
-      </div>
-    </div>
-  )
-
-  // Protected route component
-  const ProtectedRoute = ({ children }) => {
-    if (!user) {
-      return <Navigate to="/login" />
-    }
-    return <Layout>{children}</Layout>
-  }
-
+// Default redirect component
+const DefaultRedirect = () => {
+  const { user } = useAuth();
   return (
-    <CompanyProvider>
-      <InternshipProvider>
-        <UserContext.Provider value={{ user, setUser }}>
-          <BrowserRouter>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/login" element={<Login onLogin={handleLogin} />} />
-              <Route path="/register-company" element={<CompanyRegistration />} />
-              <Route path="/submission-success" element={<SubmissionSuccess />} />
+    <Navigate to={
+      user?.role === 'admin' ? '/admin' :
+      user?.role === 'employer' ? '/employer' :
+      user?.role === 'student' ? '/student' :
+      '/login'
+    } />
+  );
+};
 
-              {/* Developer 1 - Access & Student Onboarding */}
-              <Route path="/student" element={
-                <ProtectedRoute>
-                  <StudentDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/student/profile" element={
-                <ProtectedRoute>
-                  <ProfileSetup />
-                </ProtectedRoute>
-              } />
-              <Route path="/student/applications" element={
-                <ProtectedRoute>
-                  <MyApplications />
-                </ProtectedRoute>
-              } />
-              <Route path="/student/profile-viewers" element={
-                <ProtectedRoute>
-                  <ProfileViewers />
-                </ProtectedRoute>
-              } />
-              <Route path="/student/assessments" element={
-                <ProtectedRoute>
-                  <OnlineAssessments />
-                </ProtectedRoute>
-              } />
-              <Route path="/student/assessments/:id" element={
-                <ProtectedRoute>
-                  <TakeAssessment />
-                </ProtectedRoute>
-              } />
-              <Route path="/student/assessment-results/:id" element={
-                <ProtectedRoute>
-                  <AssessmentResults />
-                </ProtectedRoute>
-              } />
-
-              {/* Developer 2 - Employer Interface */}
-              <Route path="/employer" element={
-                <ProtectedRoute>
-                  <EmployerDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/employer/jobs" element={
-                <ProtectedRoute>
-                  <JobPostings />
-                </ProtectedRoute>
-              } />
-
-              {/* Developer 3 - Student Internship Experience */}
-              <Route path="/student/internships" element={
-                <ProtectedRoute>
-                  <InternshipDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/internship/logs" element={
-                <ProtectedRoute>
-                  <WorkLogs />
-                </ProtectedRoute>
-              } />
-
-              {/* Developer 4 - SCAD Internship Operations */}
-              <Route path="/admin" element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/internships" element={
-                <ProtectedRoute>
-                  <InternshipManagement />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/pending-companies" element={
-                <ProtectedRoute>
-                  <PendingCompanies />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/students/:studentId" element={
-                <ProtectedRoute>
-                  <ViewStudentProfile />
-                </ProtectedRoute>
-              } />
-
-              {/* Developer 5 - Analytics & Reporting */}
-              <Route path="/analytics" element={
-                <ProtectedRoute>
-                  <AnalyticsDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/analytics/reports" element={
-                <ProtectedRoute>
-                  <Reports />
-                </ProtectedRoute>
-              } />
-
-              {/* Default route */}
-              <Route path="*" element={<Navigate to="/login" />} />
-            </Routes>
-          </BrowserRouter>
-        </UserContext.Provider>
-      </InternshipProvider>
-    </CompanyProvider>
+const App = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <CompanyProvider>
+          <PendingCompanyProvider>
+            <StudentProvider>
+              <InternshipProvider>
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/login" element={<Login />} />
+                  
+                  {/* Admin Routes */}
+                  <Route 
+                    path="/admin" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <AdminDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/company-registration" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <CompanyRegistration />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/pending-companies" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <PendingCompanies />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/students" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <AdminStudents />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/employers" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <AdminEmployers />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/internships" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <AdminInternships />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/internship-management" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <InternshipManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  
+                  {/* Employer Routes */}
+                  <Route 
+                    path="/employer" 
+                    element={
+                      <ProtectedRoute allowedRoles={['employer']}>
+                        <EmployerDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/employer/operations" 
+                    element={
+                      <ProtectedRoute allowedRoles={['employer']}>
+                        <InternshipOperations />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/employer/profile" 
+                    element={
+                      <ProtectedRoute allowedRoles={['employer']}>
+                        <EmployerProfile />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  
+                  {/* Student Routes */}
+                  <Route 
+                    path="/student" 
+                    element={
+                      <ProtectedRoute allowedRoles={['student']}>
+                        <StudentDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/student/onboarding" 
+                    element={
+                      <ProtectedRoute allowedRoles={['student']}>
+                        <StudentOnboarding />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/student/experience" 
+                    element={
+                      <ProtectedRoute allowedRoles={['student']}>
+                        <InternshipExperience />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  
+                  {/* Analytics Routes */}
+                  <Route 
+                    path="/analytics" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <AnalyticsDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/analytics/reports" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <Reports />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  
+                  {/* Default Route */}
+                  <Route 
+                    path="/" 
+                    element={
+                      <ProtectedRoute>
+                        <DefaultRedirect />
+                      </ProtectedRoute>
+                    } 
+                  />
+                </Routes>
+              </InternshipProvider>
+            </StudentProvider>
+          </PendingCompanyProvider>
+        </CompanyProvider>
+      </AuthProvider>
+    </Router>
   )
 }
 
 export default App
-export { UserContext }

@@ -1,8 +1,17 @@
+import { usePendingCompany } from '../../context/PendingCompanyContext';
 import { useCompany } from '../../context/CompanyContext';
 import './PendingCompanies.css';
 
 const PendingCompanies = () => {
-  const { pendingCompanies, approveCompany, rejectCompany } = useCompany();
+  const { pendingCompanies, approveCompany, rejectCompany } = usePendingCompany();
+  const { addApprovedCompany } = useCompany();
+
+  const handleApprove = (companyId) => {
+    const approvedCompany = approveCompany(companyId);
+    if (approvedCompany) {
+      addApprovedCompany(approvedCompany);
+    }
+  };
 
   if (pendingCompanies.length === 0) {
     return (
@@ -26,7 +35,7 @@ const PendingCompanies = () => {
               <div className="company-actions">
                 <button
                   className="approve-btn"
-                  onClick={() => approveCompany(company.id)}
+                  onClick={() => handleApprove(company.id)}
                   title="Approve Company"
                 >
                   ✓

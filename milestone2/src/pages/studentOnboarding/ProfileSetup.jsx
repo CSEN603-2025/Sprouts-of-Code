@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import './ProfileSetup.css'
+import { useAuth } from '../../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const ProfileSetup = () => {
   const [profile, setProfile] = useState({
@@ -44,6 +46,9 @@ const ProfileSetup = () => {
   })
   
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  
+  const { user } = useAuth()
+  const navigate = useNavigate()
   
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -189,14 +194,20 @@ const ProfileSetup = () => {
   const handleEscapeKey = (e) => {
     if (e.key === 'Escape' && showSuccessModal) {
       setShowSuccessModal(false);
-      window.location.href = '/dashboard';
+      if (user?.role === 'admin') navigate('/admin');
+      else if (user?.role === 'employer') navigate('/employer');
+      else if (user?.role === 'student') navigate('/student');
+      else navigate('/');
     }
   };
   
   const handleOverlayClick = (e) => {
     if (e.target.className === 'modal-overlay') {
       setShowSuccessModal(false);
-      window.location.href = '/dashboard';
+      if (user?.role === 'admin') navigate('/admin');
+      else if (user?.role === 'employer') navigate('/employer');
+      else if (user?.role === 'student') navigate('/student');
+      else navigate('/');
     }
   };
   
@@ -205,7 +216,7 @@ const ProfileSetup = () => {
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [showSuccessModal]);
+  }, [showSuccessModal, user, navigate]);
   
   const getMajorOptions = (semester) => {
     switch (semester) {
@@ -692,7 +703,10 @@ const ProfileSetup = () => {
                   className="btn btn-primary" 
                   onClick={() => {
                     setShowSuccessModal(false);
-                    window.location.href = '/dashboard';
+                    if (user?.role === 'admin') navigate('/admin');
+                    else if (user?.role === 'employer') navigate('/employer');
+                    else if (user?.role === 'student') navigate('/student');
+                    else navigate('/');
                   }}
                 >
                   Go to Dashboard

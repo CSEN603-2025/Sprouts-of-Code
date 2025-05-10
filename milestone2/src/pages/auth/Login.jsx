@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import './Login.css'
 
 // Mock user data
@@ -30,66 +31,60 @@ const MOCK_USERS = {
   }
 }
 
-const Login = ({ onLogin }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  })
+const Login = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
+  const { login } = useAuth()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    
-    // Check if user exists
-    const user = MOCK_USERS[formData.email]
-    
-    if (user && user.password === formData.password) {
-      // Login successful
-      const { password, ...userData } = user // Remove password from user data
-      onLogin(userData)
-      
-      // Redirect based on role
-      switch (user.role) {
-        case 'student':
-          navigate('/student')
-          break
-        case 'employer':
-          navigate('/employer')
-          break
-        case 'admin':
-          navigate('/admin')
-          break
-        default:
-          navigate('/')
+    setIsLoading(true)
+
+    try {
+      const result = await login(email, password)
+      if (result.success) {
+        const { user } = result
+        if (user.role === 'admin') navigate('/admin')
+        else if (user.role === 'employer') navigate('/employer')
+        else if (user.role === 'student') navigate('/student')
+        else navigate('/')
+      } else {
+        setError(result.error)
       }
-    } else {
-      setError('Invalid email or password')
+    } catch (err) {
+      setError('An error occurred during login. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
-  
+
   return (
     <div className="login-page">
       <div className="login-container">
-        <h2>Welcome Back</h2>
-        <form onSubmit={handleSubmit}>
+        <div className="login-header">
+          <h1>Welcome Back</h1>
+          <p>Sign in to your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -99,43 +94,32 @@ const Login = ({ onLogin }) => {
             <input
               type="password"
               id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
               required
             />
+            <div className="password-hint">
+              For demo purposes, use "password" as the password
+            </div>
           </div>
 
-          <button type="submit" className="login-btn">Login</button>
-          
-          <div className="register-company">
-            <p>New to the platform?</p>
-            <button 
-              type="button" 
-              className="register-company-btn"
-              onClick={() => navigate('/register-company')}
-            >
-              Register a new Company
-            </button>
-          </div>
+          <button 
+            type="submit" 
+            className="btn btn-primary login-button"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing in...' : 'Sign In'}
+          </button>
         </form>
-        
-        <div className="demo-accounts">
-          <h3>Demo Accounts</h3>
-          <div className="account-list">
-            <div className="account-item">
-              <strong>Student:</strong>
-              <p>student@example.com / password</p>
-            </div>
-            <div className="account-item">
-              <strong>Employer:</strong>
-              <p>employer@example.com / password</p>
-            </div>
-            <div className="account-item">
-              <strong>Admin:</strong>
-              <p>admin@example.com / password</p>
-            </div>
-          </div>
+
+        <div className="login-footer">
+          <p>Demo Accounts:</p>
+          <ul>
+            <li>Admin: admin@demo.com / admin123</li>
+            <li>Company: Use any company email from the list</li>
+            <li>Student: Use any student email from the list</li>
+          </ul>
         </div>
       </div>
     </div>

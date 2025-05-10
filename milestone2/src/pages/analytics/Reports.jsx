@@ -1,7 +1,14 @@
 import { useState } from 'react'
+import { useCompany } from '../../context/CompanyContext'
+import { usePendingCompany } from '../../context/PendingCompanyContext'
+import { useInternships } from '../../context/InternshipContext'
 import './Reports.css'
 
 const Reports = () => {
+  const { companies } = useCompany()
+  const { pendingCompanies } = usePendingCompany()
+  const { internships } = useInternships()
+
   const [reportType, setReportType] = useState('internship')
   const [timeFrame, setTimeFrame] = useState('past-12-months')
   const [format, setFormat] = useState('pdf')
@@ -38,15 +45,59 @@ const Reports = () => {
   const handleGenerateReport = () => {
     setIsGenerating(true)
     
-    // Simulate report generation
+    // Generate report based on selected type and current data
     setTimeout(() => {
+      let reportData = {}
+      let reportName = ''
+
+      switch (reportType) {
+        case 'internship':
+          reportData = {
+            totalInternships: internships.length,
+            activeInternships: internships.filter(i => i.status === 'active').length,
+            completedInternships: internships.filter(i => i.status === 'completed').length,
+            internshipsByCompany: companies.map(company => ({
+              company: company.name,
+              count: internships.filter(i => i.employer === company.name).length
+            }))
+          }
+          reportName = 'Internship Performance Report'
+          break
+
+        case 'employer':
+          reportData = {
+            totalEmployers: companies.length,
+            pendingApprovals: pendingCompanies.length,
+            employersByIndustry: companies.reduce((acc, company) => {
+              acc[company.industry] = (acc[company.industry] || 0) + 1
+              return acc
+            }, {})
+          }
+          reportName = 'Employer Engagement Report'
+          break
+
+        case 'student':
+          reportData = {
+            totalStudents: 245, // This would come from StudentContext in a real app
+            placementRate: '85%',
+            averageDuration: '3.5 months'
+          }
+          reportName = 'Student Analytics Report'
+          break
+
+        default:
+          reportData = {}
+          reportName = 'General Report'
+      }
+
       const newReport = {
         id: savedReports.length + 1,
-        name: `${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report ${new Date().toLocaleDateString()}`,
+        name: `${reportName} ${new Date().toLocaleDateString()}`,
         type: reportType,
         date: new Date().toISOString().split('T')[0],
         format: format,
-        size: `${(Math.random() * 5).toFixed(1)} MB`
+        size: `${(Math.random() * 5).toFixed(1)} MB`,
+        data: reportData
       }
       
       setSavedReports([newReport, ...savedReports])

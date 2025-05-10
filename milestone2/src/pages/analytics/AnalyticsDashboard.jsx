@@ -1,31 +1,69 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useCompany } from '../../context/CompanyContext'
+import { usePendingCompany } from '../../context/PendingCompanyContext'
+import { useInternships } from '../../context/InternshipContext'
+import { useStudent } from '../../context/StudentContext'
 import './AnalyticsDashboard.css'
 
 const AnalyticsDashboard = () => {
-  // Dummy stats
+  const { companies } = useCompany()
+  const { pendingCompanies } = usePendingCompany()
+  const { internships } = useInternships()
+  const { students } = useStudent()
+
+  // Calculate stats from real data
   const stats = {
-    totalStudents: 245,
-    totalEmployers: 38,
-    activeInternships: 87,
-    completedInternships: 156
+    totalStudents: students.length,
+    totalEmployers: companies.length,
+    activeInternships: internships.filter(internship => internship.status === 'active').length,
+    completedInternships: internships.filter(internship => internship.status === 'completed').length
   }
-  
-  // Dummy chart data
+
+  // Calculate internships by month (based on startDate)
+  const internshipsByMonth = Array(12).fill(0)
+  internships.forEach(internship => {
+    if (internship.startDate) {
+      const month = new Date(internship.startDate).getMonth()
+      internshipsByMonth[month]++
+    }
+  })
+
+  // Calculate internships by department (using position/skills as proxy)
+  const departmentMap = {}
+  internships.forEach(internship => {
+    const dept = internship.position?.split(' ')[0] || 'Other'
+    departmentMap[dept] = (departmentMap[dept] || 0) + 1
+  })
   const chartData = {
-    internshipsByMonth: [32, 45, 37, 29, 43, 58, 70, 85, 65, 48, 42, 35],
-    internshipsByDepartment: [
-      { department: 'Engineering', count: 45 },
-      { department: 'Business', count: 32 },
-      { department: 'Design', count: 28 },
-      { department: 'Marketing', count: 25 },
-      { department: 'Data Science', count: 22 },
-      { department: 'Finance', count: 16 },
-      { department: 'Human Resources', count: 12 },
-      { department: 'Other', count: 8 }
-    ]
+    internshipsByMonth,
+    internshipsByDepartment: Object.entries(departmentMap).map(([department, count]) => ({ department, count }))
   }
-  
+
+  // Calculate insights from real data
+  const insights = [
+    {
+      title: 'Increasing Employer Engagement',
+      description: `Total employers increased to ${companies.length} with ${pendingCompanies.length} pending approvals.`,
+      type: 'positive'
+    },
+    {
+      title: 'Most Popular Department',
+      description: `${chartData.internshipsByDepartment.length > 0 ? chartData.internshipsByDepartment[0].department : 'N/A'} has the highest internship count.`,
+      type: 'positive'
+    },
+    {
+      title: 'Internship Activity',
+      description: `There are ${stats.activeInternships} active and ${stats.completedInternships} completed internships.`,
+      type: 'positive'
+    },
+    {
+      title: 'Student Participation',
+      description: `There are currently ${students.length} registered students in the system.`,
+      type: 'positive'
+    }
+  ]
+
   return (
     <div className="analytics-dashboard">
       <div className="page-header">
@@ -79,7 +117,6 @@ const AnalyticsDashboard = () => {
           
           <div className="chart-placeholder">
             <div className="chart-visual">
-              {/* In a real app, this would be a chart component */}
               <div className="bar-chart">
                 {chartData.internshipsByMonth.map((count, index) => (
                   <div key={index} className="chart-bar" style={{ height: `${count * 2}px` }}>
@@ -144,37 +181,17 @@ const AnalyticsDashboard = () => {
           </div>
           
           <div className="insights-list">
-            <div className="insight-item">
-              <div className="insight-icon positive">↗</div>
-              <div className="insight-content">
-                <h3>Increasing Employer Engagement</h3>
-                <p>Employer participation increased by 15% compared to last quarter.</p>
+            {insights.map((insight, index) => (
+              <div key={index} className="insight-item">
+                <div className={`insight-icon ${insight.type}`}>
+                  {insight.type === 'positive' ? '↗' : '↘'}
+                </div>
+                <div className="insight-content">
+                  <h3>{insight.title}</h3>
+                  <p>{insight.description}</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="insight-item">
-              <div className="insight-icon positive">↗</div>
-              <div className="insight-content">
-                <h3>Engineering Internships Leading</h3>
-                <p>The Engineering department continues to have the highest internship placement rate.</p>
-              </div>
-            </div>
-            
-            <div className="insight-item">
-              <div className="insight-icon negative">↘</div>
-              <div className="insight-content">
-                <h3>Finance Internships Decreased</h3>
-                <p>Finance internships have decreased by 8% compared to last year.</p>
-              </div>
-            </div>
-            
-            <div className="insight-item">
-              <div className="insight-icon positive">↗</div>
-              <div className="insight-content">
-                <h3>Student Satisfaction Rate Up</h3>
-                <p>Overall student satisfaction with internships has increased to 92%.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
