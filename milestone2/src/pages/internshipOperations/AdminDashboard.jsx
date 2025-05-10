@@ -1,20 +1,27 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCompany } from '../../context/CompanyContext'
+import { usePendingCompany } from '../../context/PendingCompanyContext'
 import { useInternships } from '../../context/InternshipContext'
+import { useStudent } from '../../context/StudentContext'
+import { useEvaluation } from '../../context/EvaluationContext'
 import './AdminDashboard.css'
 
 const AdminDashboard = () => {
   const navigate = useNavigate()
-  const { pendingCompanies } = useCompany()
+  const { companies } = useCompany()
+  const { pendingCompanies } = usePendingCompany()
   const { internships } = useInternships()
+  const { students } = useStudent()
+  const { evaluations } = useEvaluation()
 
-  // Dummy stats data
+  // Calculate stats from real data
   const stats = {
-    students: 245,
-    employers: 38,
-    activeInternships: internships.filter(internship => internship.status === 'active').length,
-    pendingApprovals: pendingCompanies.length // Update to use actual count
+    students: students.length,
+    employers: companies.length,
+    totalInternships: internships.length,
+    pendingApprovals: pendingCompanies.length,
+    evaluations: evaluations.length
   }
   
   // Dummy recent activities
@@ -44,14 +51,19 @@ const AdminDashboard = () => {
           <Link to="/admin/employers" className="stat-link">View all</Link>
         </div>
         <div className="stat-card">
-          <h3>Active Internships</h3>
-          <div className="stat-number">{stats.activeInternships}</div>
-          <Link to="/admin/internships" className="stat-link">View all</Link>
+          <h3>Total Internships</h3>
+          <div className="stat-number">{stats.totalInternships}</div>
+          <Link to="/admin/internship-management" className="stat-link">Manage Internships</Link>
         </div>
         <div className="stat-card">
           <h3>Pending Approvals</h3>
           <div className="stat-number">{stats.pendingApprovals}</div>
           <Link to="/admin/pending-companies" className="stat-link">View all</Link>
+        </div>
+        <div className="stat-card">
+          <h3>Evaluations</h3>
+          <div className="stat-number">{stats.evaluations}</div>
+          <Link to="/admin/evaluations" className="stat-link">View all</Link>
         </div>
       </div>
       
