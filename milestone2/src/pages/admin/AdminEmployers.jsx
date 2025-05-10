@@ -22,8 +22,21 @@ const AdminEmployers = () => {
       <div className="employer-cards">
         {approvedCompanies.map(company => (
           <div key={company.id} className="employer-card">
-            <h3>{company.name}</h3>
-            <p>{company.email}</p>
+            <div className="employer-header">
+              {company.logo && (
+                <img 
+                  src={company.logo} 
+                  alt={`${company.name} logo`} 
+                  className="company-logo"
+                />
+              )}
+              <h3>{company.name}</h3>
+            </div>
+            <div className="employer-info">
+              <p><strong>Industry:</strong> {company.industry}</p>
+              <p><strong>Size:</strong> {company.size}</p>
+              <p><strong>Email:</strong> {company.email}</p>
+            </div>
             <button className="btn btn-outline" onClick={() => handleViewDetails(company)}>View Details</button>
           </div>
         ))}
@@ -32,10 +45,44 @@ const AdminEmployers = () => {
       {selectedEmployer && (
         <div className="modal">
           <div className="modal-content">
-            <h2>{selectedEmployer.name}</h2>
-            <p>Email: {selectedEmployer.email}</p>
-            <p>ID: {selectedEmployer.id}</p>
-            <button className="btn btn-outline" onClick={closeModal}>Close</button>
+            <div className="modal-header">
+              <h2>{selectedEmployer.name}</h2>
+              <button className="close-btn" onClick={closeModal}>×</button>
+            </div>
+            <div className="modal-body">
+              {selectedEmployer.logo && (
+                <div className="modal-logo">
+                  <img 
+                    src={selectedEmployer.logo} 
+                    alt={`${selectedEmployer.name} logo`} 
+                  />
+                </div>
+              )}
+              <div className="modal-details">
+                <div className="detail-group">
+                  <label>Industry:</label>
+                  <span>{selectedEmployer.industry}</span>
+                </div>
+                <div className="detail-group">
+                  <label>Company Size:</label>
+                  <span>{selectedEmployer.size}</span>
+                </div>
+                <div className="detail-group">
+                  <label>Email:</label>
+                  <span>{selectedEmployer.email}</span>
+                </div>
+                {selectedEmployer.documents && selectedEmployer.documents.length > 0 && (
+                  <div className="detail-group">
+                    <label>Submitted Documents:</label>
+                    <ul className="documents-list">
+                      {selectedEmployer.documents.map((doc, index) => (
+                        <li key={index}>{doc.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}

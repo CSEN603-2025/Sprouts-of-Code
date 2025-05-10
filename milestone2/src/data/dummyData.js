@@ -11,7 +11,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.vodafone.com.eg",
       description: "Leading telecommunications company in Egypt",
-      isApproved: true
+      isApproved: true,
+      size: "501+"
     },
     {
       id: 2,
@@ -22,7 +23,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.orange.eg",
       description: "Major telecommunications provider in Egypt",
-      isApproved: true
+      isApproved: true,
+      size: "501+"
     },
     {
       id: 3,
@@ -33,7 +35,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.fawry.com",
       description: "Leading Egyptian e-payment platform",
-      isApproved: true
+      isApproved: true,
+      size: "201-500"
     },
     {
       id: 4,
@@ -44,7 +47,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.swvl.com",
       description: "Revolutionary transportation technology company",
-      isApproved: true
+      isApproved: true,
+      size: "201-500"
     },
     {
       id: 5,
@@ -55,7 +59,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.vezeeta.com",
       description: "Digital healthcare platform",
-      isApproved: true
+      isApproved: true,
+      size: "201-500"
     },
     {
       id: 6,
@@ -66,7 +71,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.instabug.com",
       description: "Mobile app testing and bug reporting platform",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 7,
@@ -77,7 +83,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.brimore.com",
       description: "Social commerce platform",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 8,
@@ -88,7 +95,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.maxab.com",
       description: "B2B e-commerce platform for retailers",
-      isApproved: true
+      isApproved: true,
+      size: "201-500"
     },
     {
       id: 9,
@@ -99,7 +107,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.khazna.com",
       description: "Digital financial services platform",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 10,
@@ -110,7 +119,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.elmenus.com",
       description: "Food discovery and delivery platform",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 11,
@@ -121,7 +131,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.breadfast.com",
       description: "Breakfast delivery service",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 12,
@@ -132,7 +143,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.yodawy.com",
       description: "Online pharmacy platform",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 13,
@@ -143,7 +155,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.moneyfellows.com",
       description: "Digital money circles platform",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 14,
@@ -154,7 +167,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.eventtus.com",
       description: "Event management platform",
-      isApproved: true
+      isApproved: true,
+      size: "11-50"
     },
     {
       id: 15,
@@ -165,7 +179,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.bosta.com",
       description: "Last-mile delivery platform",
-      isApproved: true
+      isApproved: true,
+      size: "201-500"
     },
     {
       id: 16,
@@ -176,7 +191,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.rabbit.com",
       description: "Quick commerce platform",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 17,
@@ -187,7 +203,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.dayra.com",
       description: "Digital banking platform",
-      isApproved: true
+      isApproved: true,
+      size: "11-50"
     },
     {
       id: 18,
@@ -198,7 +215,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.trella.com",
       description: "Digital freight marketplace",
-      isApproved: true
+      isApproved: true,
+      size: "51-200"
     },
     {
       id: 19,
@@ -209,7 +227,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.capiter.com",
       description: "B2B e-commerce platform",
-      isApproved: true
+      isApproved: true,
+      size: "201-500"
     },
     {
       id: 20,
@@ -220,7 +239,8 @@ export const dummyData = {
       location: "Cairo, Egypt",
       website: "https://www.sympl.com",
       description: "Buy now, pay later platform",
-      isApproved: true
+      isApproved: true,
+      size: "11-50"
     }
   ],
 
@@ -298,7 +318,7 @@ export const dummyData = {
       appliedInternships: [
         { internshipId: 1, status: "completed" },
         { internshipId: 2, status: "completed" },
-        { internshipId: 3, status: "pending" },
+        { internshipId: 3, status: "applied" },
         { internshipId: 8, status: "undergoing" }
       ]
     },

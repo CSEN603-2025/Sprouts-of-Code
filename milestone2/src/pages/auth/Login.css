@@ -88,6 +88,9 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  max-width: 100px;
+  align-self: center;
+  
 }
 
 .login-button:hover {

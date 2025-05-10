@@ -28,7 +28,7 @@ const InternshipOperations = () => {
   const [editingInternship, setEditingInternship] = useState(null)
   const [editForm, setEditForm] = useState(defaultForm)
   const [showCreateForm, setShowCreateForm] = useState(false)
-
+  
   // Get company data
   const company = companies.find(c => c.email === user.email)
   const pendingCompany = pendingCompanies.find(c => c.email === user.email)
@@ -37,7 +37,7 @@ const InternshipOperations = () => {
   const handleStatusUpdate = (internshipId, newStatus) => {
     updateInternship(internshipId, { status: newStatus })
   }
-
+  
   const toggleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id)
     setEditingInternship(null)
@@ -171,7 +171,7 @@ const InternshipOperations = () => {
                 onChange={handleCreateChange}
                 required
               />
-            </div>
+          </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Start Date</label>
@@ -182,7 +182,7 @@ const InternshipOperations = () => {
                   onChange={handleCreateChange}
                   required
                 />
-              </div>
+        </div>
               <div className="form-group">
                 <label>End Date</label>
                 <input
@@ -192,8 +192,8 @@ const InternshipOperations = () => {
                   onChange={handleCreateChange}
                   required
                 />
-              </div>
-            </div>
+          </div>
+        </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Location</label>
@@ -214,8 +214,8 @@ const InternshipOperations = () => {
                   onChange={handleCreateChange}
                   required
                 />
-              </div>
-            </div>
+          </div>
+        </div>
             <div className="form-group checkbox">
               <label>
                 <input
@@ -229,7 +229,7 @@ const InternshipOperations = () => {
             </div>
             <div className="form-actions">
               <button type="submit" className="btn btn-primary">Create Internship</button>
-            </div>
+      </div>
           </form>
         )}
         <div className="search-container">
@@ -257,7 +257,7 @@ const InternshipOperations = () => {
             </button>
           </div>
         </div>
-
+        
         <div className="internships-list">
           {filteredInternships.length > 0 ? (
             filteredInternships.map(internship => (
@@ -376,18 +376,18 @@ const InternshipOperations = () => {
                           >
                             Cancel
                           </button>
-                        </div>
+                  </div>
                       </form>
                     ) : (
                       <>
-                        <div className="detail-item">
-                          <span className="detail-label">Duration</span>
-                          <span className="detail-value">
+                  <div className="detail-item">
+                    <span className="detail-label">Duration</span>
+                    <span className="detail-value">
                             {calculateDuration(internship.startDate, internship.endDate)}
-                          </span>
-                        </div>
-                        <div className="detail-item">
-                          <span className="detail-label">Location</span>
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Location</span>
                           <span className="detail-value">
                             {internship.isRemote ? 'Remote' : internship.location}
                           </span>
@@ -399,7 +399,7 @@ const InternshipOperations = () => {
                         <div className="detail-item">
                           <span className="detail-label">Description</span>
                           <span className="detail-value">{internship.description}</span>
-                        </div>
+                  </div>
                         <div className="detail-item">
                           <span className="detail-label">Requirements</span>
                           <span className="detail-value">
@@ -409,16 +409,16 @@ const InternshipOperations = () => {
                               ))}
                             </ul>
                           </span>
-                        </div>
-                        <div className="internship-actions">
-                          {internship.status === 'pending' && (
-                            <button 
-                              className="btn btn-primary"
-                              onClick={() => handleStatusUpdate(internship.id, 'active')}
-                            >
-                              Activate
-                            </button>
-                          )}
+                </div>
+                <div className="internship-actions">
+                  {internship.status === 'pending' && (
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => handleStatusUpdate(internship.id, 'active')}
+                    >
+                      Activate
+                    </button>
+                  )}
                           {!showAll && isOwnInternship(internship) && (
                             <div className="action-buttons">
                               <button 
@@ -427,13 +427,13 @@ const InternshipOperations = () => {
                               >
                                 Edit
                               </button>
-                              <button 
-                                className="btn btn-danger"
-                                onClick={() => handleDelete(internship.id)}
-                              >
-                                Delete
-                              </button>
-                            </div>
+                  <button 
+                    className="btn btn-danger"
+                    onClick={() => handleDelete(internship.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
                           )}
                         </div>
                       </>

@@ -28,7 +28,7 @@ const Sidebar = ({ user }) => {
       case 'employer':
         return [
           { label: 'Dashboard', path: '/employer', icon: '📊' },
-          { label: 'Job Postings', path: '/employer/jobs', icon: '📋' },
+          { label: 'Internships', path: '/employer/internships', icon: '📋' },
           { label: 'Applications', path: '/employer/applications', icon: '📝' },
           { label: 'Interns', path: '/employer/interns', icon: '👥' },
         ]

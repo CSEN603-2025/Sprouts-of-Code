@@ -15,13 +15,14 @@ const EmployerDashboard = () => {
   
   // Get company's internships
   const companyInternships = internships.filter(internship => 
-    internship.employer === company?.name
+    internship.companyId === company.id
   )
-  
   // Calculate statistics
   const stats = {
     totalInternships: companyInternships.length,
-    applications: companyInternships.filter(i => i.status === 'applications').length
+    applications: companyInternships.reduce((total, internship) => {
+      return total + internship.applicants.filter(applicant => applicant.status === "applied").length;
+    }, 0)
   }
   
   return (
@@ -34,14 +35,14 @@ const EmployerDashboard = () => {
         <div className="stat-card">
           <h3>Internships</h3>
           <div className="stat-number">{stats.totalInternships}</div>
-          <Link to="/employer/operations" className="view-all-link">
+          <Link to="/employer/internships" className="view-all-link">
             View All
           </Link>
         </div>
         <div className="stat-card">
           <h3>Applications</h3>
           <div className="stat-number">{stats.applications}</div>
-          <Link to="/employer/operations?filter=applications" className="view-all-link">
+          <Link to="/employer/applications" className="view-all-link">
             View All
           </Link>
         </div>

@@ -43,7 +43,7 @@ const StudentDashboard = () => {
   }).filter(Boolean);
 
   // Only pending applications
-  const pendingApplications = applications.filter(app => app.status === 'pending');
+  const pendingApplications = applications.filter(app => app.status === 'applied');
 
   // Map completedInternships to actual internship data
   const completedInternships = applications.filter(id => id.status === 'completed');

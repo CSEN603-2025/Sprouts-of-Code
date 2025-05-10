@@ -8,6 +8,7 @@ import Layout from './components/layout/Layout'
 
 // Auth Pages
 import Login from './pages/auth/Login'
+import SubmissionSuccess from './pages/auth/SubmissionSuccess'
 
 // Admin Pages
 import AdminDashboard from './pages/internshipOperations/AdminDashboard'
@@ -22,11 +23,13 @@ import InternshipManagement from './pages/internshipOperations/InternshipManagem
 import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
 import InternshipOperations from './pages/employerInterface/InternshipOperations'
 import EmployerProfile from './pages/employerInterface/EmployerProfile'
+import EmployerApplications from './pages/employerInterface/EmployerApplications'
 
 // Student Pages
 import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
 import StudentOnboarding from './pages/studentOnboarding/StudentOnboarding'
 import InternshipExperience from './pages/internshipexperience/InternshipExperience'
+import AllInternships from './pages/student/AllInternships'
 
 // Analytics Pages
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
@@ -73,6 +76,7 @@ const App = () => {
                 <Routes>
                   {/* Public Routes */}
                   <Route path="/login" element={<Login />} />
+                  <Route path="/submission-success" element={<SubmissionSuccess />} />
                   
                   {/* Admin Routes */}
                   <Route 
@@ -84,12 +88,8 @@ const App = () => {
                     } 
                   />
                   <Route 
-                    path="/admin/company-registration" 
-                    element={
-                      <ProtectedRoute allowedRoles={['admin']}>
-                        <CompanyRegistration />
-                      </ProtectedRoute>
-                    } 
+                    path="/company-registration" 
+                    element={<CompanyRegistration />} 
                   />
                   <Route 
                     path="/admin/pending-companies" 
@@ -142,7 +142,7 @@ const App = () => {
                     } 
                   />
                   <Route 
-                    path="/employer/operations" 
+                    path="/employer/internships" 
                     element={
                       <ProtectedRoute allowedRoles={['employer']}>
                         <InternshipOperations />
@@ -154,6 +154,14 @@ const App = () => {
                     element={
                       <ProtectedRoute allowedRoles={['employer']}>
                         <EmployerProfile />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/employer/applications" 
+                    element={
+                      <ProtectedRoute allowedRoles={['employer']}>
+                        <EmployerApplications />
                       </ProtectedRoute>
                     } 
                   />
@@ -183,6 +191,7 @@ const App = () => {
                       </ProtectedRoute>
                     } 
                   />
+                  <Route path="/student/internships" element={<AllInternships />} />
                   
                   {/* Analytics Routes */}
                   <Route 
