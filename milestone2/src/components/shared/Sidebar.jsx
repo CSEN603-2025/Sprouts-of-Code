@@ -45,6 +45,15 @@ const Sidebar = ({ user }) => {
           { label: 'Reports', path: '/analytics/reports', icon: '📊' },
           { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
         ]
+      case 'FacultyAcademic':
+        return [
+          { label: 'Dashboard', path: '/faculty', icon: '📊' },
+          { label: 'My Profile', path: '/faculty/profile', icon: '👤' },
+          { label: 'Student List', path: '/faculty/students', icon: '👨‍🎓' },
+          { label: 'Appointments', path: '/faculty/appointments', icon: '📅' },
+          { label: 'Reports', path: '/faculty/reports', icon: '📄' },
+          { label: 'Settings', path: '/faculty/settings', icon: '⚙️' },
+        ];
       default:
         return []
     }
@@ -57,7 +66,7 @@ const Sidebar = ({ user }) => {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <div className="role-badge">{user.role.toUpperCase()}</div>
+        <div className="role-badge">{user.role.toUpperCase() === "FACULTYACADEMIC" ? "FACULTY ACADEMIC" : user.role.toUpperCase()}</div>
       </div>
       
       <ul className="sidebar-menu">

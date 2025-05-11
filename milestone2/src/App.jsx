@@ -45,6 +45,8 @@ import Appointments from './pages/studentOnboarding/Appointments'
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
 import Reports from './pages/analytics/Reports'
 
+import FacultyDashboard from './pages/FacultyAcademics/FacultyDashboard'
+
 import './App.css'
 
 // Protected Route component
@@ -70,6 +72,7 @@ const DefaultRedirect = () => {
       user?.role === 'admin' ? '/admin' :
         user?.role === 'employer' ? '/employer' :
           user?.role === 'student' ? '/student' :
+            user?.role === 'FacultyAcademic' ? '/faculty' :
             '/login'
     } />
   );
@@ -291,6 +294,16 @@ const App = () => {
                       element={
                         <ProtectedRoute allowedRoles={['admin']}>
                           <Reports />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    {/* Faculty Routes */}
+                    <Route
+                      path="/faculty"
+                      element={
+                        <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                          <FacultyDashboard />
                         </ProtectedRoute>
                       }
                     />
