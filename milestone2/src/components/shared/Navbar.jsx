@@ -24,17 +24,29 @@ const Navbar = ({ user, onLogout }) => {
   }
   
   useEffect(() => {
-    if (user && user.role === 'employer') {
+    if (user ) {
       // Fetch notifications from backend here
       // For now, use mock data:
-      setNotifications([
-        { id: 1, message: "Your application was accepted!", read: false },
-        { id: 2, message: "New applicant for your internship.", read: false },
-        { id: 3, message: "New applicant for your internship.", read: false },
-        
-    
-
-      ])
+      if (user.role === 'employer'){
+        setNotifications([
+          { id: 1, message: "Your application was accepted!", read: false },
+          { id: 2, message: "New applicant for your internship.", read: false },
+          { id: 3, message: "New applicant for your internship.", read: false },
+        ])  
+      }else if (user.role === 'student'){
+        setNotifications([
+          { id: 1, message: "Your application was accepted!", read: false },
+          { id: 2, message: "Your application was rejected.", read: false },
+          { id: 3, message: "Your online meeting with a SCAD officer has been confirmed.", read: false },
+        ])
+      }
+        else{
+          setNotifications([
+            { id: 1, message: "A new company has submitted an application.", read: false },
+            { id: 2, message: "A Company wants to post an internship", read: false },
+            { id: 3, message: "A student has submitted their internship evaluation report.", read: false },
+          ])    
+        } 
     }
   }, [user])
 
@@ -104,7 +116,7 @@ const Navbar = ({ user, onLogout }) => {
               Logout
             </button>
           )}
-          {user && user.role === 'employer' && (
+          {user  && (
             <>
               <IconButton
                 aria-label="show notifications"
