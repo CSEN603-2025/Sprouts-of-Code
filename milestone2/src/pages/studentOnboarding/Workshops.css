@@ -41,15 +41,6 @@
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
 }
 
-.search-container::before {
-  content: '🔍';
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-}
-
 .filter-buttons {
   display: flex;
   gap: 0.5rem;
@@ -144,7 +135,7 @@
   color: #1565c0;
 }
 
-.workshop-content {
+.workshop-card-content {
   padding: 1.5rem;
   flex: 1;
   display: flex;

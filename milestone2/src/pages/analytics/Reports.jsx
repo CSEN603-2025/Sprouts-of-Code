@@ -18,14 +18,14 @@ const Reports = () => {
     major: '',
     status: ''
   })
-  
+
   // Load saved reports from localStorage on component mount
   const [savedReports, setSavedReports] = useState(() => {
     const saved = localStorage.getItem('savedReports')
     return saved ? JSON.parse(saved) : [
-      { 
-        id: 1, 
-        name: 'Internship Performance Q2 2023', 
+      {
+        id: 1,
+        name: 'Internship Performance Q2 2023',
         type: 'internship',
         date: '2023-07-01',
         format: 'pdf',
@@ -45,9 +45,9 @@ const Reports = () => {
           }
         }
       },
-      { 
-        id: 2, 
-        name: 'Employer Engagement Report', 
+      {
+        id: 2,
+        name: 'Employer Engagement Report',
         type: 'employer',
         date: '2023-06-15',
         format: 'excel',
@@ -66,9 +66,9 @@ const Reports = () => {
           }
         }
       },
-      { 
-        id: 3, 
-        name: 'Student Placement Analysis', 
+      {
+        id: 3,
+        name: 'Student Placement Analysis',
         type: 'student',
         date: '2023-05-30',
         format: 'pdf',
@@ -93,7 +93,7 @@ const Reports = () => {
 
   const handleGenerateReport = () => {
     setIsGenerating(true)
-    
+
     // Generate report based on selected type and current data
     setTimeout(() => {
       let reportData = {}
@@ -150,7 +150,7 @@ const Reports = () => {
         status: 'pending',
         details: reportData
       }
-      
+
       setSavedReports(prev => [newReport, ...prev])
       setIsGenerating(false)
     }, 1500)
@@ -187,18 +187,18 @@ const Reports = () => {
       <div className="page-header">
         <h1>Reports</h1>
       </div>
-      
+
       <div className="reports-container">
         <div className="generate-report-card card">
           <div className="card-header">
             <h2 className="card-title">Generate New Report</h2>
           </div>
-          
+
           <div className="report-form">
             <div className="form-group">
               <label htmlFor="reportType">Report Type</label>
-              <select 
-                id="reportType" 
+              <select
+                id="reportType"
                 value={reportType}
                 onChange={(e) => setReportType(e.target.value)}
               >
@@ -209,11 +209,11 @@ const Reports = () => {
                 <option value="feedback">Feedback Summary</option>
               </select>
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="timeFrame">Time Frame</label>
-              <select 
-                id="timeFrame" 
+              <select
+                id="timeFrame"
                 value={timeFrame}
                 onChange={(e) => setTimeFrame(e.target.value)}
               >
@@ -225,11 +225,11 @@ const Reports = () => {
                 <option value="custom">Custom Range</option>
               </select>
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="format">Format</label>
-              <select 
-                id="format" 
+              <select
+                id="format"
                 value={format}
                 onChange={(e) => setFormat(e.target.value)}
               >
@@ -238,9 +238,9 @@ const Reports = () => {
                 <option value="csv">CSV</option>
               </select>
             </div>
-            
+
             <div className="form-actions">
-              <button 
+              <button
                 className="btn btn-primary"
                 onClick={handleGenerateReport}
                 disabled={isGenerating}
@@ -250,13 +250,13 @@ const Reports = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="saved-reports-card card">
           <div className="card-header">
             <h2 className="card-title">Saved Reports</h2>
             <div className="report-filters">
-              <select 
-                name="major" 
+              <select
+                name="major"
                 value={filters.major}
                 onChange={handleFilterChange}
                 className="filter-select"
@@ -266,8 +266,8 @@ const Reports = () => {
                 <option value="Business">Business</option>
                 <option value="Engineering">Engineering</option>
               </select>
-              <select 
-                name="status" 
+              <select
+                name="status"
                 value={filters.status}
                 onChange={handleFilterChange}
                 className="filter-select"
@@ -280,7 +280,7 @@ const Reports = () => {
               </select>
             </div>
           </div>
-          
+
           <div className="reports-list">
             <div className="reports-table-header">
               <div className="report-name-col">Name</div>
@@ -288,7 +288,7 @@ const Reports = () => {
                 <div className="actions-title">Actions</div>
               </div>
             </div>
-            
+
             {filteredReports.map(report => (
               <div key={report.id} className="report-item">
                 <div className="report-name-col">
@@ -343,7 +343,7 @@ const Reports = () => {
                   </span>
                 </div>
               </div>
-              
+
               {(selectedReport.status === 'flagged' || selectedReport.status === 'rejected') && (
                 <div className="report-comments">
                   <h3>Review Comments</h3>
@@ -364,7 +364,7 @@ const Reports = () => {
                   </div>
                 </div>
               )}
-              
+
               <div className="report-details">
                 <h3>Report Details</h3>
                 {selectedReport.details && (
