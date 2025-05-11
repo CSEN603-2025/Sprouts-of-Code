@@ -1594,13 +1594,9 @@ export const dummyData = {
       speaker: "Michael Chen",
       speakerTitle: "Engineering Manager at Microsoft",
       description: "Understanding different career paths in technology and how to plan your journey.",
-      //maxParticipants: 40,
-      //currentParticipants: 40,
       isProOnly: true,
       topics: ["Career Planning", "Tech Industry Trends", "Skill Development"],
-      //requirements: ["Completed at least 3 months of internship"],
-      materials: ["Career Path Guide", "Skill Assessment Tool"]
-    },
+      materials: ["Career Path Guide", "Skill Assessment Tool"],    },
     {
       id: 3,
       title: "Building Your Tech Portfolio",
@@ -1867,7 +1863,7 @@ export const updateApplicationStatus = (studentId, internshipId, newStatus) => {
   return false;
 };
 
-// Demo accounts for testing
+//// Demo accounts for testing
 export const demoAccounts = {
   admin: {
     email: "admin@demo.com",
