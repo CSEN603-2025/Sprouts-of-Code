@@ -324,12 +324,6 @@ const InternshipDashboard = () => {
           </div>
         )}
       </div>
-      {/* Duration Completed Stat Card - Temporarily Commented Out
-      <div className="stat-card">
-        <h3>Duration Completed</h3>
-        <div className="stat-number">{calculateTotalDuration()}</div>
-      </div>
-      */}
     </div>
   )
 }
