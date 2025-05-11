@@ -17,6 +17,7 @@ const Sidebar = ({ user }) => {
           { label: 'Internships', path: '/student/internships', icon: '💼' },
           { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
           { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
+          { label: 'Appointments', path: '/student/appointments', icon: '🎥' },
         ];
         if (user.isPro) {
           baseItems.push(
