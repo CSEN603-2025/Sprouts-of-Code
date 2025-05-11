@@ -36,6 +36,7 @@ const MyApplications = () => {
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedCompleted, setExpandedCompleted] = useState([]);
 
   // Filter applications based on search and status
   const filteredApplications = applications.filter(app => {
@@ -51,6 +52,15 @@ const MyApplications = () => {
     finalized: filteredApplications.filter(app => app.status === 'undergoing'),
     accepted: filteredApplications.filter(app => app.status === 'completed'),
     rejected: filteredApplications.filter(app => app.status === 'rejected')
+  };
+
+  // Completed internships for this user
+  const completedInternships = applications.filter(app => app.status === 'completed');
+
+  const toggleCompletedExpand = (id) => {
+    setExpandedCompleted(prev =>
+      prev.includes(id) ? prev.filter(eid => eid !== id) : [...prev, id]
+    );
   };
 
   return (
@@ -372,6 +382,37 @@ const MyApplications = () => {
           </div>
         )}
       </div>
+
+      {/* Completed Internships Section at the end of the page */}
+      {completedInternships.length > 0 && (
+        <div className="completed-internships-section">
+          <h2>Completed Internships</h2>
+          <div className="completed-internships-list">
+            {completedInternships.map(intern => (
+              <div key={intern.id} className="completed-internship-card">
+                <div className="completed-summary">
+                  <span className="completed-position">{intern.position}</span>
+                  <span className="completed-company">{intern.company}</span>
+                  <button className="view-more-btn" onClick={() => toggleCompletedExpand(intern.id)}>
+                    {expandedCompleted.includes(intern.id) ? 'Hide Details' : 'View More'}
+                  </button>
+                </div>
+                {expandedCompleted.includes(intern.id) && (
+                  <div className="completed-details">
+                    <div><strong>Location:</strong> {intern.location}</div>
+                    <div><strong>Duration:</strong> {intern.duration}</div>
+                    <div><strong>Type:</strong> {intern.type}</div>
+                    <div><strong>Start Date:</strong> {intern.startDate}</div>
+                    <div><strong>Salary:</strong> {intern.salary}</div>
+                    <div><strong>Requirements:</strong> {intern.requirements}</div>
+                    <div><strong>Description:</strong> {intern.description}</div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

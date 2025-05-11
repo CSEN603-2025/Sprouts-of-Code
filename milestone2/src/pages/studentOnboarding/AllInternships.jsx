@@ -17,11 +17,13 @@ const AllInternships = () => {
 
   // Filter internships based on the salary and duration filters
 const filteredInternships = dummyInternships.filter((internship) => {
-  // Salary filter
+  // Paid/Unpaid filter logic: unpaid if salary is '0', '0 EGP/month', or empty
+  const isUnpaid = !internship.salary || internship.salary.trim() === '0' || internship.salary.trim().toLowerCase() === '0 egp/month';
+  const isPaid = !isUnpaid;
   const matchesPaid =
     salaryFilter === 'All' ||
-    (salaryFilter === 'Paid' && internship.salary) ||
-    (salaryFilter === 'Unpaid' && !internship.salary);
+    (salaryFilter === 'Paid' && isPaid) ||
+    (salaryFilter === 'Unpaid' && isUnpaid);
 
   // Extract numeric duration from the string (e.g. "2 months" → 2)
   const durationMatch = internship.duration.match(/^(\d+)/);

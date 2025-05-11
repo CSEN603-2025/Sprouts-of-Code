@@ -35,6 +35,7 @@ const EmployerInterns = () => {
   const [answers, setAnswers] = useState(Array(EVAL_QUESTIONS.length).fill(0));
   const [showIncompleteMsg, setShowIncompleteMsg] = useState(false);
   const [supervisor, setSupervisor] = useState('');
+  const [expandedCardId, setExpandedCardId] = useState(null);
 
   // Get company data
   const company = companies.find(c => c.email === user.email);
@@ -161,6 +162,10 @@ const EmployerInterns = () => {
     }
   }, [answers, showIncompleteMsg]);
 
+  const toggleCardExpansion = (internId) => {
+    setExpandedCardId(prevId => prevId === internId ? null : internId);
+  };
+
   return (
     <div className="employer-applications">
       <h1>Interns</h1>
@@ -191,16 +196,27 @@ const EmployerInterns = () => {
             <div className="applications-list">
               {currentInterns.filter(filterBySearch).map((intern, idx) => (
                 <div key={idx} className="application-card">
-                  <h3>{intern.name}</h3>
-                  <div className="student-details">
-                    <p><strong>Email:</strong> {intern.email}</p>
-                    <p><strong>University:</strong> {intern.university}</p>
-                    <p><strong>Major:</strong> {intern.major}</p>
-                    <p><strong>Internship Position:</strong> {intern.internshipPosition}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3>{intern.name}</h3>
+                    <button 
+                      className="finalize-btn" 
+                      style={{ background: '#1976d2', marginRight: '0.5rem' }}
+                      onClick={() => toggleCardExpansion(intern.id)}
+                    >
+                      {expandedCardId === intern.id ? 'Hide Details' : 'View Details'}
+                    </button>
+                    <button className="finalize-btn" onClick={() => handleFinalize(intern.id, intern.internshipId)}>
+                      Finalize
+                    </button>
                   </div>
-                  <button className="finalize-btn" onClick={() => handleFinalize(intern.id, intern.internshipId)}>
-                    Finalize
-                  </button>
+                  {expandedCardId === intern.id && (
+                    <div className="student-details">
+                      <p><strong>Email:</strong> {intern.email}</p>
+                      <p><strong>University:</strong> {intern.university}</p>
+                      <p><strong>Major:</strong> {intern.major}</p>
+                      <p><strong>Internship Position:</strong> {intern.internshipPosition}</p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -218,29 +234,42 @@ const EmployerInterns = () => {
                 const evaluation = getEvaluation(intern.id, intern.internshipId, company.id);
                 return (
                   <div key={idx} className="application-card">
-                    <h3>{intern.name}</h3>
-                    <div className="student-details">
-                      <p><strong>Email:</strong> {intern.email}</p>
-                      <p><strong>University:</strong> {intern.university}</p>
-                      <p><strong>Major:</strong> {intern.major}</p>
-                      <p><strong>Internship Position:</strong> {intern.internshipPosition}</p>
-                      {evaluation && evaluation.supervisor && (
-                        <p><strong>Supervisor:</strong> {evaluation.supervisor}</p>
-                      )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h3>{intern.name}</h3>
+                      <div>
+                        <button 
+                          className="finalize-btn" 
+                          style={{ background: '#1976d2', marginRight: '0.5rem' }}
+                          onClick={() => toggleCardExpansion(intern.id)}
+                        >
+                          {expandedCardId === intern.id ? 'Hide Details' : 'View Details'}
+                        </button>
+                        {!evaluation ? (
+                          <button className="finalize-btn" style={{background:'#1976d2'}} onClick={() => openEvalModal(intern, 'create')}>
+                            Create Evaluation
+                          </button>
+                        ) : (
+                          <>
+                            <button className="finalize-btn" style={{background:'#fbc02d', color:'#222'}} onClick={() => openEvalModal(intern, 'edit', evaluation.id, evaluation.answers, evaluation.supervisor)}>
+                              View/Edit Evaluation
+                            </button>
+                            <button className="finalize-btn" style={{background:'#c62828', marginLeft:'0.5rem'}} onClick={() => handleEvalDelete(evaluation.id)}>
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    {!evaluation ? (
-                      <button className="finalize-btn" style={{background:'#1976d2'}} onClick={() => openEvalModal(intern, 'create')}>
-                        Create Evaluation
-                      </button>
-                    ) : (
-                      <>
-                        <button className="finalize-btn" style={{background:'#fbc02d', color:'#222'}} onClick={() => openEvalModal(intern, 'edit', evaluation.id, evaluation.answers, evaluation.supervisor)}>
-                          View/Edit Evaluation
-                        </button>
-                        <button className="finalize-btn" style={{background:'#c62828', marginLeft:'0.5rem'}} onClick={() => handleEvalDelete(evaluation.id)}>
-                          Delete
-                        </button>
-                      </>
+                    {expandedCardId === intern.id && (
+                      <div className="student-details">
+                        <p><strong>Email:</strong> {intern.email}</p>
+                        <p><strong>University:</strong> {intern.university}</p>
+                        <p><strong>Major:</strong> {intern.major}</p>
+                        <p><strong>Internship Position:</strong> {intern.internshipPosition}</p>
+                        {evaluation && evaluation.supervisor && (
+                          <p><strong>Supervisor:</strong> {evaluation.supervisor}</p>
+                        )}
+                      </div>
                     )}
                   </div>
                 );
