@@ -32,7 +32,7 @@ const Navbar = ({ user, onLogout }) => {
         { id: 2, message: "New applicant for your internship.", read: false },
         { id: 3, message: "New applicant for your internship.", read: false },
         
-        
+    
 
       ])
     }
@@ -87,6 +87,15 @@ const Navbar = ({ user, onLogout }) => {
         ) : null}
         
         <div className="navbar-right">
+          {user && (
+            <button 
+              onClick={onLogout} 
+              className="btn btn-outline logout-btn"
+              style={{ marginRight: '1rem' }}
+            >
+              Logout
+            </button>
+          )}
           {user && user.role === 'employer' && (
             <>
               <IconButton
