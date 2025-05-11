@@ -456,3 +456,35 @@
   justify-content: flex-end;
   margin-bottom: 1.5rem;
 } 
+/* Styling for Filter Dropdowns */
+.filters {
+  display: flex;
+  gap: 20px; /* Adjusted gap between the dropdowns */
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.filter-select {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 180px; /* Adjust width as needed */
+}
+
+.filter-select:focus {
+  border-color: #007bff; /* Blue border on focus */
+  outline: none;
+}
+
+.filter-select:hover {
+  border-color: #007bff; /* Hover effect */
+}
+
+.filter-select option {
+  padding: 10px;
+}

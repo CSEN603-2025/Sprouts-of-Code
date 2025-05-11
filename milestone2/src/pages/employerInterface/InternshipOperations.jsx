@@ -1,8 +1,9 @@
-import { useState } from 'react'
+
 import { useAuth } from '../../context/AuthContext'
 import { useInternships } from '../../context/InternshipContext'
 import { useCompany } from '../../context/CompanyContext'
 import { usePendingCompany } from '../../context/PendingCompanyContext'
+import React, { useState, useMemo } from 'react'
 import './InternshipOperations.css'
 
 const defaultForm = {
@@ -28,6 +29,10 @@ const InternshipOperations = () => {
   const [editingInternship, setEditingInternship] = useState(null)
   const [editForm, setEditForm] = useState(defaultForm)
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [paidFilter, setPaidFilter] = useState('All');
+  const [durationFilter, setDurationFilter] = useState('All');
+  const [selectedIndustries, setSelectedIndustries] = useState([]);
+  const currentCompanyId = user?.companyId;
   
   // Get company data
   const company = companies.find(c => c.email === user.email)
@@ -118,7 +123,7 @@ const InternshipOperations = () => {
     setShowCreateForm(false)
   }
 
-  // Filter internships based on search query and company filter
+  //Filter internships based on search query and company filter
   const filteredInternships = internships.filter(internship => {
     const companyName = getCompanyName(internship.companyId).toLowerCase()
     const position = internship.position.toLowerCase()
@@ -127,8 +132,44 @@ const InternshipOperations = () => {
     const matchesSearch = companyName.includes(query) || position.includes(query)
     const matchesCompany = showAll || internship.companyId === company?.id
 
-    return matchesSearch && matchesCompany
+     //Calculate the duration in months (assuming the string format is "X months")
+    const start = new Date(internship.startDate);
+    const end = new Date(internship.endDate);
+    const duration = (end.getFullYear() - start.getFullYear()) * 12 + 
+                          (end.getMonth() - start.getMonth());
+
+    // Check if the internship is paid or unpaid based on the filter
+    const matchesPaid =
+      paidFilter === 'All' ||
+      (paidFilter === 'Paid' && internship.salary) ||
+      (paidFilter === 'Unpaid' && !internship.salary);
+
+    // Check if the duration matches the selected filter
+     const matchesDuration =
+      durationFilter === 'All' ||
+      (durationFilter === '1 month' && duration === 1) ||
+      (durationFilter === '2 months' && duration === 2) ||
+      (durationFilter === '3 months' && duration === 3) ||
+      (durationFilter === 'More than 3 months' && duration > 3);
+
+      //  const matchesIndustry =
+      //   selectedIndustries.length === 0 || selectedIndustries.includes(internship.industry);
+
+    // Return true if all conditions match
+    return matchesSearch && matchesCompany && matchesPaid && matchesDuration;
   })
+
+//  const industries = useMemo(() => {
+//     const allIndustries = internships.map((internship) => internship.industry);
+//     return [...new Set(allIndustries)];
+//   }, [internships]);
+
+
+  // Handle industry selection
+  // const handleIndustryChange = (e) => {
+  //   const options = Array.from(e.target.selectedOptions, (option) => option.value);
+  //   setSelectedIndustries(options);
+  // };
   
   return (
     <div className="internship-operations">
@@ -255,6 +296,45 @@ const InternshipOperations = () => {
             >
               My Company's Internships
             </button>
+            <div className="filters">
+            {/* Paid/Unpaid Filter */}
+            <select
+              className="filter-select"
+              value={paidFilter}
+              onChange={(e) => setPaidFilter(e.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Paid">Paid</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+
+            {/* Duration Filter */}
+            <select
+              className="filter-select"
+              value={durationFilter}
+              onChange={(e) => setDurationFilter(e.target.value)}
+            >
+              <option value="All">All Durations</option>
+              <option value="1 month">1 months</option>
+              <option value="2 months">2 months</option>
+              <option value="3 months">3 months</option>
+              <option value="More than 3 months">More than 3 months</option>
+            </select>
+
+            {/* Industry Filter */}
+            {/* <select
+              className="filter-select"
+              multiple
+              value={selectedIndustries}
+              onChange={handleIndustryChange}
+            >
+              {industries.map((industry) => (
+                <option key={industry} value={industry}>
+                  {industry}
+                </option>
+              ))}
+            </select> */}
+          </div>
           </div>
         </div>
         
