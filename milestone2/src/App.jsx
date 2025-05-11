@@ -39,6 +39,7 @@ import ProfileViewers from './pages/studentOnboarding/ProfileViewers'
 import OnlineAssessments from './pages/studentOnboarding/OnlineAssessments'
 import Workshops from './pages/studentOnboarding/Workshops'
 import WorkshopPlayer from './pages/studentOnboarding/WorkshopPlayer'
+import Appointments from './pages/studentOnboarding/Appointments'
 
 // Analytics Pages
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
