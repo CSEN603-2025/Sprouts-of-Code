@@ -32,7 +32,10 @@ export const AuthProvider = ({ children }) => {
       // Check if it's a demo account
       if (isDemoAccount(email, password)) {
         const role = getDemoAccountRole(email);
-        const user = { email, role };
+        let user = { email, role };
+        if (role === 'FacultyAcademic') {
+          user.name = 'Yasmine Elbehiry';
+        }
         setUser(user);
         setIsAuthenticated(true);
         localStorage.setItem('user', JSON.stringify(user));
