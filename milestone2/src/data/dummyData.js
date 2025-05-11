@@ -354,7 +354,7 @@ export const dummyData = {
     {
       id: 8,
       name: "Ziad Walid",
-      email: "ziad.walid@student.guc.edu.eg",
+      email: "ziad.chahine@student.guc.edu.eg",
       university: "German University in Cairo",
       major: "Software Engineering",
       graduationYear: 2025,
