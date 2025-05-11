@@ -2083,6 +2083,11 @@ export const demoAccounts = {
     email: "admin@demo.com",
     password: "admin123",
     role: "admin"
+  },
+  facultyAcademic: {
+    email: "yasmin.el-behiry@guc.edu.eg",
+    password: "password",
+    role: "FacultyAcademic"
   }
 };
 
