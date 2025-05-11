@@ -20,8 +20,10 @@ const Sidebar = ({ user }) => {
         ];
         if (user.isPro) {
           baseItems.push(
+            { label: 'Appointments', path: '/student/appointments', icon: '🎥' , pro : true},
             { label: 'Profile Viewers', path: '/student/profile-viewers', icon: '👁️', pro: true },
-            { label: 'Online Assessments', path: '/student/assessments', icon: '📝', pro: true }
+            { label: 'Online Assessments', path: '/student/assessments', icon: '📝', pro: true },
+            { label: 'Career Workshops', path: '/student/workshops', icon: '🧑‍💻', pro: true }
           );
         }
         return baseItems;

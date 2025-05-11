@@ -1,8 +1,8 @@
-import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useInternships } from '../../context/InternshipContext'
 import { useCompany } from '../../context/CompanyContext'
 import { usePendingCompany } from '../../context/PendingCompanyContext'
+import React, { useState, useMemo } from 'react'
 import './InternshipOperations.css'
 
 const defaultForm = {
@@ -13,6 +13,7 @@ const defaultForm = {
   endDate: '',
   location: '',
   isRemote: false,
+  isPaid: false,
   salary: '',
   status: 'pending'
 }
@@ -28,6 +29,11 @@ const InternshipOperations = () => {
   const [editingInternship, setEditingInternship] = useState(null)
   const [editForm, setEditForm] = useState(defaultForm)
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [paidFilter, setPaidFilter] = useState('All');
+  const [durationFilter, setDurationFilter] = useState('All');
+  const [selectedIndustries, setSelectedIndustries] = useState([]);
+  const [selectedIndustry, setSelectedIndustry] = useState('All');
+  const currentCompanyId = user?.companyId;
   
   // Get company data
   const company = companies.find(c => c.email === user.email)
@@ -112,13 +118,20 @@ const InternshipOperations = () => {
     addInternship({
       ...createForm,
       requirements: typeof createForm.requirements === 'string' ? createForm.requirements.split('\n').filter(r => r.trim()) : createForm.requirements,
-      companyId: company.id
+      companyId: company.id,
+      salary: createForm.isPaid ? createForm.salary : '0 EGP/month'
     })
     setCreateForm(defaultForm)
     setShowCreateForm(false)
   }
 
-  // Filter internships based on search query and company filter
+  // Get unique industries from internships
+  const industries = useMemo(() => {
+    const allIndustries = internships.map((internship) => internship.industry).filter(Boolean);
+    return ['All', ...Array.from(new Set(allIndustries))];
+  }, [internships]);
+
+  //Filter internships based on search query and company filter
   const filteredInternships = internships.filter(internship => {
     const companyName = getCompanyName(internship.companyId).toLowerCase()
     const position = internship.position.toLowerCase()
@@ -127,8 +140,40 @@ const InternshipOperations = () => {
     const matchesSearch = companyName.includes(query) || position.includes(query)
     const matchesCompany = showAll || internship.companyId === company?.id
 
-    return matchesSearch && matchesCompany
+    // Calculate the duration in months
+    const start = new Date(internship.startDate);
+    const end = new Date(internship.endDate);
+    const duration = (end.getFullYear() - start.getFullYear()) * 12 + 
+                          (end.getMonth() - start.getMonth());
+
+    // Paid/Unpaid logic: unpaid if salary is '0', '0 EGP/month', or similar
+    const isUnpaid = !internship.salary || internship.salary.trim() === '0' || internship.salary.trim().toLowerCase() === '0 egp/month';
+    const isPaid = !isUnpaid;
+    const matchesPaid =
+      paidFilter === 'All' ||
+      (paidFilter === 'Paid' && isPaid) ||
+      (paidFilter === 'Unpaid' && isUnpaid);
+
+    // Duration filter
+    const matchesDuration =
+      durationFilter === 'All' ||
+      (durationFilter === '1 month' && duration === 1) ||
+      (durationFilter === '2 months' && duration === 2) ||
+      (durationFilter === '3 months' && duration === 3) ||
+      (durationFilter === 'More than 3 months' && duration > 3);
+
+    // Industry filter
+    const matchesIndustry = selectedIndustry === 'All' || internship.industry === selectedIndustry;
+
+    // Return true if all conditions match
+    return matchesSearch && matchesCompany && matchesPaid && matchesDuration && matchesIndustry;
   })
+
+  // Handle industry selection
+  // const handleIndustryChange = (e) => {
+  //   const options = Array.from(e.target.selectedOptions, (option) => option.value);
+  //   setSelectedIndustries(options);
+  // };
   
   return (
     <div className="internship-operations">
@@ -171,7 +216,7 @@ const InternshipOperations = () => {
                 onChange={handleCreateChange}
                 required
               />
-          </div>
+            </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Start Date</label>
@@ -182,7 +227,7 @@ const InternshipOperations = () => {
                   onChange={handleCreateChange}
                   required
                 />
-        </div>
+              </div>
               <div className="form-group">
                 <label>End Date</label>
                 <input
@@ -192,8 +237,8 @@ const InternshipOperations = () => {
                   onChange={handleCreateChange}
                   required
                 />
-          </div>
-        </div>
+              </div>
+            </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Location</label>
@@ -205,6 +250,22 @@ const InternshipOperations = () => {
                   required
                 />
               </div>
+              <div className="form-group paid-toggle-group">
+                <label htmlFor="isPaidToggle" className="toggle-label">Paid Internship</label>
+                <label className="toggle-switch">
+                  <input
+                    id="isPaidToggle"
+                    type="checkbox"
+                    name="isPaid"
+                    checked={createForm.isPaid}
+                    onChange={handleCreateChange}
+                  />
+                  <span className="slider"></span>
+                </label>
+                <span className="toggle-desc">Check if this internship is paid</span>
+              </div>
+            </div>
+            {createForm.isPaid && (
               <div className="form-group">
                 <label>Salary</label>
                 <input
@@ -213,9 +274,10 @@ const InternshipOperations = () => {
                   value={createForm.salary}
                   onChange={handleCreateChange}
                   required
+                  placeholder="e.g., 5000 EGP/month"
                 />
-          </div>
-        </div>
+              </div>
+            )}
             <div className="form-group checkbox">
               <label>
                 <input
@@ -223,13 +285,14 @@ const InternshipOperations = () => {
                   name="isRemote"
                   checked={createForm.isRemote}
                   onChange={handleCreateChange}
+                  Style="margin-right: 5px;"
                 />
                 Remote Position
               </label>
             </div>
             <div className="form-actions">
               <button type="submit" className="btn btn-primary">Create Internship</button>
-      </div>
+            </div>
           </form>
         )}
         <div className="search-container">
@@ -255,6 +318,42 @@ const InternshipOperations = () => {
             >
               My Company's Internships
             </button>
+            <div className="filters">
+              {/* Paid/Unpaid Filter */}
+              <select
+                className="filter-select"
+                value={paidFilter}
+                onChange={(e) => setPaidFilter(e.target.value)}
+              >
+                <option value="All">All</option>
+                <option value="Paid">Paid</option>
+                <option value="Unpaid">Unpaid</option>
+              </select>
+
+              {/* Duration Filter */}
+              <select
+                className="filter-select"
+                value={durationFilter}
+                onChange={(e) => setDurationFilter(e.target.value)}
+              >
+                <option value="All">All Durations</option>
+                <option value="1 month">1 months</option>
+                <option value="2 months">2 months</option>
+                <option value="3 months">3 months</option>
+                <option value="More than 3 months">More than 3 months</option>
+              </select>
+
+              {/* Industry Filter */}
+              <select
+                className="filter-select"
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+              >
+                {industries.map((industry) => (
+                  <option key={industry} value={industry}>{industry}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
         

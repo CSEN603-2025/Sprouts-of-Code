@@ -153,3 +153,21 @@
     flex-direction: column;
     gap: 8px;
   }
+
+  .change-photo-btn {
+    border: 1.5px solid #dc3545;
+    color: #dc3545;
+    background: #fff;
+    border-radius: 6px;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    margin-left: 12px;
+  }
+  .change-photo-btn:hover {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+  }
