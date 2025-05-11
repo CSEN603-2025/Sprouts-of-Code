@@ -265,7 +265,8 @@ export const dummyData = {
     {
       id: 2,
       name: "Mariam Sayed",
-      email: "mariam.sayed@student.guc.edu.eg",
+      // Original email: mariam.sayed@student.guc.edu.eg
+      email: "mariam.sayedmohamed@student.guc.edu.eg",
       university: "German University in Cairo",
       major: "Computer Engineering",
       graduationYear: 2025,
@@ -575,7 +576,7 @@ export const dummyData = {
         "Machine Learning basics",
         "Data analysis skills"
       ],
-      duration: "6 months",
+      duration: "2 months",
       startDate: "2024-07-01",
       endDate: "2024-12-31",
       location: "Cairo, Egypt",
@@ -971,7 +972,7 @@ export const dummyData = {
       startDate: "2024-07-15",
       endDate: "2024-10-15",
       location: "Cairo, Egypt",
-      isRemote: true,
+      isRemote: false,
       salary: "4000 EGP/month",
       status: "active",
       applicants: [
@@ -1562,6 +1563,198 @@ export const dummyData = {
       status: "active",
       applicants: []
     }
+  ],
+
+  // Workshops data
+  workshops: [
+    {
+      id: 1,
+      title: "Advanced Interview Techniques",
+      type: "upcoming",
+      date: "2025-05-20",
+      time: "14:00",
+      duration: "2 hours",
+      speaker: "Sarah Johnson",
+      speakerTitle: "Senior Tech Recruiter at Google",
+      description: "Learn advanced interview techniques and how to handle complex technical questions.",
+      //maxParticipants: 50,
+      //currentParticipants: 35,
+      isProOnly: true,
+      topics: ["Technical Interviews", "Problem Solving", "Communication Skills"],
+      //requirements: ["Completed at least 3 months of internship", "Basic interview experience"],
+      materials: ["Interview Preparation Guide", "Common Questions List"],
+      // registrationDeadline: "2025-05-19"
+    },
+    {
+      id: 2,
+      title: "Career Path Planning in Tech",
+      type: "live",
+      time: "15:30",
+      duration: "1.5 hours",
+      speaker: "Michael Chen",
+      speakerTitle: "Engineering Manager at Microsoft",
+      description: "Understanding different career paths in technology and how to plan your journey.",
+      isProOnly: true,
+      topics: ["Career Planning", "Tech Industry Trends", "Skill Development"],
+      materials: ["Career Path Guide", "Skill Assessment Tool"],    },
+    {
+      id: 3,
+      title: "Building Your Tech Portfolio",
+      type: "pre-recorded",
+      date: "2025-04-15",
+      duration: "3 hours",
+      speaker: "Alex Rodriguez",
+      speakerTitle: "Senior Developer at Amazon",
+      description: "Learn how to create an impressive portfolio that showcases your technical skills.",
+      isProOnly: true,
+      topics: ["Portfolio Development", "Project Showcase", "GitHub Best Practices"],
+      materials: ["Portfolio Template", "Project Ideas List", "GitHub Guide"],
+      videoUrl: "https://example.com/workshops/portfolio-building"
+    },
+    {
+      id: 4,
+      title: "Networking in Tech Industry",
+      type: "upcoming",
+      date: "2025-05-25",
+      time: "16:00",
+      duration: "2 hours",
+      speaker: "Emily Brown",
+      speakerTitle: "Tech Community Lead at LinkedIn",
+      description: "Master the art of networking in the tech industry and build valuable connections.",
+      //maxParticipants: 45,
+      //currentParticipants: 30,
+      isProOnly: true,
+      topics: ["Professional Networking", "LinkedIn Optimization", "Industry Events"],
+      //requirements: ["Completed at least 3 months of internship"],
+      materials: ["Networking Guide", "LinkedIn Profile Template"],
+      // registrationDeadline: "2025-05-24"
+    },
+    {
+      id: 5,
+      title: "Advanced System Design",
+      type: "pre-recorded",
+      date: "2025-04-20",
+      duration: "4 hours",
+      speaker: "David Wilson",
+      speakerTitle: "Principal Engineer at Netflix",
+      description: "Deep dive into system design principles and best practices for large-scale applications.",
+      isProOnly: true,
+      topics: ["System Architecture", "Scalability", "Performance Optimization"],
+      materials: ["System Design Patterns", "Case Studies", "Practice Problems"],
+      videoUrl: "https://example.com/workshops/system-design"
+    },
+    {
+      id: 6,
+      title: "Tech Leadership Workshop",
+      type: "live",
+      time: "13:00",
+      duration: "2.5 hours",
+      speaker: "Lisa Thompson",
+      speakerTitle: "VP of Engineering at Spotify",
+      description: "Learn essential leadership skills for tech professionals and how to lead technical teams.",
+      //maxParticipants: 35,
+      //currentParticipants: 35,
+      isProOnly: true,
+      topics: ["Technical Leadership", "Team Management", "Communication"],
+      //requirements: ["Completed at least 3 months of internship", "Team project experience"],
+      materials: ["Leadership Guide", "Team Management Templates"]
+    },
+    {
+      id: 7,
+      title: "Machine Learning Fundamentals",
+      type: "upcoming",
+      date: "2025-06-01",
+      time: "10:00",
+      duration: "3 hours",
+      speaker: "Dr. James Wilson",
+      speakerTitle: "AI Research Lead at DeepMind",
+      description: "Introduction to machine learning concepts and practical applications for beginners.",
+      //maxParticipants: 60,
+      //currentParticipants: 45,
+      isProOnly: true,
+      topics: ["ML Basics", "Neural Networks", "Practical Applications"],
+      //requirements: ["Basic Python knowledge", "Completed at least 3 months of internship"],
+      materials: ["ML Fundamentals Guide", "Python Code Examples", "Practice Datasets"],
+      // registrationDeadline: "2025-05-31"
+    },
+    {
+      id: 8,
+      title: "Cloud Architecture Best Practices",
+      type: "live",
+      time: "11:00",
+      duration: "2 hours",
+      speaker: "Maria Garcia",
+      speakerTitle: "Cloud Solutions Architect at AWS",
+      description: "Learn how to design and implement scalable cloud architectures using AWS services.",
+      //maxParticipants: 50,
+      //currentParticipants: 50,
+      isProOnly: true,
+      topics: ["Cloud Architecture", "AWS Services", "Scalability Patterns"],
+      //requirements: ["Basic cloud knowledge", "Completed at least 3 months of internship"],
+      materials: ["Architecture Templates", "Best Practices Guide"]
+    },
+    {
+      id: 9,
+      title: "Cybersecurity Essentials",
+      type: "pre-recorded",
+      date: "2025-05-01",
+      duration: "3.5 hours",
+      speaker: "John Smith",
+      speakerTitle: "Security Lead at Cisco",
+      description: "Essential cybersecurity concepts and practices for developers and IT professionals.",
+      isProOnly: true,
+      topics: ["Security Basics", "Threat Detection", "Secure Coding"],
+      materials: ["Security Checklist", "Code Examples", "Practice Scenarios"],
+      videoUrl: "https://example.com/workshops/cybersecurity"
+    },
+    {
+      id: 10,
+      title: "DevOps Pipeline Automation",
+      type: "upcoming",
+      date: "2025-06-05",
+      time: "14:00",
+      duration: "2.5 hours",
+      speaker: "Rachel Chen",
+      speakerTitle: "DevOps Engineer at GitHub",
+      description: "Learn how to automate your development pipeline using modern DevOps tools and practices.",
+      //maxParticipants: 40,
+      //currentParticipants: 25,
+      isProOnly: true,
+      topics: ["CI/CD", "Docker", "Kubernetes Basics"],
+      //requirements: ["Basic Git knowledge", "Completed at least 3 months of internship"],
+      materials: ["Pipeline Templates", "Docker Examples", "Best Practices Guide"],
+      // registrationDeadline: "2025-06-04"
+    },
+    {
+      id: 11,
+      title: "Mobile App Development with React Native",
+      type: "live",
+      time: "15:00",
+      duration: "2 hours",
+      speaker: "Tom Anderson",
+      speakerTitle: "Mobile Lead at Instagram",
+      description: "Build cross-platform mobile applications using React Native and modern development practices.",
+      //maxParticipants: 45,
+      //currentParticipants: 45,
+      isProOnly: true,
+      topics: ["React Native", "Mobile UI/UX", "Performance Optimization"],
+      //requirements: ["Basic React knowledge", "Completed at least 3 months of internship"],
+      materials: ["React Native Guide", "UI Components", "Performance Tips"]
+    },
+    {
+      id: 12,
+      title: "Data Visualization Masterclass",
+      type: "pre-recorded",
+      date: "2025-05-05",
+      duration: "3 hours",
+      speaker: "Sarah Lee",
+      speakerTitle: "Data Visualization Expert at Tableau",
+      description: "Master the art of creating compelling and informative data visualizations.",
+      isProOnly: true,
+      topics: ["Data Visualization", "Chart Types", "Best Practices"],
+      materials: ["Visualization Templates", "Color Schemes", "Case Studies"],
+      videoUrl: "https://example.com/workshops/data-viz"
+    }
   ]
 };
 
@@ -1668,8 +1861,9 @@ export const updateApplicationStatus = (studentId, internshipId, newStatus) => {
     return true;
   }
   return false;
-}; 
-// Demo accounts for testing
+};
+
+//// Demo accounts for testing
 export const demoAccounts = {
   admin: {
     email: "admin@demo.com",
@@ -1707,5 +1901,34 @@ dummyData.students.forEach(student => {
       totalMonths += getInternshipDurationMonths(internship);
     }
   });
-  student.isPro = totalMonths > 3;
-}); 
+  // Don't override Mariam's isPro status
+  if (student.email !== "mariam.sayedmohamed@student.guc.edu.eg") {
+    student.isPro = totalMonths >= 3;
+  }
+});
+
+// Add workshop-related helper functions
+export const getWorkshopsByType = (type) => {
+  return dummyData.workshops.filter(workshop => workshop.type === type);
+};
+
+export const getProWorkshops = () => {
+  return dummyData.workshops.filter(workshop => workshop.isProOnly);
+};
+
+export const getWorkshopById = (id) => {
+  return dummyData.workshops.find(workshop => workshop.id === id);
+};
+
+export const registerForWorkshop = (workshopId, studentId) => {
+  const workshop = dummyData.workshops.find(w => w.id === workshopId);
+  const student = dummyData.students.find(s => s.id === studentId);
+  
+  if (workshop && student && student.isPro) {
+    if (workshop.currentParticipants < workshop.maxParticipants) {
+      workshop.currentParticipants++;
+      return true;
+    }
+  }
+  return false;
+}; 
