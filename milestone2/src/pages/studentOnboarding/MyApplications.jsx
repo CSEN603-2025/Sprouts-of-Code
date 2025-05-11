@@ -1,96 +1,38 @@
 // src/pages/studentOnboarding/MyApplications.jsx
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { dummyStudents, dummyInternships, dummyCompanies } from '../../data/dummyData';
+import { useAuth } from '../../context/AuthContext';
 import './MyApplications.css';
 
 const MyApplications = () => {
-  // Dummy data for applications with more examples
-  const [applications] = useState([
-    {
-      id: 1,
-      company: 'TechCorp',
-      position: 'Frontend Developer',
-      status: 'pending',
-      date: '2023-05-15',
-      description: 'Developing user interfaces using React and Redux',
-      requirements: 'React, JavaScript, HTML/CSS',
-      location: 'Cairo, Egypt',
-      duration: '3 months',
-      salary: 'Paid',
-      type: 'Full-time',
-      startDate: '2023-06-01'
-    },
-    {
-      id: 2,
-      company: 'TechNova',
-      position: 'Backend Developer',
-      status: 'finalized',
-      date: '2023-05-12',
-      description: 'Building scalable backend services using Node.js',
-      requirements: 'Node.js, Express, MongoDB',
-      location: 'Remote',
-      duration: '6 months',
-      salary: 'Paid',
-      type: 'Part-time',
-      startDate: '2023-06-15'
-    },
-    {
-      id: 3,
-      company: 'DataSystems',
-      position: 'Data Analyst',
-      status: 'accepted',
-      date: '2023-05-10',
-      description: 'Analyzing data and creating reports',
-      requirements: 'Python, SQL, Data Analysis',
-      location: 'Remote',
-      duration: '6 months',
-      salary: 'Paid',
-      type: 'Full-time',
-      startDate: '2023-06-01'
-    },
-    {
-      id: 4,
-      company: 'DataFlow',
-      position: 'Data Engineer',
-      status: 'rejected',
-      date: '2023-05-08',
-      description: 'Building data pipelines and ETL processes',
-      requirements: 'Python, Apache Spark, AWS',
-      location: 'Alexandria, Egypt',
-      duration: '4 months',
-      salary: 'Paid',
-      type: 'Full-time',
-      startDate: '2023-06-01'
-    },
-    {
-      id: 5,
-      company: 'InnovateTech',
-      position: 'Mobile Developer',
-      status: 'rejected',
-      date: '2023-05-05',
-      description: 'Developing mobile applications using React Native',
-      requirements: 'React Native, JavaScript, Mobile Development',
-      location: 'Alexandria, Egypt',
-      duration: '4 months',
-      salary: 'Unpaid',
-      type: 'Part-time',
-      startDate: '2023-06-01'
-    },
-    {
-      id: 6,
-      company: 'InnovateSoft',
-      position: 'UI/UX Designer',
-      status: 'rejected',
-      date: '2023-05-03',
-      description: 'Creating user interfaces and experiences',
-      requirements: 'Figma, Adobe XD, UI/UX Design',
-      location: 'Cairo, Egypt',
-      duration: '3 months',
-      salary: 'Unpaid',
-      type: 'Part-time',
-      startDate: '2023-06-15'
-    }
-  ]);
+  const { user } = useAuth();
+  
+  // Get the logged-in student using their email
+  const loggedInStudent = dummyStudents.find(student => student.email === user.email);
+
+  // Transform the student's applications into the format we need
+  const [applications] = useState(() => {
+    return loggedInStudent.appliedInternships.map(app => {
+      const internship = dummyInternships.find(i => i.id === app.internshipId);
+      const company = dummyCompanies.find(c => c.id === internship.companyId);
+      
+      return {
+        id: internship.id,
+        company: company.name,
+        position: internship.position,
+        status: app.status,
+        date: internship.startDate, // Using start date as application date for demo
+        description: internship.description,
+        requirements: internship.requirements.join(', '),
+        location: internship.location,
+        duration: internship.duration,
+        salary: internship.salary,
+        type: internship.isRemote ? 'Remote' : 'On-site',
+        startDate: internship.startDate
+      };
+    });
+  });
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -105,9 +47,9 @@ const MyApplications = () => {
 
   // Group applications by status
   const groupedApplications = {
-    pending: filteredApplications.filter(app => app.status === 'pending'),
-    finalized: filteredApplications.filter(app => app.status === 'finalized'),
-    accepted: filteredApplications.filter(app => app.status === 'accepted'),
+    pending: filteredApplications.filter(app => app.status === 'applied'),
+    finalized: filteredApplications.filter(app => app.status === 'undergoing'),
+    accepted: filteredApplications.filter(app => app.status === 'completed'),
     rejected: filteredApplications.filter(app => app.status === 'rejected')
   };
 
@@ -133,20 +75,20 @@ const MyApplications = () => {
               All
             </button>
             <button 
-              className={`status-filter ${statusFilter === 'pending' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('pending')}
+              className={`status-filter ${statusFilter === 'applied' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('applied')}
             >
               Pending
             </button>
             <button 
-              className={`status-filter ${statusFilter === 'finalized' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('finalized')}
+              className={`status-filter ${statusFilter === 'undergoing' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('undergoing')}
             >
               Finalized
             </button>
             <button 
-              className={`status-filter ${statusFilter === 'accepted' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('accepted')}
+              className={`status-filter ${statusFilter === 'completed' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('completed')}
             >
               Accepted
             </button>

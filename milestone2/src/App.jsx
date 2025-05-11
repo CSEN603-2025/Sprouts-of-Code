@@ -33,6 +33,12 @@ import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
 import StudentOnboarding from './pages/studentOnboarding/StudentOnboarding'
 import InternshipExperience from './pages/internshipexperience/InternshipExperience'
 import AllInternships from './pages/student/AllInternships'
+import MyApplications from './pages/studentOnboarding/MyApplications'
+import ProfileSetup from './pages/studentOnboarding/ProfileSetup'
+import ProfileViewers from './pages/studentOnboarding/ProfileViewers'
+import OnlineAssessments from './pages/studentOnboarding/OnlineAssessments'
+import Workshops from './pages/studentOnboarding/Workshops'
+import WorkshopPlayer from './pages/studentOnboarding/WorkshopPlayer'
 
 // Analytics Pages
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
@@ -196,6 +202,30 @@ const App = () => {
                       } 
                     />
                     <Route 
+                      path="/student/workshops" 
+                      element={
+                        <ProtectedRoute allowedRoles={['student']}>
+                          <Workshops />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/student/workshops/:workshopId" 
+                      element={
+                        <ProtectedRoute allowedRoles={['student']}>
+                          <WorkshopPlayer />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/student/profile" 
+                      element={
+                        <ProtectedRoute allowedRoles={['student']}>
+                          <ProfileSetup />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
                       path="/student/onboarding" 
                       element={
                         <ProtectedRoute allowedRoles={['student']}>
@@ -212,6 +242,30 @@ const App = () => {
                       } 
                     />
                     <Route path="/student/internships" element={<AllInternships />} />
+                    <Route 
+                      path="/student/applications" 
+                      element={
+                        <ProtectedRoute allowedRoles={['student']}>
+                          <MyApplications />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/student/profile-viewers" 
+                      element={
+                        <ProtectedRoute allowedRoles={['student']}>
+                          <ProfileViewers />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/student/assessments" 
+                      element={
+                        <ProtectedRoute allowedRoles={['student']}>
+                          <OnlineAssessments />
+                        </ProtectedRoute>
+                      } 
+                    />
                     
                     {/* Analytics Routes */}
                     <Route 
