@@ -1,93 +1,88 @@
-import { useState } from 'react'
-import { useCompany } from '../../context/CompanyContext'
-import { usePendingCompany } from '../../context/PendingCompanyContext'
-import { useInternships } from '../../context/InternshipContext'
-import './Reports.css'
+// src/components/Reports.jsx
+import React, { useState } from 'react';
+import { useCompany } from '../../context/CompanyContext';
+import { usePendingCompany } from '../../context/PendingCompanyContext';
+import { useInternships } from '../../context/InternshipContext';
+
+import {
+  Box,
+  Grid,
+  Card,
+  CardHeader,
+  CardContent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Typography,
+  Stack,
+  IconButton
+} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import InsertChartIcon from '@mui/icons-material/InsertChart';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import DownloadIcon from '@mui/icons-material/Download';
+import ShareIcon from '@mui/icons-material/Share';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Reports = () => {
-  const { companies } = useCompany()
-  const { pendingCompanies } = usePendingCompany()
-  const { internships } = useInternships()
+  const { companies } = useCompany();
+  const { pendingCompanies } = usePendingCompany();
+  const { internships } = useInternships();
 
-  const [reportType, setReportType] = useState('internship')
-  const [timeFrame, setTimeFrame] = useState('past-12-months')
-  const [format, setFormat] = useState('pdf')
-  const [isGenerating, setIsGenerating] = useState(false)
-  
-  // Dummy saved reports
+  const [reportType, setReportType] = useState('internship');
+  const [timeFrame, setTimeFrame] = useState('past-12-months');
+  const [format, setFormat] = useState('pdf');
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const [savedReports, setSavedReports] = useState([
-    { 
-      id: 1, 
-      name: 'Internship Performance Q2 2023', 
-      type: 'internship',
-      date: '2023-07-01',
-      format: 'pdf',
-      size: '2.4 MB'
-    },
-    { 
-      id: 2, 
-      name: 'Employer Engagement Report', 
-      type: 'employer',
-      date: '2023-06-15',
-      format: 'excel',
-      size: '1.8 MB'
-    },
-    { 
-      id: 3, 
-      name: 'Student Placement Analysis', 
-      type: 'student',
-      date: '2023-05-30',
-      format: 'pdf',
-      size: '3.2 MB'
-    }
-  ])
-  
-  const handleGenerateReport = () => {
-    setIsGenerating(true)
-    
-    // Generate report based on selected type and current data
-    setTimeout(() => {
-      let reportData = {}
-      let reportName = ''
+    { id: 1, name: 'Internship Performance Q2 2023', type: 'internship', date: '2023-07-01', format: 'pdf', size: '2.4 MB' },
+    { id: 2, name: 'Employer Engagement Report', type: 'employer', date: '2023-06-15', format: 'excel', size: '1.8 MB' },
+    { id: 3, name: 'Student Placement Analysis', type: 'student', date: '2023-05-30', format: 'pdf', size: '3.2 MB' },
+  ]);
 
+  const handleGenerateReport = () => {
+    setIsGenerating(true);
+    setTimeout(() => {
+      let reportData = {}, reportName = '';
       switch (reportType) {
         case 'internship':
           reportData = {
             totalInternships: internships.length,
             activeInternships: internships.filter(i => i.status === 'active').length,
             completedInternships: internships.filter(i => i.status === 'completed').length,
-            internshipsByCompany: companies.map(company => ({
-              company: company.name,
-              count: internships.filter(i => i.employer === company.name).length
+            internshipsByCompany: companies.map(c => ({
+              company: c.name,
+              count: internships.filter(i => i.employer === c.name).length
             }))
-          }
-          reportName = 'Internship Performance Report'
-          break
-
+          };
+          reportName = 'Internship Performance Report';
+          break;
         case 'employer':
           reportData = {
             totalEmployers: companies.length,
             pendingApprovals: pendingCompanies.length,
-            employersByIndustry: companies.reduce((acc, company) => {
-              acc[company.industry] = (acc[company.industry] || 0) + 1
-              return acc
+            employersByIndustry: companies.reduce((acc, c) => {
+              acc[c.industry] = (acc[c.industry] || 0) + 1;
+              return acc;
             }, {})
-          }
-          reportName = 'Employer Engagement Report'
-          break
-
+          };
+          reportName = 'Employer Engagement Report';
+          break;
         case 'student':
           reportData = {
-            totalStudents: 245, // This would come from StudentContext in a real app
+            totalStudents: 245,
             placementRate: '85%',
             averageDuration: '3.5 months'
-          }
-          reportName = 'Student Analytics Report'
-          break
-
+          };
+          reportName = 'Student Analytics Report';
+          break;
         default:
-          reportData = {}
-          reportName = 'General Report'
+          reportData = {};
+          reportName = 'General Report';
       }
 
       const newReport = {
@@ -95,129 +90,165 @@ const Reports = () => {
         name: `${reportName} ${new Date().toLocaleDateString()}`,
         type: reportType,
         date: new Date().toISOString().split('T')[0],
-        format: format,
+        format,
         size: `${(Math.random() * 5).toFixed(1)} MB`,
         data: reportData
-      }
-      
-      setSavedReports([newReport, ...savedReports])
-      setIsGenerating(false)
-    }, 2000)
-  }
-  
-  return (
-    <div className="reports-page">
-      <div className="page-header">
-        <h1>Reports</h1>
-      </div>
-      
-      <div className="reports-container">
-        <div className="generate-report-card card">
-          <div className="card-header">
-            <h2 className="card-title">Generate New Report</h2>
-          </div>
-          
-          <div className="report-form">
-            <div className="form-group">
-              <label htmlFor="reportType">Report Type</label>
-              <select 
-                id="reportType" 
-                value={reportType}
-                onChange={(e) => setReportType(e.target.value)}
-              >
-                <option value="internship">Internship Performance</option>
-                <option value="student">Student Analytics</option>
-                <option value="employer">Employer Engagement</option>
-                <option value="department">Department Analysis</option>
-                <option value="feedback">Feedback Summary</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="timeFrame">Time Frame</label>
-              <select 
-                id="timeFrame" 
-                value={timeFrame}
-                onChange={(e) => setTimeFrame(e.target.value)}
-              >
-                <option value="past-12-months">Past 12 Months</option>
-                <option value="past-6-months">Past 6 Months</option>
-                <option value="past-3-months">Past 3 Months</option>
-                <option value="current-year">Current Year</option>
-                <option value="previous-year">Previous Year</option>
-                <option value="custom">Custom Range</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="format">Format</label>
-              <select 
-                id="format" 
-                value={format}
-                onChange={(e) => setFormat(e.target.value)}
-              >
-                <option value="pdf">PDF</option>
-                <option value="excel">Excel</option>
-                <option value="csv">CSV</option>
-              </select>
-            </div>
-            
-            <div className="form-actions">
-              <button 
-                className="btn btn-primary"
-                onClick={handleGenerateReport}
-                disabled={isGenerating}
-              >
-                {isGenerating ? 'Generating...' : 'Generate Report'}
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        <div className="saved-reports-card card">
-          <div className="card-header">
-            <h2 className="card-title">Saved Reports</h2>
-          </div>
-          
-          <div className="reports-list">
-            <div className="reports-table-header">
-              <div className="report-name-col">Name</div>
-              <div className="report-date-col">Date</div>
-              <div className="report-format-col">Format</div>
-              <div className="report-actions-col">Actions</div>
-            </div>
-            
-            {savedReports.map(report => (
-              <div key={report.id} className="report-item">
-                <div className="report-name-col">
-                  <div className="report-icon">
-                    {report.format === 'pdf' && '📄'}
-                    {report.format === 'excel' && '📊'}
-                    {report.format === 'csv' && '📋'}
-                  </div>
-                  <div className="report-details">
-                    <div className="report-name">{report.name}</div>
-                    <div className="report-size">{report.size}</div>
-                  </div>
-                </div>
-                <div className="report-date-col">{report.date}</div>
-                <div className="report-format-col">
-                  <span className={`format-badge ${report.format}`}>
-                    {report.format.toUpperCase()}
-                  </span>
-                </div>
-                <div className="report-actions-col">
-                  <button className="action-button">Download</button>
-                  <button className="action-button">Share</button>
-                  <button className="action-button danger">Delete</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+      };
 
-export default Reports
+      setSavedReports([newReport, ...savedReports]);
+      setIsGenerating(false);
+    }, 2000);
+  };
+
+  const columns = [
+    {
+      field: 'name',
+      headerName: 'Name',
+      flex: 3,
+      renderCell: ({ value, row }) => (
+        <Stack direction="row" alignItems="center" spacing={1}>
+          {row.format === 'pdf'
+            ? <PictureAsPdfIcon color="error" />
+            : row.format === 'excel'
+              ? <InsertChartIcon color="success" />
+              : <TableChartIcon color="info" />
+          }
+          <Box>
+            <Typography variant="body2">{value}</Typography>
+            <Typography variant="caption" color="textSecondary">{row.size}</Typography>
+          </Box>
+        </Stack>
+      )
+    },
+    { field: 'date', headerName: 'Date', flex: 1 },
+    {
+      field: 'format',
+      headerName: 'Format',
+      flex: 1,
+      renderCell: ({ value }) => (
+        <Box
+          component="span"
+          sx={{
+            px: 1.5,
+            py: 0.5,
+            borderRadius: 1,
+            bgcolor:
+              value === 'pdf' ? 'error.light'
+              : value === 'excel' ? 'success.light'
+              : 'info.light',
+            textTransform: 'uppercase',
+            fontSize: '0.75rem',
+            fontWeight: 600
+          }}
+        >
+          {value}
+        </Box>
+      )
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      flex: 2,
+      sortable: false,
+      renderCell: () => (
+        <Stack direction="row" spacing={1}>
+          <IconButton size="small"><DownloadIcon fontSize="small" /></IconButton>
+          <IconButton size="small"><ShareIcon fontSize="small" /></IconButton>
+          <IconButton size="small" color="error"><DeleteIcon fontSize="small" /></IconButton>
+        </Stack>
+      )
+    }
+  ];
+
+  return (
+    <Box sx={{ p: 4, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h4" mb={4}>Reports</Typography>
+
+      <Grid container spacing={4}>
+        {/* Generate */}
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardHeader title="Generate New Report" />
+            <CardContent>
+              <Stack spacing={3}>
+                <FormControl fullWidth>
+                  <InputLabel>Report Type</InputLabel>
+                  <Select
+                    value={reportType}
+                    label="Report Type"
+                    onChange={e => setReportType(e.target.value)}
+                  >
+                    <MenuItem value="internship">Internship Performance</MenuItem>
+                    <MenuItem value="student">Student Analytics</MenuItem>
+                    <MenuItem value="employer">Employer Engagement</MenuItem>
+                    <MenuItem value="department">Department Analysis</MenuItem>
+                    <MenuItem value="feedback">Feedback Summary</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel>Time Frame</InputLabel>
+                  <Select
+                    value={timeFrame}
+                    label="Time Frame"
+                    onChange={e => setTimeFrame(e.target.value)}
+                  >
+                    <MenuItem value="past-12-months">Past 12 Months</MenuItem>
+                    <MenuItem value="past-6-months">Past 6 Months</MenuItem>
+                    <MenuItem value="past-3-months">Past 3 Months</MenuItem>
+                    <MenuItem value="current-year">Current Year</MenuItem>
+                    <MenuItem value="previous-year">Previous Year</MenuItem>
+                    <MenuItem value="custom">Custom Range</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel>Format</InputLabel>
+                  <Select
+                    value={format}
+                    label="Format"
+                    onChange={e => setFormat(e.target.value)}
+                  >
+                    <MenuItem value="pdf">PDF</MenuItem>
+                    <MenuItem value="excel">Excel</MenuItem>
+                    <MenuItem value="csv">CSV</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <Button
+                  variant="contained"
+                  onClick={handleGenerateReport}
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? 'Generating…' : 'Generate Report'}
+                </Button>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Saved Reports */}
+        <Grid item xs={12} md={8}>
+          <Card>
+            <CardHeader title="Saved Reports" />
+            <CardContent>
+              <Box sx={{ width: '100%' }}>
+                <DataGrid
+                  rows={savedReports}
+                  columns={columns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  disableSelectionOnClick
+                  autoHeight
+                  getRowId={row => row.id}
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
+  );
+};
+
+export default Reports;
