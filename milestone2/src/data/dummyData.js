@@ -548,6 +548,7 @@ export const dummyData = {
       id: 1,
       companyId: 1,
       position: "Software Engineering Intern",
+      industry: "Software Development",
       description: "Join our software engineering team to work on cutting-edge telecommunications solutions.",
       requirements: [
         "Strong programming skills in Java/Python",
@@ -570,6 +571,7 @@ export const dummyData = {
       id: 2,
       companyId: 2,
       position: "Data Science Intern",
+      industry: "Data Science",
       description: "Work with our data science team to analyze customer behavior and improve our services.",
       requirements: [
         "Python programming",
@@ -591,6 +593,7 @@ export const dummyData = {
       id: 3,
       companyId: 3,
       position: "Frontend Development Intern",
+      industry: "Web Development",
       description: "Join our frontend team to build user-friendly interfaces for our payment platform.",
       requirements: [
         "React.js experience",
@@ -614,6 +617,7 @@ export const dummyData = {
       id: 4,
       companyId: 4,
       position: "Mobile App Development Intern",
+      industry: "Mobile Development",
       description: "Work on our mobile applications using React Native and contribute to our transportation platform.",
       requirements: [
         "React Native experience",
@@ -637,6 +641,7 @@ export const dummyData = {
       id: 5,
       companyId: 5,
       position: "UI/UX Design Intern",
+      industry: "Design",
       description: "Help design intuitive user interfaces for our healthcare platform.",
       requirements: [
         "Figma/Sketch experience",
@@ -660,6 +665,7 @@ export const dummyData = {
       id: 6,
       companyId: 6,
       position: "QA Engineering Intern",
+      industry: "Quality Assurance",
       description: "Join our quality assurance team to ensure the highest quality of our mobile testing platform.",
       requirements: [
         "Testing methodologies",
@@ -682,6 +688,7 @@ export const dummyData = {
       id: 7,
       companyId: 7,
       position: "Backend Development Intern",
+      industry: "Backend Development",
       description: "Work on our e-commerce platform's backend services using Node.js and MongoDB.",
       requirements: [
         "Node.js experience",
@@ -704,6 +711,7 @@ export const dummyData = {
       id: 8,
       companyId: 8,
       position: "DevOps Intern",
+      industry: "DevOps",
       description: "Learn and contribute to our cloud infrastructure and deployment processes.",
       requirements: [
         "Linux basics",
@@ -725,6 +733,7 @@ export const dummyData = {
       id: 9,
       companyId: 9,
       position: "Full Stack Development Intern",
+      industry: "Full Stack Development",
       description: "Work on both frontend and backend of our financial services platform.",
       requirements: [
         "React.js",
@@ -747,6 +756,7 @@ export const dummyData = {
       id: 10,
       companyId: 10,
       position: "Product Management Intern",
+      industry: "Product Management",
       description: "Learn product management by working on our food delivery platform features.",
       requirements: [
         "Analytical skills",
@@ -769,6 +779,7 @@ export const dummyData = {
       id: 11,
       companyId: 11,
       position: "Mobile App Development Intern",
+      industry: "Mobile Development",
       description: "Contribute to our breakfast delivery app using Flutter.",
       requirements: [
         "Flutter/Dart",
@@ -790,6 +801,7 @@ export const dummyData = {
       id: 12,
       companyId: 12,
       position: "Data Analysis Intern",
+      industry: "Data Analytics",
       description: "Analyze healthcare data to improve our pharmacy platform.",
       requirements: [
         "Python",
@@ -812,6 +824,7 @@ export const dummyData = {
       id: 13,
       companyId: 13,
       position: "Security Engineering Intern",
+      industry: "Cybersecurity",
       description: "Work on securing our financial platform and user data.",
       requirements: [
         "Security basics",
@@ -834,6 +847,7 @@ export const dummyData = {
       id: 14,
       companyId: 14,
       position: "Event Technology Intern",
+      industry: "Event Technology",
       description: "Help develop and maintain our event management platform.",
       requirements: [
         "Web development",
@@ -856,6 +870,7 @@ export const dummyData = {
       id: 15,
       companyId: 15,
       position: "Logistics Technology Intern",
+      industry: "Logistics Technology",
       description: "Work on optimizing our delivery routes and tracking system.",
       requirements: [
         "Algorithm knowledge",
@@ -878,6 +893,7 @@ export const dummyData = {
       id: 16,
       companyId: 16,
       position: "Frontend Development Intern",
+      industry: "Web Development",
       description: "Build user interfaces for our quick commerce platform.",
       requirements: [
         "React.js",
@@ -899,6 +915,7 @@ export const dummyData = {
       id: 17,
       companyId: 17,
       position: "FinTech Development Intern",
+      industry: "FinTech Development",
       description: "Work on our digital banking platform's features.",
       requirements: [
         "Java/Spring Boot",
@@ -920,6 +937,7 @@ export const dummyData = {
       id: 18,
       companyId: 18,
       position: "Backend Development Intern",
+      industry: "Backend Development",
       description: "Develop backend services for our logistics platform.",
       requirements: [
         "Python/Django",
@@ -941,6 +959,7 @@ export const dummyData = {
       id: 19,
       companyId: 19,
       position: "E-commerce Development Intern",
+      industry: "E-commerce Development",
       description: "Work on our B2B e-commerce platform features.",
       requirements: [
         "PHP/Laravel",
@@ -962,6 +981,7 @@ export const dummyData = {
       id: 20,
       companyId: 20,
       position: "FinTech Product Intern",
+      industry: "Product Management",
       description: "Help develop and improve our buy-now-pay-later features.",
       requirements: [
         "Product management",
@@ -983,6 +1003,7 @@ export const dummyData = {
       id: 21,
       companyId: 1,
       position: "Network Engineering Intern",
+      industry: "Network Engineering",
       description: "Learn and contribute to our telecommunications network infrastructure.",
       requirements: [
         "Network protocols",
@@ -1004,6 +1025,7 @@ export const dummyData = {
       id: 22,
       companyId: 2,
       position: "Cloud Solutions Intern",
+      industry: "Cloud Computing",
       description: "Work on cloud infrastructure and deployment for our services.",
       requirements: [
         "AWS/Azure basics",
@@ -1025,6 +1047,7 @@ export const dummyData = {
       id: 23,
       companyId: 3,
       position: "Payment Systems Intern",
+      industry: "Payment Systems",
       description: "Contribute to our payment processing platform development.",
       requirements: [
         "Java/Python",
@@ -1046,6 +1069,7 @@ export const dummyData = {
       id: 24,
       companyId: 4,
       position: "AI/ML Intern",
+      industry: "Artificial Intelligence",
       description: "Work on machine learning models for route optimization.",
       requirements: [
         "Python",
@@ -1067,6 +1091,7 @@ export const dummyData = {
       id: 25,
       companyId: 5,
       position: "Healthcare Tech Intern",
+      industry: "Healthcare Technology",
       description: "Develop features for our healthcare platform.",
       requirements: [
         "React.js",
@@ -1078,7 +1103,7 @@ export const dummyData = {
       endDate: "2024-08-31",
       location: "Cairo, Egypt",
       isRemote: false,
-      salary: "4500 EGP/month",
+      salary: "0 EGP/month",
       status: "active",
       applicants: [
         { studentId: 18, status: "applied" }
@@ -1088,6 +1113,7 @@ export const dummyData = {
       id: 26,
       companyId: 6,
       position: "Mobile Testing Intern",
+      industry: "Quality Assurance",
       description: "Develop and maintain our mobile app testing framework.",
       requirements: [
         "Mobile testing",
@@ -1099,7 +1125,7 @@ export const dummyData = {
       endDate: "2024-11-15",
       location: "Cairo, Egypt",
       isRemote: true,
-      salary: "4000 EGP/month",
+      salary: "0 EGP/month",
       status: "active",
       applicants: [
         { studentId: 19, status: "undergoing" }
@@ -1109,6 +1135,7 @@ export const dummyData = {
       id: 27,
       companyId: 7,
       position: "E-commerce Analytics Intern",
+      industry: "Data Analytics",
       description: "Analyze user behavior and sales data for our platform.",
       requirements: [
         "Data analysis",
@@ -1120,7 +1147,7 @@ export const dummyData = {
       endDate: "2024-08-31",
       location: "Cairo, Egypt",
       isRemote: false,
-      salary: "4500 EGP/month",
+      salary: "0 EGP/month",
       status: "active",
       applicants: [
         { studentId: 20, status: "rejected" }
@@ -1130,6 +1157,7 @@ export const dummyData = {
       id: 28,
       companyId: 8,
       position: "Supply Chain Tech Intern",
+      industry: "Supply Chain Technology",
       description: "Work on our B2B supply chain management system.",
       requirements: [
         "Java/Spring",
@@ -1149,6 +1177,7 @@ export const dummyData = {
       id: 29,
       companyId: 9,
       position: "Digital Banking Intern",
+      industry: "FinTech Development",
       description: "Contribute to our digital banking platform features.",
       requirements: [
         "Java/Python",
@@ -1168,6 +1197,7 @@ export const dummyData = {
       id: 30,
       companyId: 10,
       position: "Food Tech Intern",
+      industry: "Food Technology",
       description: "Work on our restaurant management system.",
       requirements: [
         "React.js",
@@ -1187,6 +1217,7 @@ export const dummyData = {
       id: 31,
       companyId: 11,
       position: "Mobile UI/UX Intern",
+      industry: "Design",
       description: "Design and implement user interfaces for our food delivery app.",
       requirements: [
         "UI/UX design",
@@ -1206,6 +1237,7 @@ export const dummyData = {
       id: 32,
       companyId: 12,
       position: "Pharmacy Tech Intern",
+      industry: "Healthcare Technology",
       description: "Develop features for our online pharmacy platform.",
       requirements: [
         "PHP/Laravel",
@@ -1225,6 +1257,7 @@ export const dummyData = {
       id: 33,
       companyId: 13,
       position: "Financial Systems Intern",
+      industry: "FinTech Development",
       description: "Work on our digital money circles platform.",
       requirements: [
         "Java/Spring",
@@ -1244,6 +1277,7 @@ export const dummyData = {
       id: 34,
       companyId: 14,
       position: "Event Platform Intern",
+      industry: "Event Technology",
       description: "Develop features for our event management system.",
       requirements: [
         "React.js",
@@ -1263,6 +1297,7 @@ export const dummyData = {
       id: 35,
       companyId: 15,
       position: "Logistics Systems Intern",
+      industry: "Logistics Technology",
       description: "Work on our delivery tracking and optimization system.",
       requirements: [
         "Python",
@@ -1274,7 +1309,7 @@ export const dummyData = {
       endDate: "2024-10-15",
       location: "Cairo, Egypt",
       isRemote: false,
-      salary: "5000 EGP/month",
+      salary: "0 EGP/month",
       status: "active",
       applicants: []
     },
@@ -1282,6 +1317,7 @@ export const dummyData = {
       id: 36,
       companyId: 16,
       position: "Quick Commerce Tech Intern",
+      industry: "E-commerce Development",
       description: "Work on our rapid delivery platform's core features.",
       requirements: [
         "React.js",
@@ -1293,7 +1329,7 @@ export const dummyData = {
       endDate: "2024-09-30",
       location: "Cairo, Egypt",
       isRemote: false,
-      salary: "4500 EGP/month",
+      salary: "0 EGP/month",
       status: "active",
       applicants: []
     },
@@ -1301,6 +1337,7 @@ export const dummyData = {
       id: 37,
       companyId: 17,
       position: "Digital Banking Security Intern",
+      industry: "Cybersecurity",
       description: "Help secure our digital banking platform and user data.",
       requirements: [
         "Security protocols",
@@ -1312,7 +1349,7 @@ export const dummyData = {
       endDate: "2024-12-15",
       location: "Cairo, Egypt",
       isRemote: true,
-      salary: "6000 EGP/month",
+      salary: "0 EGP/month",
       status: "active",
       applicants: []
     },
@@ -1320,6 +1357,7 @@ export const dummyData = {
       id: 38,
       companyId: 18,
       position: "Freight Tech Intern",
+      industry: "Logistics Technology",
       description: "Develop features for our digital freight marketplace.",
       requirements: [
         "Python/Django",
@@ -1339,6 +1377,7 @@ export const dummyData = {
       id: 39,
       companyId: 19,
       position: "B2B E-commerce Intern",
+      industry: "E-commerce Development",
       description: "Work on our B2B e-commerce platform's core features.",
       requirements: [
         "PHP/Laravel",
@@ -1358,6 +1397,7 @@ export const dummyData = {
       id: 40,
       companyId: 20,
       position: "FinTech Product Intern",
+      industry: "Product Management",
       description: "Help develop and improve our buy-now-pay-later features.",
       requirements: [
         "Product management",
@@ -1377,6 +1417,7 @@ export const dummyData = {
       id: 41,
       companyId: 1,
       position: "5G Technology Intern",
+      industry: "Network Engineering",
       description: "Work on next-generation telecommunications solutions.",
       requirements: [
         "Network protocols",
@@ -1396,6 +1437,7 @@ export const dummyData = {
       id: 42,
       companyId: 2,
       position: "IoT Solutions Intern",
+      industry: "IoT Development",
       description: "Develop IoT solutions for our telecommunications network.",
       requirements: [
         "IoT protocols",
@@ -1415,6 +1457,7 @@ export const dummyData = {
       id: 43,
       companyId: 3,
       position: "Blockchain Intern",
+      industry: "Blockchain Development",
       description: "Work on blockchain solutions for our payment platform.",
       requirements: [
         "Blockchain basics",
@@ -1434,6 +1477,7 @@ export const dummyData = {
       id: 44,
       companyId: 4,
       position: "Autonomous Systems Intern",
+      industry: "Autonomous Systems",
       description: "Contribute to our autonomous vehicle technology.",
       requirements: [
         "Machine Learning",
@@ -1453,6 +1497,7 @@ export const dummyData = {
       id: 45,
       companyId: 5,
       position: "Healthcare AI Intern",
+      industry: "Artificial Intelligence",
       description: "Develop AI solutions for healthcare diagnostics.",
       requirements: [
         "Machine Learning",
@@ -1472,6 +1517,7 @@ export const dummyData = {
       id: 46,
       companyId: 6,
       position: "Performance Testing Intern",
+      industry: "Quality Assurance",
       description: "Work on performance testing and optimization.",
       requirements: [
         "Performance testing",
@@ -1491,6 +1537,7 @@ export const dummyData = {
       id: 47,
       companyId: 7,
       position: "Social Commerce Intern",
+      industry: "E-commerce Development",
       description: "Develop features for our social commerce platform.",
       requirements: [
         "React.js",
@@ -1510,6 +1557,7 @@ export const dummyData = {
       id: 48,
       companyId: 8,
       position: "Supply Chain AI Intern",
+      industry: "Artificial Intelligence",
       description: "Work on AI solutions for supply chain optimization.",
       requirements: [
         "Machine Learning",
@@ -1529,6 +1577,7 @@ export const dummyData = {
       id: 49,
       companyId: 9,
       position: "Digital Wallet Intern",
+      industry: "FinTech Development",
       description: "Develop features for our digital wallet platform.",
       requirements: [
         "Java/Spring",
@@ -1548,6 +1597,7 @@ export const dummyData = {
       id: 50,
       companyId: 10,
       position: "Restaurant Tech Intern",
+      industry: "Food Technology",
       description: "Work on our restaurant management and ordering system.",
       requirements: [
         "React.js",
@@ -1755,6 +1805,170 @@ export const dummyData = {
       materials: ["Visualization Templates", "Color Schemes", "Case Studies"],
       videoUrl: "https://example.com/workshops/data-viz"
     }
+  ],
+
+  // Appointments data
+  appointments: [
+    {
+      id: 1,
+      senderId: 1,
+      receiverId: 2,
+      description: "Request for internship extension discussion",
+      date: "2024-03-20T10:00:00",
+      status: "pending"
+    },
+    {
+      id: 2,
+      senderId: "SCAD",
+      receiverId: 3,
+      description: "Follow-up on internship evaluation",
+      date: "2024-03-21T14:30:00",
+      status: "accepted"
+    },
+    {
+      id: 3,
+      senderId: 5,
+      receiverId: "SCAD",
+      description: "Career guidance session request",
+      date: "2024-03-22T11:00:00",
+      status: "rejected"
+    },
+    {
+      id: 4,
+      senderId: "SCAD",
+      receiverId: 7,
+      description: "Workshop feedback discussion",
+      date: "2024-03-23T15:00:00",
+      status: "pending"
+    },
+    {
+      id: 5,
+      senderId: 9,
+      receiverId: "SCAD",
+      description: "Internship certificate verification request",
+      date: "2024-03-24T09:30:00",
+      status: "accepted"
+    },
+    {
+      id: 6,
+      senderId: 10,
+      receiverId: 11,
+      description: "Pro membership benefits discussion",
+      date: "2024-03-25T13:00:00",
+      status: "pending"
+    },
+    {
+      id: 7,
+      senderId: 13,
+      receiverId: 4,
+      description: "Technical interview preparation session",
+      date: "2024-03-26T10:30:00",
+      status: "accepted"
+    },
+    {
+      id: 8,
+      senderId: "SCAD",
+      receiverId: 15,
+      description: "Internship performance review",
+      date: "2024-03-27T14:00:00",
+      status: "rejected"
+    },
+    {
+      id: 9,
+      senderId: 17,
+      receiverId: 8,
+      description: "Career path planning consultation",
+      date: "2024-03-28T11:30:00",
+      status: "pending"
+    },
+    {
+      id: 10,
+      senderId: 9,
+      receiverId: 19,
+      description: "Workshop registration assistance",
+      date: "2024-03-29T15:30:00",
+      status: "accepted"
+    },
+    {
+      id: 11,
+      senderId: 2,
+      receiverId: 11,
+      description: "Internship application guidance",
+      date: "2024-03-30T09:00:00",
+      status: "pending"
+    },
+    {
+      id: 12,
+      senderId: "SCAD",
+      receiverId: 4,
+      description: "Resume review session",
+      date: "2024-03-31T13:30:00",
+      status: "accepted"
+    },
+    {
+      id: 13,
+      senderId: 6,
+      receiverId: 19,
+      description: "Portfolio review request",
+      date: "2024-04-01T10:00:00",
+      status: "rejected"
+    },
+    {
+      id: 14,
+      senderId: "SCAD",
+      receiverId: 8,
+      description: "Internship feedback discussion",
+      date: "2024-04-02T14:30:00",
+      status: "pending"
+    },
+    {
+      id: 15,
+      senderId: 10,
+      receiverId: 2,
+      description: "Career fair preparation meeting",
+      date: "2024-04-03T11:00:00",
+      status: "accepted"
+    },
+    {
+      id: 16,
+      senderId: 1,
+      receiverId: 12,
+      description: "Workshop attendance confirmation",
+      date: "2024-04-04T15:00:00",
+      status: "pending"
+    },
+    {
+      id: 17,
+      senderId: 14,
+      receiverId: "SCAD",
+      description: "Internship extension request",
+      date: "2024-04-05T09:30:00",
+      status: "accepted"
+    },
+    {
+      id: 18,
+      senderId: "SCAD",
+      receiverId: 16,
+      description: "Career development planning",
+      date: "2024-04-06T13:00:00",
+      status: "rejected"
+    },
+    {
+      id: 19,
+      senderId: 18,
+      receiverId: 12,
+      description: "Technical skills assessment",
+      date: "2024-04-07T10:30:00",
+      status: "pending"
+    },
+    {
+      id: 20,
+      senderId: 5,
+      receiverId: 20,
+      description: "Internship completion review",
+      date: "2024-04-08T14:00:00",
+      status: "accepted"
+    }
   ]
 };
 
@@ -1929,6 +2143,40 @@ export const registerForWorkshop = (workshopId, studentId) => {
       workshop.currentParticipants++;
       return true;
     }
+  }
+  return false;
+};
+
+// Add appointments to exports
+export const dummyAppointments = dummyData.appointments;
+
+// Add appointment helper functions
+export const getAppointmentsByUserId = (userId) => {
+  return dummyData.appointments.filter(appointment => 
+    appointment.senderId === userId || appointment.receiverId === userId
+  );
+};
+
+export const getAppointmentsByStatus = (status) => {
+  return dummyData.appointments.filter(appointment => 
+    appointment.status === status
+  );
+};
+
+export const addAppointment = (appointment) => {
+  const newId = Math.max(...dummyData.appointments.map(a => a.id)) + 1;
+  dummyData.appointments.push({
+    ...appointment,
+    id: newId
+  });
+  return newId;
+};
+
+export const updateAppointmentStatus = (id, newStatus) => {
+  const appointment = dummyData.appointments.find(a => a.id === id);
+  if (appointment) {
+    appointment.status = newStatus;
+    return true;
   }
   return false;
 }; 

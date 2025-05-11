@@ -24,16 +24,6 @@
     position: relative;
   }
   
-  .search-container::before {
-    content: '🔍';
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: var(--dark-gray);
-  }
-  
   .search-input {
     width: 100%;
     padding: 12px 16px 12px 48px;
@@ -361,3 +351,102 @@
   }
   
   /* ... (keep the rest of the styles the same) ... */
+
+.completed-internships-section {
+  margin: 40px auto 0 auto;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.07);
+  padding: 32px 24px 24px 24px;
+}
+.completed-internships-section h2 {
+  margin-bottom: 18px;
+  color: var(--primary-black);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.completed-internships-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.completed-internship-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(74, 144, 226, 0.04);
+  padding: 18px 20px 14px 20px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s;
+}
+.completed-internship-card:hover {
+  box-shadow: 0 4px 16px rgba(74, 144, 226, 0.10);
+}
+.completed-summary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 1.08rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  gap: 0;
+}
+.completed-position {
+  flex: 1 1 0;
+  text-align: left;
+  color: #1e293b;
+  font-weight: 600;
+}
+.completed-company {
+  flex: 1 1 0;
+  text-align: center;
+  color: #4a90e2;
+  font-weight: 500;
+}
+.view-more-btn {
+  flex: 1 1 0;
+  margin-left: 0;
+  margin-right: 0;
+  justify-self: flex-end;
+  text-align: center;
+  display: inline-block;
+  max-width: 130px;
+  margin-left: 100px;
+}
+.view-more-btn:hover {
+  background: #4a90e2;
+  color: #fff;
+}
+.completed-details {
+  margin-top: 8px;
+  font-size: 0.98rem;
+  color: #334155;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 10px 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.completed-details > div {
+  margin-bottom: 4px;
+}
+.completed-details > div:last-child {
+  margin-bottom: 0;
+}
+@media (max-width: 700px) {
+  .completed-internships-list {
+    gap: 14px;
+  }
+  .completed-internship-card {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
