@@ -4,9 +4,10 @@ import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 const ProfileSetup = () => {
+  const { user } = useAuth()
   const [profile, setProfile] = useState({
-    fullName: 'John Student',
-    email: 'student@example.com',
+    fullName: user?.fullName || user?.name || '',
+    email: user?.email || '',
     phone: '',
     major: '',
     semester: '',
@@ -47,7 +48,6 @@ const ProfileSetup = () => {
   
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   
-  const { user } = useAuth()
   const navigate = useNavigate()
   
   const handleInputChange = (e) => {
@@ -218,6 +218,14 @@ const ProfileSetup = () => {
     };
   }, [showSuccessModal, user, navigate]);
   
+  useEffect(() => {
+    setProfile(prev => ({
+      ...prev,
+      fullName: user?.fullName || user?.name || '',
+      email: user?.email || ''
+    }))
+  }, [user])
+  
   const getMajorOptions = (semester) => {
     switch (semester) {
       case '1':
@@ -277,6 +285,14 @@ const ProfileSetup = () => {
   
   const semesters = Array.from({ length: 10 }, (_, i) => i + 1);
   
+  // Helper to get initials from full name
+  const getInitials = (name) => {
+    if (!name) return '';
+    const parts = name.trim().split(' ');
+    if (parts.length === 1) return parts[0][0].toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+  
   return (
     <div className="profile-setup">
       <div className="page-header">
@@ -299,8 +315,8 @@ const ProfileSetup = () => {
         
         <form className="profile-form" onSubmit={handleSubmit}>
           <div className="profile-avatar">
-            <div className="avatar-placeholder">JS</div>
-            <button type="button" className="btn btn-outline">Change Photo</button>
+            <div className="avatar-placeholder">{getInitials(profile.fullName)}</div>
+            <button type="button" className="btn btn-outline change-photo-btn">Change Photo</button>
           </div>
           
           <div className="form-section">
