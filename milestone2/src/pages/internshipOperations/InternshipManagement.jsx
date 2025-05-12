@@ -63,22 +63,35 @@ const InternshipManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredInternships.map(internship => (
-              <tr key={internship.id}>
-                <td>{internship.employer}</td>
-                <td>{internship.position}</td>
-                <td>{internship.duration}</td>
-                <td>{internship.paid ? 'Paid' : 'Unpaid'}</td>
-                <td>{internship.paid ? internship.expectedSalary : '-'}</td>
-                <td>{internship.skills}</td>
-                <td>{internship.jobDescription}</td>
-                <td>
-                  <div className="table-actions">
-                    <button className="action-button danger" onClick={() => handleDelete(internship.id)}>Delete</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {filteredInternships.map(internship => {
+              // Determine paid/unpaid and salary
+              let isPaid = true;
+              let salaryValue = internship.salary || internship.expectedSalary || '';
+              if (
+                salaryValue === 0 ||
+                salaryValue === '0' ||
+                salaryValue === '0 EGP/month' ||
+                salaryValue === 0.0
+              ) {
+                isPaid = false;
+              }
+              return (
+                <tr key={internship.id}>
+                  <td>{internship.employer || companies.find(c => c.id === internship.companyId)?.name || '-'}</td>
+                  <td>{internship.position}</td>
+                  <td>{internship.duration}</td>
+                  <td>{isPaid ? 'Paid' : 'Unpaid'}</td>
+                  <td>{isPaid ? salaryValue : '-'}</td>
+                  <td>{internship.skills || (internship.requirements ? internship.requirements.join(', ') : '')}</td>
+                  <td>{internship.jobDescription || internship.description}</td>
+                  <td>
+                    <div className="table-actions">
+                      <button className="action-button danger" onClick={() => handleDelete(internship.id)}>Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         {filteredInternships.length === 0 && (
