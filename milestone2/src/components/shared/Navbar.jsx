@@ -83,6 +83,14 @@ const Navbar = ({ user, onLogout }) => {
                 <Link to="/analytics" className="nav-link">Analytics</Link>
               </>
             )}
+            {user.role === 'FacultyAcademic' && (
+              <>
+                <Link to="/faculty" className="nav-link">Dashboard</Link>
+                <Link to="/faculty/students" className="nav-link">Students</Link>
+                <Link to="/faculty/reports" className="nav-link">Reports</Link>
+                <Link to="/faculty/appointments" className="nav-link">Appointments</Link>
+              </>
+            )}
           </div>
         ) : null}
         
@@ -184,6 +192,14 @@ const Navbar = ({ user, onLogout }) => {
                       <Link to="/admin/settings" className="dropdown-item">System Settings</Link>
                       <Link to="/admin/users" className="dropdown-item">User Management</Link>
                       <Link to="/admin/reports" className="dropdown-item">Reports</Link>
+                    </>
+                  )}
+                  {user.role === 'FacultyAcademic' && (
+                    <>
+                      <Link to="/faculty/profile" className="dropdown-item">My Profile</Link>
+                      <Link to="/faculty/students" className="dropdown-item">Student List</Link>
+                      <Link to="/faculty/appointments" className="dropdown-item">Appointments</Link>
+                      <Link to="/faculty/settings" className="dropdown-item">Settings</Link>
                     </>
                   )}
                   
