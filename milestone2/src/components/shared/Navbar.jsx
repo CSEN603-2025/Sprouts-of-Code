@@ -29,9 +29,10 @@ const Navbar = ({ user, onLogout }) => {
       // For now, use mock data:
       if (user.role === 'employer'){
         setNotifications([
-          { id: 1, message: "Your application was accepted!", read: false },
-          { id: 2, message: "New applicant for your internship.", read: false },
+          { id: 1, message: "You have recieved a new email.", read: false },
+          { id: 2, message: "Your application was accepted!", read: false },
           { id: 3, message: "New applicant for your internship.", read: false },
+          
         ])  
       }else if (user.role === 'student'){
         setNotifications([
