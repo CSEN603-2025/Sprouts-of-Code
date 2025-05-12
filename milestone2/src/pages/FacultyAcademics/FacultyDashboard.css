@@ -1,0 +1,21 @@
+.faculty-reports-link {
+  display: inline-block;
+  margin-bottom: 24px;
+}
+
+.faculty-reports-btn {
+  background: #1565c0;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(21,101,192,0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.faculty-reports-btn:hover {
+  background: #003c8f;
+  box-shadow: 0 4px 16px rgba(21,101,192,0.13);
+} 

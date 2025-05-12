@@ -17,6 +17,7 @@ const Sidebar = ({ user }) => {
           { label: 'Internships', path: '/student/internships', icon: '💼' },
           { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
           { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
+          { label: 'Appointments', path: '/student/appointments', icon: '🎥' },
         ];
         if (user.isPro) {
           baseItems.push(
@@ -43,6 +44,7 @@ const Sidebar = ({ user }) => {
           { label: 'Analytics', path: '/analytics', icon: '📈' },
           { label: 'Evaluations', path: '/admin/evaluations', icon: '📝' },
           { label: 'Reports', path: '/analytics/reports', icon: '📊' },
+          { label: 'Appointments', path: '/admin/appointments', icon: '📅' },
           { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
         ]
       case 'FacultyAcademic':

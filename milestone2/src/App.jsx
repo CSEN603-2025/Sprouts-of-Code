@@ -47,6 +47,7 @@ import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
 import Reports from './pages/analytics/Reports'
 
 import FacultyDashboard from './pages/FacultyAcademics/FacultyDashboard'
+import FacultyReports from './pages/FacultyAcademics/FacultyReports'
 
 import './App.css'
 
@@ -306,6 +307,14 @@ const App = () => {
                         element={
                           <ProtectedRoute allowedRoles={['FacultyAcademic']}>
                             <FacultyDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/faculty/reports"
+                        element={
+                          <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                            <FacultyReports />
                           </ProtectedRoute>
                         }
                       />
