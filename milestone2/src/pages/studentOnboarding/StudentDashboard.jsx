@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
@@ -29,9 +30,12 @@ import '../../components/shared/Navbar.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
-  
-  // Get the logged-in student using their email
-  const loggedInStudent = dummyStudents.find(student => student.email === user.email);
+  const { students } = useStudent();
+  const { internships } = useInternships();
+  const { companies } = useCompany();
+
+  // Get the logged-in student from dummy data
+  const student = dummyStudents.find(s => s.email === user.email);
 
   // Map appliedInternships to actual internship data
   const applications = (student?.appliedInternships || []).map(app => {
@@ -263,72 +267,28 @@ const StudentDashboard = () => {
             <h2 className="card-title">My Applications</h2>
             <Link to="/student/applications" className="btn btn-outline">View All</Link>
           </div>
-        )}
-
-        {groupedApplications.finalized.length > 0 && (
-          <div className="application-group">
-            <h2 className="group-title finalized">
-              Finalized Applications ({groupedApplications.finalized.length})
-            </h2>
-            <div className="applications-grid">
-              {groupedApplications.finalized.map(app => (
-                <div key={app.id} className="application-card finalized">
-                  <div className="card-header">
-                    <div className="header-main">
-                      <h3>{app.position}</h3>
-                      <div className="status-badge finalized">Finalized</div>
-                    </div>
-                    <div className="header-details">
-                      <div className="company-info">
-                        <i className="fas fa-building"></i>
-                        <p className="company">{app.company}</p>
-                      </div>
-                      <div className="date-info">
-                        <i className="fas fa-calendar"></i>
-                        <p className="date">Applied: {app.date}</p>
-                      </div>
-                    </div>
+          <div className="applications-list">
+            {applications.length > 0 ? (
+              applications.map(app => (
+                <div key={app.id} className="application-item">
+                  <div className="application-info">
+                    <h3>{app.position}</h3>
+                    <p className="company">{getCompanyName(app.companyId)}</p>
+                    <p className="date">Applied: {app.date}</p>
+                    <p className="date">Duration: {app.duration}</p>
                   </div>
-                  <div className="card-content">
-                    <div className="info-section">
-                      <h4>Job Details</h4>
-                      <div className="info-grid">
-                        <div className="info-item">
-                          <span className="label">Location</span>
-                          <span className="value">{app.location}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Duration</span>
-                          <span className="value">{app.duration}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Type</span>
-                          <span className="value">{app.type}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Start Date</span>
-                          <span className="value">{app.startDate}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="info-section">
-                      <h4>Requirements</h4>
-                      <p className="requirements">{app.requirements}</p>
-                    </div>
-
-                    <div className="info-section">
-                      <h4>Description</h4>
-                      <p className="description">{app.description}</p>
-                    </div>
-
-                    <div className="card-footer">
-                      <span className="salary">{app.salary}</span>
-                    </div>
+                  <div className="application-status">
+                    <span className={`status-badge ${app.status}`}>
+                      {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
+              ))
+            ) : (
+              <div className="application-item">
+                <p>No applications found.</p>
+              </div>
+            )}
           </div>
         </div>
         
@@ -336,108 +296,30 @@ const StudentDashboard = () => {
           <div className="card-header">
             <h2 className="card-title">Completed Internships</h2>
           </div>
-        )}
-
-        {groupedApplications.rejected.length > 0 && (
-          <div className="application-group">
-            <h2 className="group-title rejected">
-              Rejected Applications ({groupedApplications.rejected.length})
-            </h2>
-            <div className="applications-grid">
-              {groupedApplications.rejected.map(app => (
-                <div key={app.id} className="application-card rejected">
-                  <div className="card-header">
-                    <div className="header-main">
-                      <h3>{app.position}</h3>
-                      <div className="status-badge rejected">Rejected</div>
+          <div className="applications-list">
+            {completedInternships.length > 0 ? (
+              completedInternships.map(internship => (
+                <div key={internship.id} className="application-item">
+                  <div className="application-info">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' , width: '100%'}}>
+                      <h3 style={{ margin: 0 }}>{internship.position}</h3>
+                      <span className="status-badge completed">Completed</span>
                     </div>
-                    <div className="header-details">
-                      <div className="company-info">
-                        <i className="fas fa-building"></i>
-                        <p className="company">{app.company}</p>
-                      </div>
-                      <div className="date-info">
-                        <i className="fas fa-calendar"></i>
-                        <p className="date">Applied: {app.date}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-content">
-                    <div className="info-section">
-                      <h4>Job Details</h4>
-                      <div className="info-grid">
-                        <div className="info-item">
-                          <span className="label">Location</span>
-                          <span className="value">{app.location}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Duration</span>
-                          <span className="value">{app.duration}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Type</span>
-                          <span className="value">{app.type}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Start Date</span>
-                          <span className="value">{app.startDate}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="info-section">
-                      <h4>Requirements</h4>
-                      <p className="requirements">{app.requirements}</p>
-                    </div>
-
-                    <div className="info-section">
-                      <h4>Description</h4>
-                      <p className="description">{app.description}</p>
-                    </div>
-
-                    <div className="card-footer">
-                      <span className="salary">{app.salary}</span>
-                    </div>
+                    <p className="company">{getCompanyName(internship.companyId)}</p>
+                    <p className="date">Duration: {internship.duration}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Completed Internships Section at the end of the page */}
-      {completedInternships.length > 0 && (
-        <div className="completed-internships-section">
-          <h2>Completed Internships</h2>
-          <div className="completed-internships-list">
-            {completedInternships.map(intern => (
-              <div key={intern.id} className="completed-internship-card">
-                <div className="completed-summary">
-                  <span className="completed-position">{intern.position}</span>
-                  <span className="completed-company">{intern.company}</span>
-                  <button className="view-more-btn" onClick={() => toggleCompletedExpand(intern.id)}>
-                    {expandedCompleted.includes(intern.id) ? 'Hide Details' : 'View More'}
-                  </button>
-                </div>
-                {expandedCompleted.includes(intern.id) && (
-                  <div className="completed-details">
-                    <div><strong>Location:</strong> {intern.location}</div>
-                    <div><strong>Duration:</strong> {intern.duration}</div>
-                    <div><strong>Type:</strong> {intern.type}</div>
-                    <div><strong>Start Date:</strong> {intern.startDate}</div>
-                    <div><strong>Salary:</strong> {intern.salary}</div>
-                    <div><strong>Requirements:</strong> {intern.requirements}</div>
-                    <div><strong>Description:</strong> {intern.description}</div>
-                  </div>
-                )}
+              ))
+            ) : (
+              <div className="application-item">
+                <p>No completed internships.</p>
               </div>
-            ))}
+            )}
           </div>
         </div>*/}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MyApplications;
+export default StudentDashboard
