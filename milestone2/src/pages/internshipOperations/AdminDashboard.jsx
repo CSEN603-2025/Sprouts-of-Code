@@ -5,6 +5,7 @@ import { usePendingCompany } from '../../context/PendingCompanyContext'
 import { useInternships } from '../../context/InternshipContext'
 import { useStudent } from '../../context/StudentContext'
 import { useEvaluation } from '../../context/EvaluationContext'
+import { useReportPeriod } from '../../context/ReportPeriodContext'
 import './AdminDashboard.css'
 
 const AdminDashboard = () => {
@@ -14,6 +15,7 @@ const AdminDashboard = () => {
   const { internships } = useInternships()
   const { students } = useStudent()
   const { evaluations } = useEvaluation()
+  const { startDate, endDate, setStartDate, setEndDate } = useReportPeriod()
 
   // Calculate stats from real data
   const stats = {
@@ -64,6 +66,34 @@ const AdminDashboard = () => {
           <h3>Evaluations</h3>
           <div className="stat-number">{stats.evaluations}</div>
           <Link to="/admin/evaluations" className="stat-link">View all</Link>
+        </div>
+      </div>
+      
+      {/* Report Submission Period Card */}
+      <div className="report-period-card">
+        <div className="report-period-header">
+          <h2>Set Report Submission Period</h2>
+        </div>
+        <div className="report-period-fields">
+          <label>
+            Start Date:
+            <input
+              type="date"
+              value={startDate}
+              onChange={e => setStartDate(e.target.value)}
+            />
+          </label>
+          <label>
+            End Date:
+            <input
+              type="date"
+              value={endDate}
+              onChange={e => setEndDate(e.target.value)}
+            />
+          </label>
+        </div>
+        <div className="report-period-current">
+          <strong>Current Period:</strong> {startDate || 'Not set'} to {endDate || 'Not set'}
         </div>
       </div>
       

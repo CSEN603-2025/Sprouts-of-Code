@@ -116,6 +116,11 @@
     border-left-color: #dc3545;
   }
   
+  .application-card.rejected .status-badge.rejected {
+    background-color: #dc3545;
+    color: white;
+  }
+  
   .card-header {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 20px;
