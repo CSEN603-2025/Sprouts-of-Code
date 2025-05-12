@@ -25,6 +25,7 @@ import Menu from '@mui/material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { dummyCompanies, dummyStudents, dummyInternships } from '../../data/dummyData';
+import '../../components/shared/Navbar.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -111,6 +112,33 @@ const StudentDashboard = () => {
     setNotifications(updatedNotifications);
     localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
   };
+  const [suggestedCompanies] = useState([
+    {
+      id: 1,
+      name: "TechNova",
+      industry: "Software",
+      reason: "Matches your interest in Frontend Development",
+      recommendedBy: "2 past interns",
+      logo: "https://via.placeholder.com/40"
+    },
+    {
+      id: 2,
+      name: "GreenEnergy",
+      industry: "Renewable Energy",
+      reason: "Popular among students interested in sustainability",
+      recommendedBy: "5 past interns",
+      logo: "https://via.placeholder.com/40"
+    },
+    {
+      id: 3,
+      name: "FinWise",
+      industry: "Finance",
+      reason: "Recommended by past interns",
+      recommendedBy: "3 past interns",
+      logo: "https://via.placeholder.com/40"
+    },
+    // ... more companies ...
+  ]);
 
   return (
     <div className="student-dashboard">
@@ -128,10 +156,11 @@ const StudentDashboard = () => {
               '&:hover': {
                 backgroundColor: '#f0f0f0',
               },
+              marginRight: '1rem'
             }}
           >
             <Badge badgeContent={unreadCount} color="error">
-              <NotificationsIcon />
+              <NotificationsIcon sx={{ color: '#000', fontSize: '24px' }} />
             </Badge>
           </IconButton>
           <Menu
@@ -173,30 +202,10 @@ const StudentDashboard = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <p style={{ margin: 0 }}>Welcome back, {student ? student.name : 'Student'}!</p>
             {student?.isPro === true && (
-              <Badge
-                badgeContent={
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <VerifiedIcon style={{ fontSize: '16px' }} />
-                    PRO
-                  </span>
-                }
-                color="primary"
-                sx={{
-                  '& .MuiBadge-badge': {
-                    backgroundColor: '#1976d2',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: '12px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
-                    position: 'static',
-                    transform: 'none',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }
-                }}
-              />
+              <span className="pro-badge">
+                <VerifiedIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                PRO
+              </span>
             )}
           </div>
         </div>
@@ -220,6 +229,36 @@ const StudentDashboard = () => {
           <div className="stat-number">{activeInternships.length}</div>
         </div>
       </div>
+
+          <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Suggested Companies
+      </Typography>
+      <List sx={{ maxHeight: 220, overflow: 'auto' }}>
+        {suggestedCompanies.map(company => (
+          <ListItem key={company.id} alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar src={company.logo} alt={company.name} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={company.name}
+              secondary={
+                <>
+                  <Typography component="span" variant="body2" color="text.primary">
+                    {company.industry}
+                  </Typography>
+                  {" — " + company.reason}
+                  <br />
+                  <Typography component="span" variant="caption" color="text.secondary">
+                    {company.recommendedBy}
+                  </Typography>
+                </>
+              }
+            />
+          </ListItem>
+        ))}
+      </List>
+</Paper>
       
       <div className="dashboard-sections">
         <div className="card">
@@ -252,7 +291,7 @@ const StudentDashboard = () => {
           </div>
         </div>
         
-        <div className="card">
+        {/* /*<div className="card">
           <div className="card-header">
             <h2 className="card-title">Completed Internships</h2>
           </div>
@@ -276,7 +315,7 @@ const StudentDashboard = () => {
               </div>
             )}
           </div>
-        </div>
+        </div>*/}
       </div>
     </div>
   )
