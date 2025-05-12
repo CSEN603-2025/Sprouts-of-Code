@@ -47,6 +47,7 @@
 .navbar-right {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .profile-dropdown {
@@ -111,18 +112,23 @@
 
 .logout-btn {
   padding: 8px 16px;
-  border: 1px solid var(--primary-color);
   border-radius: 4px;
-  background-color: transparent;
-  color: var(--primary-color);
+  background-color: var(--primary-red) !important;
+  color: #fff !important;
+  border: none !important;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  box-shadow: none;
+  margin: 0 !important;
 }
 
 .logout-btn:hover {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: #c62828 !important;
+  color: #fff !important;
 }
 
 @media (max-width: 768px) {
