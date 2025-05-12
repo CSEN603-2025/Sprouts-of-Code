@@ -9,6 +9,7 @@ export const AppointmentProvider = ({ children }) => {
   useEffect(() => {
     // Initialize with dummy data
     setAppointments(dummyAppointments);
+    console.log('[AppointmentContext] Loaded appointments:', dummyAppointments);
   }, []);
 
   const addAppointment = (appointment) => {

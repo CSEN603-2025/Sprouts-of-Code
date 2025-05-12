@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import './Navbar.css'
 import { FaBell } from 'react-icons/fa'
@@ -9,15 +9,22 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import NotificationsIcon from '@mui/icons-material/Notifications'
+import { useAppointments } from '../../context/AppointmentContext'
+import { useAuth } from '../../context/AuthContext'
+import { useStudent } from '../../context/StudentContext'
 
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
 
 const Navbar = ({ user, onLogout }) => {
+  const { appointments } = useAppointments();
+  const { students } = useStudent();
+  const { user: authUser } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [showNotifications, setShowNotifications] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
+  const prevAppointmentsRef = useRef([]);
   
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen)
@@ -25,23 +32,70 @@ const Navbar = ({ user, onLogout }) => {
   
   useEffect(() => {
     if (user && user.role === 'employer') {
-      // Fetch notifications from backend here
-      // For now, use mock data:
       setNotifications([
         { id: 1, message: "Your application was accepted!", read: false },
         { id: 2, message: "New applicant for your internship.", read: false },
         { id: 3, message: "New applicant for your internship.", read: false },
-        
-    
-
       ])
     }
   }, [user])
 
+  // Student appointment notifications
+  useEffect(() => {
+    if (!user || user.role !== 'student') return;
+    console.log('[Navbar] user:', user);
+    console.log('[Navbar] students:', students);
+    console.log('[Navbar] appointments:', appointments);
+    console.log('[Navbar] user.id:', user.id, typeof user.id);
+    appointments.forEach((apt, idx) => {
+      console.log(`[Navbar] appointment[${idx}]: id=${apt.id}, senderId=${apt.senderId} (${typeof apt.senderId}), receiverId=${apt.receiverId} (${typeof apt.receiverId})`);
+    });
+    // Notify for any accepted or rejected appointment where user is sender or receiver
+    const myAppointments = appointments.filter(
+      apt => (apt.senderId?.toString() === user.id?.toString() || apt.receiverId?.toString() === user.id?.toString()) &&
+        (apt.status === 'accepted' || apt.status === 'rejected')
+    );
+    console.log('[Navbar] myAppointments:', myAppointments);
+    myAppointments.forEach(apt => {
+      // Find the other party
+      let otherPartyName = 'SCAD';
+      if (apt.senderId?.toString() === user.id?.toString()) {
+        // User is sender, so receiver is other party
+        if (apt.receiverId !== 'SCAD') {
+          const other = students.find(s => s.id.toString() === apt.receiverId.toString());
+          if (other) otherPartyName = other.name;
+          console.log(`[Navbar] Found receiver as other party:`, other);
+        }
+      } else {
+        // User is receiver, so sender is other party
+        if (apt.senderId !== 'SCAD') {
+          const other = students.find(s => s.id.toString() === apt.senderId.toString());
+          if (other) otherPartyName = other.name;
+          console.log(`[Navbar] Found sender as other party:`, other);
+        }
+      }
+      const date = new Date(apt.date).toLocaleString();
+      const message = `Your appointment with ${otherPartyName} on ${date} was ${apt.status}: ${apt.description}`;
+      // Avoid duplicate notifications for the same appointment and status
+      setNotifications(prev => {
+        const alreadyExists = prev.some(n => n.message === message);
+        if (alreadyExists) return prev;
+        console.log(`[Navbar] Adding notification:`, message);
+        return [
+          { id: Date.now() + Math.random(), message, read: false },
+          ...prev
+        ];
+      });
+    });
+    prevAppointmentsRef.current = myAppointments.map(a => ({ ...a }));
+  }, [appointments, user, students]);
+
   const unreadCount = notifications.filter(n => !n.read).length
 
   const handleBellClick = (event) => {
-    setAnchorEl(event.currentTarget)
+    setAnchorEl(event.currentTarget);
+    // Mark all notifications as read
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   }
 
   const handleClose = () => {
@@ -103,7 +157,7 @@ const Navbar = ({ user, onLogout }) => {
               Logout
             </button>
           )}
-          {user && user.role === 'employer' && (
+          {(user && (user.role === 'employer' || user.role === 'student')) && (
             <>
               <IconButton
                 aria-label="show notifications"

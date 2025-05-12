@@ -22,7 +22,6 @@ import AdminEmployers from './pages/admin/AdminEmployers'
 import AdminInternships from './pages/admin/AdminInternships'
 import InternshipManagement from './pages/internshipOperations/InternshipManagement'
 import AdminEvaluations from './pages/internshipOperations/AdminEvaluations'
-import AdminAppointments from './pages/admin/AdminAppointments'
 
 // Employer Pages
 import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
@@ -156,14 +155,6 @@ const App = () => {
                           element={
                             <ProtectedRoute allowedRoles={['admin']}>
                               <AdminEvaluations />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/appointments"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AdminAppointments />
                             </ProtectedRoute>
                           }
                         />
