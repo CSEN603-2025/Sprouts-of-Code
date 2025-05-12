@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { dummyAppointments, dummyStudents } from '../../data/dummyData';
+import { useStudent } from '../../context/StudentContext';
+import { useAppointments } from '../../context/AppointmentContext';
 import './AdminAppointments.css';
 
 const ADMIN_ID = 'SCAD';
 
 const AdminAppointments = () => {
-  const [appointments, setAppointments] = useState([]);
+  const { students } = useStudent();
+  const { appointments, addAppointment, updateAppointmentStatus } = useAppointments();
   const [sentAppointments, setSentAppointments] = useState([]);
   const [receivedAppointments, setReceivedAppointments] = useState([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
@@ -20,12 +22,11 @@ const AdminAppointments = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setAppointments(dummyAppointments);
-  }, []);
-
-  useEffect(() => {
-    setSentAppointments(appointments.filter(apt => apt.senderId === ADMIN_ID));
-    setReceivedAppointments(appointments.filter(apt => apt.receiverId === ADMIN_ID));
+    // Filter appointments for admin
+    const sent = appointments.filter(apt => apt.senderId === ADMIN_ID);
+    const received = appointments.filter(apt => apt.receiverId === ADMIN_ID);
+    setSentAppointments(sent);
+    setReceivedAppointments(received);
   }, [appointments]);
 
   const validateForm = () => {
@@ -75,8 +76,8 @@ const AdminAppointments = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+
     const newAppointment = {
-      id: Date.now(),
       senderId: ADMIN_ID,
       receiverId: formData.studentId,
       description: formData.description,
@@ -85,7 +86,9 @@ const AdminAppointments = () => {
       type: formData.type,
       duration: formData.duration
     };
-    setAppointments(prev => [...prev, newAppointment]);
+
+    addAppointment(newAppointment);
+
     setShowRequestForm(false);
     setFormData({
       studentId: '',
@@ -99,15 +102,11 @@ const AdminAppointments = () => {
   };
 
   const handleAccept = (appointmentId) => {
-    setAppointments(prev => prev.map(apt =>
-      apt.id === appointmentId ? { ...apt, status: 'accepted' } : apt
-    ));
+    updateAppointmentStatus(appointmentId, 'accepted');
   };
 
   const handleReject = (appointmentId) => {
-    setAppointments(prev => prev.map(apt =>
-      apt.id === appointmentId ? { ...apt, status: 'rejected' } : apt
-    ));
+    updateAppointmentStatus(appointmentId, 'rejected');
   };
 
   const handleJoinCall = (appointment) => {
@@ -116,7 +115,7 @@ const AdminAppointments = () => {
   };
 
   const renderAppointmentCard = (appointment, isReceived = false) => {
-    const student = dummyStudents.find(s => s.id.toString() === (isReceived ? appointment.senderId.toString() : appointment.receiverId.toString()));
+    const student = students.find(s => s.id.toString() === (isReceived ? appointment.senderId.toString() : appointment.receiverId.toString()));
     const startDate = new Date(appointment.date);
     const endDate = new Date(startDate.getTime() + Number(appointment.duration) * 60000);
     const period = `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
@@ -222,7 +221,7 @@ const AdminAppointments = () => {
                   tabIndex={0}
                 >
                   <option value="">Select a student</option>
-                  {dummyStudents.map(student => (
+                  {students.map(student => (
                     <option key={student.id} value={student.id}>{student.name}</option>
                   ))}
                 </select>

@@ -1818,7 +1818,6 @@ export const dummyData = {
       status: "pending",
       duration: 30
     },
-    ,
     {
       id: 22,
       senderId: 1,
@@ -2217,7 +2216,7 @@ export const addAppointment = (appointment) => {
 };
 
 export const updateAppointmentStatus = (id, newStatus) => {
-  const appointment = dummyData.appointments.find(a => a.id === id);
+  const appointment = dummyData.appointments.find(a => a.id.toString() === id.toString());
   if (appointment) {
     appointment.status = newStatus;
     return true;

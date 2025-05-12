@@ -21,7 +21,7 @@ export const AppointmentProvider = ({ children }) => {
     if (updateDummyAppointmentStatus(id, newStatus)) {
       setAppointments(prevAppointments =>
         prevAppointments.map(appointment =>
-          appointment.id === id
+          appointment.id.toString() === id.toString()
             ? { ...appointment, status: newStatus }
             : appointment
         )
