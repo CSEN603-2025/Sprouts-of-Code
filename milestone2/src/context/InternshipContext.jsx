@@ -35,12 +35,30 @@ export const InternshipProvider = ({ children }) => {
     setInternships(prev => prev.filter(internship => internship.id !== id));
   };
 
+  // New functions for industry-related operations
+  const getInternshipsByIndustry = (industry) => {
+    return internships.filter(internship => internship.industry === industry);
+  };
+
+  const getUniqueIndustries = () => {
+    return [...new Set(internships.map(internship => internship.industry))];
+  };
+
+  const getInternshipsByCompanyAndIndustry = (companyId, industry) => {
+    return internships.filter(internship => 
+      internship.companyId === companyId && internship.industry === industry
+    );
+  };
+
   return (
     <InternshipContext.Provider value={{
       internships,
       addInternship,
       updateInternship,
-      deleteInternship
+      deleteInternship,
+      getInternshipsByIndustry,
+      getUniqueIndustries,
+      getInternshipsByCompanyAndIndustry
     }}>
       {children}
     </InternshipContext.Provider>
