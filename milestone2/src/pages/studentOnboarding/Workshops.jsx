@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getProWorkshops } from '../../data/dummyData';
 import { useAuth } from '../../context/AuthContext';
 import { useStudent } from '../../context/StudentContext';
+import { Dialog, DialogContent } from '@mui/material';
+import Certificate from './Certificate';
 import './Workshops.css';
 
 const Workshops = () => {
@@ -13,13 +15,17 @@ const Workshops = () => {
   const [filter, setFilter] = useState('all'); // all, upcoming, live, pre-recorded
   const [workshops, setWorkshops] = useState([]);
   const [registeredWorkshops, setRegisteredWorkshops] = useState(new Set());
+  const [completedWorkshops, setCompletedWorkshops] = useState([]);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
 
   useEffect(() => {
     // Get workshops and check registration status
     const allWorkshops = getProWorkshops();
     // In a real app, this would come from an API
     const userRegistrations = JSON.parse(localStorage.getItem(`workshop_registrations_${user?.id}`) || '[]');
+    const completed = JSON.parse(localStorage.getItem(`completed_workshops_${user?.id}`) || '[]');
     setRegisteredWorkshops(new Set(userRegistrations));
+    setCompletedWorkshops(completed);
     setWorkshops(allWorkshops);
   }, [user]);
 
@@ -34,6 +40,19 @@ const Workshops = () => {
 
   const handleStartWorkshop = (workshopId) => {
     navigate(`/student/workshops/${workshopId}`);
+  };
+
+  const handleViewCertificate = (workshop) => {
+    setSelectedCertificate(workshop);
+  };
+
+  const handleCloseCertificate = () => {
+    setSelectedCertificate(null);
+  };
+
+  const handleDownloadCertificate = () => {
+    // In a real app, this would generate and download a PDF
+    console.log('Downloading certificate...');
   };
 
   const addNotification = (message) => {
@@ -74,6 +93,50 @@ const Workshops = () => {
 
   return (
     <div className="workshops-page">
+      
+      <Dialog
+        open={!!selectedCertificate}
+        onClose={handleCloseCertificate}
+        maxWidth="md"
+        fullWidth
+        className="certificate-modal"
+      >
+        <DialogContent className="certificate-modal-content">
+          {selectedCertificate && (
+            <Certificate
+              workshop={selectedCertificate}
+              student={user}
+              onDownload={handleDownloadCertificate}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      {completedWorkshops.length > 0 && (
+        <div className="certificates-section">
+          <h2>My Certificates</h2>
+          <div className="certificates-grid">
+            {completedWorkshops.map(workshopId => {
+              const workshop = workshops.find(w => w.id === parseInt(workshopId));
+              if (!workshop) return null;
+              
+              return (
+                <div key={workshopId} className="certificate-card">
+                  <h3 className="certificate-card-title">{workshop.title}</h3>
+                  <p className="certificate-card-date">
+                    Completed on: {new Date().toLocaleDateString()}
+                  </p>
+                  <button
+                    className="view-certificate-button"
+                    onClick={() => handleViewCertificate(workshop)}
+                  >
+                    View Certificate
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <div className="page-header">
         <h1>Career Workshops</h1>
         <div className="filters-container">
