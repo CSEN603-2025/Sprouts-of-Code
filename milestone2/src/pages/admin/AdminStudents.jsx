@@ -5,6 +5,7 @@ import './AdminStudents.css';
 const AdminStudents = () => {
   const { students } = useStudent();
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [internshipStatusFilter, setInternshipStatusFilter] = useState('All');
 
   const handleViewDetails = (student) => {
     setSelectedStudent(student);
@@ -14,18 +15,51 @@ const AdminStudents = () => {
     setSelectedStudent(null);
   };
 
+  const handleFilterChange = (e) => {
+    setInternshipStatusFilter(e.target.value);
+  };
+
+  const filteredStudents = students.filter(student => {
+    if (internshipStatusFilter === 'All') return true;
+
+    return student.appliedInternships.some(internship =>
+      internship.status.toLowerCase() === internshipStatusFilter.toLowerCase()
+    );
+  });
+
   return (
     <div className="admin-list-page">
       <h1>All Students</h1>
       <p>Total Students: <strong>{students.length}</strong></p>
+
+      {/* Internship status filter dropdown */}
+      <div className="filter-bar">
+        <label htmlFor="statusFilter">Filter by Internship Status: </label>
+        <select
+          id="statusFilter"
+          value={internshipStatusFilter}
+          onChange={handleFilterChange}
+        >
+          <option value="All">All</option>
+          <option value="applied">Applied</option>
+          <option value="undergoing">Undergoing</option>
+          <option value="completed">Completed</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
       <div className="student-cards">
-        {students.map(student => (
-          <div key={student.id} className="student-card">
-            <h3>{student.name}</h3>
-            <p>{student.email}</p>
-            <button className="btn btn-outline" onClick={() => handleViewDetails(student)}>View Details</button>
-          </div>
-        ))}
+        {filteredStudents.length > 0 ? (
+          filteredStudents.map(student => (
+            <div key={student.id} className="student-card">
+              <h3>{student.name}</h3>
+              <p>{student.email}</p>
+              <button className="btn btn-outline" onClick={() => handleViewDetails(student)}>View Details</button>
+            </div>
+          ))
+        ) : (
+          <p>No students found for the selected internship status.</p>
+        )}
       </div>
 
       {selectedStudent && (
@@ -42,4 +76,4 @@ const AdminStudents = () => {
   );
 };
 
-export default AdminStudents; 
+export default AdminStudents;

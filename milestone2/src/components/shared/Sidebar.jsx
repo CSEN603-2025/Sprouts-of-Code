@@ -17,9 +17,11 @@ const Sidebar = ({ user }) => {
           { label: 'Internships', path: '/student/internships', icon: '💼' },
           { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
           { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
+          { label: 'Appointments', path: '/student/appointments', icon: '🎥' },
         ];
         if (user.isPro) {
           baseItems.push(
+            { label: 'Appointments', path: '/student/appointments', icon: '🎥' , pro : true},
             { label: 'Profile Viewers', path: '/student/profile-viewers', icon: '👁️', pro: true },
             { label: 'Online Assessments', path: '/student/assessments', icon: '📝', pro: true },
             { label: 'Career Workshops', path: '/student/workshops', icon: '🧑‍💻', pro: true }
@@ -44,6 +46,15 @@ const Sidebar = ({ user }) => {
           { label: 'Reports', path: '/analytics/reports', icon: '📊' },
           { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
         ]
+      case 'FacultyAcademic':
+        return [
+          { label: 'Dashboard', path: '/faculty', icon: '📊' },
+          { label: 'My Profile', path: '/faculty/profile', icon: '👤' },
+          { label: 'Student List', path: '/faculty/students', icon: '👨‍🎓' },
+          { label: 'Appointments', path: '/faculty/appointments', icon: '📅' },
+          { label: 'Reports', path: '/faculty/reports', icon: '📄' },
+          { label: 'Settings', path: '/faculty/settings', icon: '⚙️' },
+        ];
       default:
         return []
     }
@@ -56,7 +67,7 @@ const Sidebar = ({ user }) => {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <div className="role-badge">{user.role.toUpperCase()}</div>
+        <div className="role-badge">{user.role.toUpperCase() === "FACULTYACADEMIC" ? "FACULTY ACADEMIC" : user.role.toUpperCase()}</div>
       </div>
       
       <ul className="sidebar-menu">
