@@ -43,6 +43,7 @@ const Sidebar = ({ user }) => {
           { label: 'Analytics', path: '/analytics', icon: '📈' },
           { label: 'Evaluations', path: '/admin/evaluations', icon: '📝' },
           { label: 'Reports', path: '/analytics/reports', icon: '📊' },
+          { label: 'Appointments', path: '/admin/appointments', icon: '📅' },
           { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
         ]
       case 'FacultyAcademic':

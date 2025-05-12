@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useStudent } from '../../context/StudentContext';
+import { dummyAppointments } from '../../data/dummyData';
 import './Appointments.css';
 
 const Appointments = () => {
   const { user } = useAuth();
   const { students } = useStudent();
-  const [appointments, setAppointments] = useState([]);
+  const [sentAppointments, setSentAppointments] = useState([]);
+  const [receivedAppointments, setReceivedAppointments] = useState([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [formData, setFormData] = useState({
     type: 'career_guidance',
@@ -18,9 +20,17 @@ const Appointments = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Load appointments from localStorage
-    const savedAppointments = JSON.parse(localStorage.getItem(`appointments_${user?.id}`) || '[]');
-    setAppointments(savedAppointments);
+    // Load appointments from dummy data
+    const sent = dummyAppointments.filter(apt => {
+      console.log('Comparing:', apt.senderId, user?.id);
+      return apt.senderId.toString() === user?.id;
+    });
+    console.log(localStorage.getItem('user'));
+    const received = dummyAppointments.filter(apt => apt.receiverId.toString() === user?.id);
+    console.log('Sent Appointments:', sent);
+    console.log('Received Appointments:', received);
+    setSentAppointments(sent);
+    setReceivedAppointments(received);
   }, [user]);
 
   const validateForm = () => {
@@ -91,16 +101,16 @@ const Appointments = () => {
 
     const newAppointment = {
       id: Date.now(),
-      studentId: user.id,
-      studentName: user.name,
-      ...formData,
+      senderId: user.id,
+      receiverId: 'SCAD', // Default receiver is SCAD
+      description: formData.description,
+      date: `${formData.date}T${formData.time}:00`,
       status: 'pending',
-      createdAt: new Date().toISOString()
+      type: formData.type,
+      duration: formData.duration
     };
 
-    const updatedAppointments = [...appointments, newAppointment];
-    setAppointments(updatedAppointments);
-    localStorage.setItem(`appointments_${user?.id}`, JSON.stringify(updatedAppointments));
+    setSentAppointments(prev => [...prev, newAppointment]);
     
     // Reset form
     setFormData({
@@ -112,22 +122,116 @@ const Appointments = () => {
     });
     setShowRequestForm(false);
     setErrors({});
-
-    // Add notification
-    const newNotification = {
-      id: Date.now(),
-      message: `Your appointment request for ${formData.type === 'career_guidance' ? 'Career Guidance' : 'Report Clarification'} has been submitted.`,
-      time: new Date().toLocaleString(),
-      read: false
-    };
-    const currentNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
-    localStorage.setItem(`notifications_${user?.id}`, JSON.stringify([newNotification, ...currentNotifications]));
   };
 
   const cancelAppointment = (appointmentId) => {
-    const updatedAppointments = appointments.filter(apt => apt.id !== appointmentId);
-    setAppointments(updatedAppointments);
-    localStorage.setItem(`appointments_${user?.id}`, JSON.stringify(updatedAppointments));
+    setSentAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+  };
+
+  const handleAccept = (appointmentId) => {
+    setReceivedAppointments(prev => prev.map(apt =>
+      apt.id === appointmentId ? { ...apt, status: 'accepted' } : apt
+    ));
+    setSentAppointments(prev => prev.map(apt =>
+      apt.id === appointmentId ? { ...apt, status: 'accepted' } : apt
+    ));
+  };
+
+  const handleCancelReceived = (appointmentId) => {
+    setReceivedAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+    setSentAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+  };
+
+  const handleJoinCall = (appointment) => {
+    alert(`Joining call for appointment with ID: ${appointment.id}`);
+    // In a real app, this would open a video call link
+  };
+
+  const renderAppointmentCard = (appointment) => {
+    const isSender = appointment.senderId.toString() === user?.id;
+    const isReceiver = appointment.receiverId.toString() === user?.id;
+    const startDate = new Date(appointment.date);
+    const endDate = new Date(startDate.getTime() + Number(appointment.duration) * 60000);
+    const period = `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    return (
+      <div key={appointment.id} className={`appointment-card ${appointment.status}`}>
+        <div className="card-header">
+          <h3>{appointment.type === 'career_guidance' ? 'Career Guidance' : 'Report Clarification'}</h3>
+          <span className={`status-badge ${appointment.status}`}>
+            {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+          </span>
+        </div>
+        <div className="card-content">
+          <div className="appointment-details">
+            <div className="detail-item">
+              <i className="fas fa-calendar"></i>
+              <span>{startDate.toLocaleDateString()}</span>
+            </div>
+            <div className="detail-item">
+              <i className="fas fa-clock"></i>
+              <span>{period}</span>
+            </div>
+            <div className="detail-item">
+              <i className="fas fa-hourglass-half"></i>
+              <span>{appointment.duration ? `${appointment.duration} minutes` : 'N/A'}</span>
+            </div>
+          </div>
+          <div className="description">
+            <h4>Description</h4>
+            <p>{appointment.description}</p>
+          </div>
+        </div>
+        <div className="card-footer">
+          {/* Pending: Accept/Cancel for receiver */}
+          {appointment.status === 'pending' && isReceiver && (
+            <>
+              <button
+                className="btn btn-primary"
+                aria-label="Accept appointment"
+                tabIndex={0}
+                onClick={() => handleAccept(appointment.id)}
+                onKeyDown={e => { if (e.key === 'Enter') handleAccept(appointment.id); }}
+              >
+                Accept
+              </button>
+              <button
+                className="btn btn-secondary"
+                aria-label="Cancel appointment"
+                tabIndex={0}
+                onClick={() => handleCancelReceived(appointment.id)}
+                onKeyDown={e => { if (e.key === 'Enter') handleCancelReceived(appointment.id); }}
+              >
+                Cancel
+              </button>
+            </>
+          )}
+          {/* Pending: Cancel for sender */}
+          {appointment.status === 'pending' && isSender && (
+            <button
+              className="btn btn-secondary"
+              aria-label="Cancel request"
+              tabIndex={0}
+              onClick={() => cancelAppointment(appointment.id)}
+              onKeyDown={e => { if (e.key === 'Enter') cancelAppointment(appointment.id); }}
+            >
+              Cancel Request
+            </button>
+          )}
+          {/* Accepted: Join Call for both sender and receiver */}
+          {appointment.status === 'accepted' && (isSender || isReceiver) && (
+            <button
+              className="btn btn-primary"
+              aria-label="Join call"
+              tabIndex={0}
+              onClick={() => handleJoinCall(appointment)}
+              onKeyDown={e => { if (e.key === 'Enter') handleJoinCall(appointment); }}
+            >
+              Join Call
+            </button>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -235,61 +339,32 @@ const Appointments = () => {
         </div>
       )}
 
-      <div className="appointments-list">
-        <h2>Your Appointments</h2>
-        {appointments.length > 0 ? (
-          <div className="appointments-grid">
-            {appointments.map(appointment => (
-              <div key={appointment.id} className={`appointment-card ${appointment.status}`}>
-                <div className="card-header">
-                  <h3>{appointment.type === 'career_guidance' ? 'Career Guidance' : 'Report Clarification'}</h3>
-                  <span className={`status-badge ${appointment.status}`}>
-                    {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-                  </span>
-                </div>
-                <div className="card-content">
-                  <div className="appointment-details">
-                    <div className="detail-item">
-                      <i className="fas fa-calendar"></i>
-                      <span>{new Date(appointment.date).toLocaleDateString()}</span>
-                    </div>
-                    <div className="detail-item">
-                      <i className="fas fa-clock"></i>
-                      <span>{appointment.time}</span>
-                    </div>
-                    <div className="detail-item">
-                      <i className="fas fa-hourglass-half"></i>
-                      <span>{appointment.duration} minutes</span>
-                    </div>
-                  </div>
-                  <div className="description">
-                    <h4>Description</h4>
-                    <p>{appointment.description}</p>
-                  </div>
-                </div>
-                <div className="card-footer">
-                  {appointment.status === 'pending' && (
-                    <button 
-                      className="btn btn-secondary"
-                      onClick={() => cancelAppointment(appointment.id)}
-                    >
-                      Cancel Request
-                    </button>
-                  )}
-                  {appointment.status === 'approved' && (
-                    <button className="btn btn-primary">
-                      Join Call
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="no-appointments">
-            <p>You haven't requested any appointments yet.</p>
-          </div>
-        )}
+      <div className="appointments-sections">
+        <div className="appointments-section">
+          <h2>Sent Appointments</h2>
+          {sentAppointments.length > 0 ? (
+            <div className="appointments-grid">
+              {sentAppointments.map(renderAppointmentCard)}
+            </div>
+          ) : (
+            <div className="no-appointments">
+              <p>You haven't sent any appointment requests yet.</p>
+            </div>
+          )}
+        </div>
+
+        <div className="appointments-section">
+          <h2>Received Appointments</h2>
+          {receivedAppointments.length > 0 ? (
+            <div className="appointments-grid">
+              {receivedAppointments.map(renderAppointmentCard)}
+            </div>
+          ) : (
+            <div className="no-appointments">
+              <p>You haven't received any appointment requests yet.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
