@@ -1,0 +1,102 @@
+.call-meeting-container {
+  min-height: 100vh;
+  background: #f4f6fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 40px;
+}
+
+.call-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.call-timer {
+  font-size: 1.5rem;
+  color: #1976d2;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.call-participants {
+  display: flex;
+  gap: 48px;
+  margin-bottom: 32px;
+}
+
+.participant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.video-preview {
+  width: 180px;
+  height: 120px;
+  background: #222;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.video-off {
+  color: #bbb;
+}
+
+.participant-label {
+  font-size: 1rem;
+  color: #444;
+}
+
+.call-controls {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.call-btn {
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.call-btn:hover {
+  background: #e3f2fd;
+}
+
+.call-btn.off {
+  background: #f8d7da;
+  color: #b71c1c;
+}
+
+.call-btn.on {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.call-btn.leave {
+  background: #d32f2f;
+  color: #fff;
+}
+
+.call-btn.leave:hover {
+  background: #b71c1c;
+} 

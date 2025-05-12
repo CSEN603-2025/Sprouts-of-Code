@@ -51,6 +51,8 @@ import Reports from './pages/analytics/Reports'
 import FacultyDashboard from './pages/FacultyAcademics/FacultyDashboard'
 import FacultyReports from './pages/FacultyAcademics/FacultyReports'
 
+import CallMeeting from './pages/call/CallMeeting'
+
 import './App.css'
 
 // Protected Route component
@@ -328,6 +330,12 @@ const App = () => {
                               <FacultyReports />
                             </ProtectedRoute>
                           }
+                        />
+
+                        {/* Call Routes */}
+                        <Route
+                          path="/call"
+                          element={<CallMeeting />}
                         />
 
                         {/* Default Route */}

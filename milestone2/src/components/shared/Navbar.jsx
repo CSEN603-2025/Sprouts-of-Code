@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Navbar.css'
 import { FaBell } from 'react-icons/fa'
 import IconButton from '@mui/material/IconButton'
@@ -12,9 +12,45 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import { useAppointments } from '../../context/AppointmentContext'
 import { useAuth } from '../../context/AuthContext'
 import { useStudent } from '../../context/StudentContext'
+import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
+import CallIcon from '@mui/icons-material/Call'
 
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
+
+// Modal style for call notification
+const modalStyle = {
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  zIndex: 2000,
+  minWidth: 320,
+  textAlign: 'center',
+}
+
+// Extra style for call icon and message
+const callIconStyle = {
+  fontSize: 48,
+  color: '#1976d2',
+  marginBottom: 12,
+}
+const callMessageStyle = {
+  fontSize: 20,
+  fontWeight: 500,
+  margin: '12px 0',
+}
+const callButtonGroupStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  gap: 16,
+  marginTop: 20,
+}
 
 const Navbar = ({ user, onLogout }) => {
   const { appointments } = useAppointments();
@@ -25,6 +61,9 @@ const Navbar = ({ user, onLogout }) => {
   const [showNotifications, setShowNotifications] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const prevAppointmentsRef = useRef([]);
+  // State for simulating a call notification
+  const [callNotification, setCallNotification] = useState(null);
+  const navigate = useNavigate();
   
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen)
@@ -89,6 +128,33 @@ const Navbar = ({ user, onLogout }) => {
     });
     prevAppointmentsRef.current = myAppointments.map(a => ({ ...a }));
   }, [appointments, user, students]);
+
+  // Listen for Ctrl+B to simulate a call from SCAD
+  useEffect(() => {
+    if (!user || user.role !== 'student') return;
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && (e.key === 'b' || e.key === 'B')) {
+        setCallNotification({
+          from: 'SCAD',
+          status: 'incoming',
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [user]);
+
+  const handleAcceptCall = () => {
+    setCallNotification({ from: 'SCAD', status: 'accepted' });
+    setTimeout(() => {
+      setCallNotification(null);
+      navigate('/call');
+    }, 1000);
+  };
+  const handleRejectCall = () => {
+    setCallNotification({ from: 'SCAD', status: 'rejected' });
+    setTimeout(() => setCallNotification(null), 2000);
+  };
 
   const unreadCount = notifications.filter(n => !n.read).length
 
@@ -271,6 +337,28 @@ const Navbar = ({ user, onLogout }) => {
           )}
         </div>
       </div>
+      {/* Call Notification Modal */}
+      <Modal open={!!callNotification && callNotification.status === 'incoming'} onClose={() => setCallNotification(null)}>
+        <Box sx={modalStyle}>
+          <CallIcon sx={callIconStyle} />
+          <h2 style={{ marginBottom: 8 }}>Incoming Call</h2>
+          <div style={callMessageStyle}>
+            <span style={{ color: '#1976d2' }}>{callNotification?.from}</span> is calling you.<br />
+            <span style={{ fontSize: 16, color: '#555' }}>Would you like to accept the call?</span>
+          </div>
+          <div style={callButtonGroupStyle}>
+            <button className="btn btn-primary" onClick={handleAcceptCall} aria-label="Accept call">Accept</button>
+            <button className="btn btn-secondary" onClick={handleRejectCall} aria-label="Reject call">Reject</button>
+          </div>
+        </Box>
+      </Modal>
+      {/* Call Result Modal */}
+      <Modal open={!!callNotification && callNotification.status !== 'incoming'} onClose={() => setCallNotification(null)}>
+        <Box sx={modalStyle}>
+          {callNotification?.status === 'accepted' && <h2>Call Accepted</h2>}
+          {callNotification?.status === 'rejected' && <h2>Call Rejected</h2>}
+        </Box>
+      </Modal>
     </nav>
   )
 }
