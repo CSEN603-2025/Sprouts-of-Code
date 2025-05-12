@@ -1,0 +1,93 @@
+.faculty-reports-page {
+  max-width: 1000px;
+  margin: 32px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.faculty-reports-page h1 {
+  font-size: 2rem;
+  margin-bottom: 28px;
+  color: #222;
+  font-weight: 700;
+}
+
+.reports-table-wrapper {
+  overflow-x: auto;
+}
+
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafbfc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.reports-table th, .reports-table td {
+  padding: 14px 18px;
+  text-align: left;
+}
+
+.reports-table th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.reports-table tr {
+  border-bottom: 1px solid #ececec;
+}
+
+.reports-table tr:last-child {
+  border-bottom: none;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.status-badge.accepted {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.status-badge.flagged {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+.status-badge.rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.status-select {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  background: #f8fafc;
+  color: #222;
+  transition: border 0.2s;
+  outline: none;
+}
+.status-select:focus {
+  border: 1.5px solid #007bff;
+  background: #fff;
+}
+
+@media (max-width: 700px) {
+  .faculty-reports-page {
+    padding: 8px;
+  }
+  .reports-table th, .reports-table td {
+    padding: 8px 6px;
+    font-size: 0.95rem;
+  }
+} 
