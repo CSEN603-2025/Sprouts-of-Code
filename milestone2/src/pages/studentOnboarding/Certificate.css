@@ -1,124 +1,124 @@
 .certificate {
-    max-width: 800px;
-    margin: 2rem auto;
-    text-align: center;
-  }
-  
-  .certificate-content {
-    padding: 2rem;
-  }
-  
-  .certificate-title {
-    color: #2c3e50;
-    font-weight: 700 !important;
-    margin-bottom: 2rem !important;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-  
-  .certificate-subtitle {
-    color: #666;
-    margin-bottom: 1rem !important;
-  }
-  
-  .student-name {
-    color: #2c3e50;
-    font-weight: 600 !important;
-    margin: 1.5rem 0 !important;
-    font-size: 2rem !important;
-  }
-  
-  .certificate-text {
-    color: #666;
-    margin-bottom: 1rem !important;
-  }
-  
-  .workshop-name {
-    color: #2c3e50;
-    font-weight: 600 !important;
-    margin: 1.5rem 0 !important;
-    font-size: 1.5rem !important;
-  }
-  
-  .certificate-details {
-    margin: 2rem 0;
-    padding: 1rem;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .workshop-details {
-    color: #666;
-    margin: 0.5rem 0 !important;
-  }
-  
-  .certificate-footer {
-    margin-top: 2rem;
-  }
-  
-  /* .download-button {
-    background-color: #ffd700 !important;
-    color: #000 !important;
-    padding: 0.75rem 1.5rem !important;
-    font-weight: 600 !important;
-    text-transform: none !important;
-  } */
-  
-  /* .download-button:hover {
-    background-color: #e6c200 !important;
-  } */
-  
-  /* Certificate Modal Styles */
-  .certificate-modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .certificate-modal-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 90vw;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  
-  /* Certificate Card Styles (for the certificates section) */
-  .certificate-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .certificate-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .certificate-card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
-  
-  .certificate-card-date {
-    color: #666;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-  }
-  
-  .view-certificate-button {
-    background-color: #ffd700 !important;
-    color: #000 !important;
-    padding: 0.5rem 1rem !important;
-    font-weight: 500 !important;
-    text-transform: none !important;
-  }
-  
-  .view-certificate-button:hover {
-    background-color: #e6c200 !important;
-  } 
+  max-width: 800px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.certificate-content {
+  padding: 2rem;
+}
+
+.certificate-title {
+  color: #2c3e50;
+  font-weight: 700 !important;
+  margin-bottom: 2rem !important;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.certificate-subtitle {
+  color: #666;
+  margin-bottom: 1rem !important;
+}
+
+.student-name {
+  color: #2c3e50;
+  font-weight: 600 !important;
+  margin: 1.5rem 0 !important;
+  font-size: 2rem !important;
+}
+
+.certificate-text {
+  color: #666;
+  margin-bottom: 1rem !important;
+}
+
+.workshop-name {
+  color: #2c3e50;
+  font-weight: 600 !important;
+  margin: 1.5rem 0 !important;
+  font-size: 1.5rem !important;
+}
+
+.certificate-details {
+  margin: 2rem 0;
+  padding: 1rem;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.workshop-details {
+  color: #666;
+  margin: 0.5rem 0 !important;
+}
+
+.certificate-footer {
+  margin-top: 2rem;
+}
+
+/* .download-button {
+  background-color: #ffd700 !important;
+  color: #000 !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+} */
+
+/* .download-button:hover {
+  background-color: #e6c200 !important;
+} */
+
+/* Certificate Modal Styles */
+.certificate-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.certificate-modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Certificate Card Styles (for the certificates section) */
+.certificate-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.certificate-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.certificate-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.certificate-card-date {
+  color: #666;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.view-certificate-button {
+  background-color: #ffd700 !important;
+  color: #000 !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+}
+
+.view-certificate-button:hover {
+  background-color: #e6c200 !important;
+} 

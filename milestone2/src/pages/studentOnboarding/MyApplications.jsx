@@ -1,38 +1,49 @@
 // src/pages/studentOnboarding/MyApplications.jsx
 
 import { useState, useEffect } from 'react';
-import { dummyStudents, dummyInternships, dummyCompanies } from '../../data/dummyData';
 import { useAuth } from '../../context/AuthContext';
+import { useInternships } from '../../context/InternshipContext';
+import { useStudent } from '../../context/StudentContext';
+import { useCompany } from '../../context/CompanyContext';
 import './MyApplications.css';
 
 const MyApplications = () => {
   const { user } = useAuth();
+  const { internships } = useInternships();
+  const { students } = useStudent();
+  const { companies } = useCompany();
   
   // Get the logged-in student using their email
-  const loggedInStudent = dummyStudents.find(student => student.email === user.email);
+  const loggedInStudent = students.find(student => student.email === user.email);
 
   // Transform the student's applications into the format we need
-  const [applications] = useState(() => {
-    return loggedInStudent.appliedInternships.map(app => {
-      const internship = dummyInternships.find(i => i.id === app.internshipId);
-      const company = dummyCompanies.find(c => c.id === internship.companyId);
-      
-      return {
-        id: internship.id,
-        company: company.name,
-        position: internship.position,
-        status: app.status,
-        date: internship.startDate, // Using start date as application date for demo
-        description: internship.description,
-        requirements: internship.requirements.join(', '),
-        location: internship.location,
-        duration: internship.duration,
-        salary: internship.salary,
-        type: internship.isRemote ? 'Remote' : 'On-site',
-        startDate: internship.startDate
-      };
-    });
-  });
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    if (loggedInStudent) {
+      const transformedApplications = loggedInStudent.appliedInternships.map(app => {
+        const internship = internships.find(i => i.id === app.internshipId);
+        const company = companies.find(c => c.id === internship?.companyId);
+        
+        return {
+          id: internship?.id,
+          company: company?.name,
+          position: internship?.position,
+          status: app.status,
+          date: internship?.startDate,
+          description: internship?.description,
+          requirements: internship?.requirements?.join(', '),
+          location: internship?.location,
+          duration: internship?.duration,
+          salary: internship?.salary,
+          type: internship?.isRemote ? 'Remote' : 'On-site',
+          startDate: internship?.startDate
+        };
+      }).filter(Boolean); // Filter out any null values
+
+      setApplications(transformedApplications);
+    }
+  }, [loggedInStudent, internships, companies]);
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -40,8 +51,8 @@ const MyApplications = () => {
 
   // Filter applications based on search and status
   const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.company.toLowerCase().includes(search.toLowerCase()) ||
-                         app.position.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = (app.company?.toLowerCase() || '').includes(search.toLowerCase()) ||
+                         (app.position?.toLowerCase() || '').includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -49,19 +60,20 @@ const MyApplications = () => {
   // Group applications by status
   const groupedApplications = {
     pending: filteredApplications.filter(app => app.status === 'applied'),
-    finalized: filteredApplications.filter(app => app.status === 'undergoing'),
-    accepted: filteredApplications.filter(app => app.status === 'completed'),
+    accepted: filteredApplications.filter(app => app.status === 'undergoing'),
     rejected: filteredApplications.filter(app => app.status === 'rejected')
   };
 
-   // Completed internships for this user
-   const completedInternships = applications.filter(app => app.status === 'completed');
+  // Completed internships for this user (including both finalized and completed status)
+  const completedInternships = applications.filter(app => 
+    app.status === 'completed' || app.status === 'finalized'
+  );
 
-   const toggleCompletedExpand = (id) => {
-     setExpandedCompleted(prev =>
-       prev.includes(id) ? prev.filter(eid => eid !== id) : [...prev, id]
-     );
-   };
+  const toggleCompletedExpand = (id) => {
+    setExpandedCompleted(prev =>
+      prev.includes(id) ? prev.filter(eid => eid !== id) : [...prev, id]
+    );
+  };
 
   return (
     <div className="my-applications">
@@ -126,74 +138,6 @@ const MyApplications = () => {
                     <div className="header-main">
                       <h3>{app.position}</h3>
                       <div className="status-badge pending">Pending</div>
-                    </div>
-                    <div className="header-details">
-                      <div className="company-info">
-                        <i className="fas fa-building"></i>
-                        <p className="company">{app.company}</p>
-                      </div>
-                      <div className="date-info">
-                        <i className="fas fa-calendar"></i>
-                        <p className="date">Applied: {app.date}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-content">
-                    <div className="info-section">
-                      <h4>Job Details</h4>
-                      <div className="info-grid">
-                        <div className="info-item">
-                          <span className="label">Location</span>
-                          <span className="value">{app.location}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Duration</span>
-                          <span className="value">{app.duration}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Type</span>
-                          <span className="value">{app.type}</span>
-                        </div>
-                        <div className="info-item">
-                          <span className="label">Start Date</span>
-                          <span className="value">{app.startDate}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="info-section">
-                      <h4>Requirements</h4>
-                      <p className="requirements">{app.requirements}</p>
-                    </div>
-
-                    <div className="info-section">
-                      <h4>Description</h4>
-                      <p className="description">{app.description}</p>
-                    </div>
-
-                    <div className="card-footer">
-                      <span className="salary">{app.salary}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        
-
-        {groupedApplications.finalized.length > 0 && (
-          <div className="application-group">
-            <h2 className="group-title finalized">
-              Finalized Applications ({groupedApplications.finalized.length})
-            </h2>
-            <div className="applications-grid">
-              {groupedApplications.finalized.map(app => (
-                <div key={app.id} className="application-card finalized">
-                  <div className="card-header">
-                    <div className="header-main">
-                      <h3>{app.position}</h3>
-                      <div className="status-badge finalized">Finalized</div>
                     </div>
                     <div className="header-details">
                       <div className="company-info">
@@ -414,33 +358,7 @@ const MyApplications = () => {
           </div>
         </div>
       )}
-      {/* <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Completed Internships</h2>
-          </div>
-          <div className="applications-list">
-            {completedInternships.length > 0 ? (
-              completedInternships.map(internship => (
-                <div key={internship.id} className="application-item">
-                  <div className="application-info">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' , width: '100%'}}>
-                      <h3 style={{ margin: 0 }}>{internship.position}</h3>
-                      <span className="status-badge completed">Completed</span>
-                    </div>
-                    <p className="company">{getCompanyName(internship.companyId)}</p>
-                    <p className="date">Duration: {internship.duration}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="application-item">
-                <p>No completed internships.</p>
-              </div>
-            )}
-          </div>
-        </div> */}
     </div>
-    
   );
 };
 

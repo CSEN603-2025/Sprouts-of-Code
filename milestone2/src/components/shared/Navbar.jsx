@@ -111,7 +111,6 @@ const Navbar = ({ user, onLogout }) => {
             <button 
               onClick={onLogout} 
               className="btn btn-outline logout-btn"
-              style={{ marginRight: '1rem' }}
             >
               Logout
             </button>
