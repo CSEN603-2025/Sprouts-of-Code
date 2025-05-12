@@ -91,7 +91,7 @@ const Navbar = ({ user, onLogout }) => {
             {user.role === 'admin' && (
               <>
                 <Link to="/admin" className="nav-link">Dashboard</Link>
-                <Link to="/admin/internships" className="nav-link">Internships</Link>
+                <Link to="/admin/internship-management" className="nav-link">Internships</Link>
                 <Link to="/analytics" className="nav-link">Analytics</Link>
               </>
             )}
