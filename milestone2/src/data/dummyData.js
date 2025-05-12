@@ -1812,7 +1812,7 @@ export const dummyData = {
     {
       id: 1,
       senderId: 1,
-      receiverId: 2,
+      receiverId: 3, // was 2, now 3 (pro)
       description: "Request for internship extension discussion",
       date: "2024-03-20T10:00:00",
       status: "pending"
@@ -1851,7 +1851,7 @@ export const dummyData = {
     },
     {
       id: 6,
-      senderId: 10,
+      senderId: 11, // was 10, now 11 (pro)
       receiverId: 11,
       description: "Pro membership benefits discussion",
       date: "2024-03-25T13:00:00",
@@ -1860,7 +1860,7 @@ export const dummyData = {
     {
       id: 7,
       senderId: 13,
-      receiverId: 4,
+      receiverId: 15, // was 4, now 15 (pro)
       description: "Technical interview preparation session",
       date: "2024-03-26T10:30:00",
       status: "accepted"
@@ -1876,7 +1876,7 @@ export const dummyData = {
     {
       id: 9,
       senderId: 17,
-      receiverId: 8,
+      receiverId: 17, // was 8, now 17 (pro)
       description: "Career path planning consultation",
       date: "2024-03-28T11:30:00",
       status: "pending"
@@ -1891,7 +1891,7 @@ export const dummyData = {
     },
     {
       id: 11,
-      senderId: 2,
+      senderId: 1, // was 2, now 1 (pro)
       receiverId: 11,
       description: "Internship application guidance",
       date: "2024-03-30T09:00:00",
@@ -1900,14 +1900,14 @@ export const dummyData = {
     {
       id: 12,
       senderId: "SCAD",
-      receiverId: 4,
+      receiverId: 15, // was 4, now 15 (pro)
       description: "Resume review session",
       date: "2024-03-31T13:30:00",
       status: "accepted"
     },
     {
       id: 13,
-      senderId: 6,
+      senderId: 13, // was 6, now 13 (pro)
       receiverId: 19,
       description: "Portfolio review request",
       date: "2024-04-01T10:00:00",
@@ -1916,15 +1916,15 @@ export const dummyData = {
     {
       id: 14,
       senderId: "SCAD",
-      receiverId: 8,
+      receiverId: 17, // was 8, now 17 (pro)
       description: "Internship feedback discussion",
       date: "2024-04-02T14:30:00",
       status: "pending"
     },
     {
       id: 15,
-      senderId: 10,
-      receiverId: 2,
+      senderId: 19, // was 10, now 19 (pro)
+      receiverId: 3, // was 2, now 3 (pro)
       description: "Career fair preparation meeting",
       date: "2024-04-03T11:00:00",
       status: "accepted"
@@ -1932,14 +1932,14 @@ export const dummyData = {
     {
       id: 16,
       senderId: 1,
-      receiverId: 12,
+      receiverId: 11, // was 12, now 11 (pro)
       description: "Workshop attendance confirmation",
       date: "2024-04-04T15:00:00",
       status: "pending"
     },
     {
       id: 17,
-      senderId: 14,
+      senderId: 19, // was 14, now 19 (pro)
       receiverId: "SCAD",
       description: "Internship extension request",
       date: "2024-04-05T09:30:00",
@@ -1948,15 +1948,15 @@ export const dummyData = {
     {
       id: 18,
       senderId: "SCAD",
-      receiverId: 16,
+      receiverId: 15, // was 16, now 15 (pro)
       description: "Career development planning",
       date: "2024-04-06T13:00:00",
       status: "rejected"
     },
     {
       id: 19,
-      senderId: 18,
-      receiverId: 12,
+      senderId: 17, // was 18, now 17 (pro)
+      receiverId: 11, // was 12, now 11 (pro)
       description: "Technical skills assessment",
       date: "2024-04-07T10:30:00",
       status: "pending"
@@ -1964,7 +1964,7 @@ export const dummyData = {
     {
       id: 20,
       senderId: 5,
-      receiverId: 20,
+      receiverId: 19,
       description: "Internship completion review",
       date: "2024-04-08T14:00:00",
       status: "accepted"
