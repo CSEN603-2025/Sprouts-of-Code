@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
@@ -34,29 +33,61 @@ const StudentDashboard = () => {
   const { internships } = useInternships();
   const { companies } = useCompany();
 
-  // Get the logged-in student from dummy data
-  const student = dummyStudents.find(s => s.email === user.email);
+  // Get the logged-in student from context data
+  const student = students.find(s => s.email === user.email);
 
   // Map appliedInternships to actual internship data
   const applications = (student?.appliedInternships || []).map(app => {
-    const internship = dummyInternships.find(i => i.id === app.internshipId);
+    const internship = internships.find(i => i.id === app.internshipId);
+    const company = companies.find(c => c.id === internship?.companyId);
     return internship
-      ? { ...internship, status: app.status, date: internship.startDate || '' }
+      ? { 
+          ...internship, 
+          status: app.status, 
+          date: internship.startDate || '',
+          company: company?.name || 'Unknown Company'
+        }
       : null;
   }).filter(Boolean);
 
-  // Only pending applications
-  const pendingApplications = applications.filter(app => app.status === 'applied');
+  // Helper function to get status display text
+  const getStatusDisplay = (status) => {
+    switch(status) {
+      case 'applied':
+        return 'Pending';
+      case 'undergoing':
+        return 'Accepted';
+      case 'completed':
+        return 'Completed';
+      case 'rejected':
+        return 'Rejected';
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  };
 
-  // Map completedInternships to actual internship data
-  const completedInternships = applications.filter(app => app.status === 'completed');
+  // Helper function to get status class
+  const getStatusClass = (status) => {
+    switch(status) {
+      case 'applied':
+        return 'pending';
+      case 'undergoing':
+        return 'accepted';
+      case 'completed':
+        return 'completed';
+      case 'rejected':
+        return 'rejected';
+      default:
+        return status;
+    }
+  };
 
   // Calculate total internship duration from student's appliedInternships with status 'completed'
   const calculateTotalDuration = () => {
     let totalMonths = 0;
     (student?.appliedInternships || []).forEach(app => {
       if (app.status === 'completed') {
-        const internship = dummyInternships.find(i => i.id === app.internshipId);
+        const internship = internships.find(i => i.id === app.internshipId);
         if (internship && internship.duration) {
           // Extract the number from the duration string (e.g., '3 months')
           const match = internship.duration.match(/(\d+)/);
@@ -76,13 +107,13 @@ const StudentDashboard = () => {
   };
 
   // Calculate stats
-  const activeInternships = applications.filter(app => app.status === 'undergoing' || app.status === 'active');
+  const activeInternships = applications.filter(app => app.status === 'undergoing');
   const upcomingInterviews = applications.filter(app => app.status === 'interview').length;
 
 
   // Helper to get company name by companyId
   const getCompanyName = (companyId) => {
-    const company = dummyCompanies.find(c => c.id === companyId);
+    const company = companies.find(c => c.id === companyId);
     return company ? company.name : 'Unknown Company';
   };
 
@@ -273,13 +304,13 @@ const StudentDashboard = () => {
                 <div key={app.id} className="application-item">
                   <div className="application-info">
                     <h3>{app.position}</h3>
-                    <p className="company">{getCompanyName(app.companyId)}</p>
+                    <p className="company">{app.company}</p>
                     <p className="date">Applied: {app.date}</p>
                     <p className="date">Duration: {app.duration}</p>
                   </div>
                   <div className="application-status">
-                    <span className={`status-badge ${app.status}`}>
-                      {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                    <span className={`status-badge ${getStatusClass(app.status)}`}>
+                      {getStatusDisplay(app.status)}
                     </span>
                   </div>
                 </div>
