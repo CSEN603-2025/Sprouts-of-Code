@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getProWorkshops } from '../../data/dummyData';
 import { useAuth } from '../../context/AuthContext';
 import testVideo from '../../assets/test video.mp4';
+import Certificate from './Certificate';
 import './WorkshopPlayer.css';
 
 const WorkshopPlayer = () => {
@@ -17,6 +18,7 @@ const WorkshopPlayer = () => {
   const [feedback, setFeedback] = useState('');
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [showCertificate, setShowCertificate] = useState(false);
   const chatEndRef = useRef(null);
   const videoRef = useRef(null);
 
@@ -55,6 +57,16 @@ const WorkshopPlayer = () => {
     // Auto-scroll chat to bottom
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
+
+  const handleVideoEnded = () => {
+    setShowCertificate(true);
+    // Save completion status
+    const completedWorkshops = JSON.parse(localStorage.getItem(`completed_workshops_${user?.id}`) || '[]');
+    if (!completedWorkshops.includes(workshopId)) {
+      completedWorkshops.push(workshopId);
+      localStorage.setItem(`completed_workshops_${user?.id}`, JSON.stringify(completedWorkshops));
+    }
+  };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -112,10 +124,18 @@ const WorkshopPlayer = () => {
               autoPlay={workshop.type === 'live'}
               className="workshop-video"
               src={testVideo}
+              onEnded={handleVideoEnded}
             >
               Your browser does not support the video tag.
             </video>
           </div>
+
+          {showCertificate && (
+            <Certificate
+              workshop={workshop}
+              student={user}
+            />
+          )}
 
           <div className="workshop-info">
             <div className="speaker-info">
