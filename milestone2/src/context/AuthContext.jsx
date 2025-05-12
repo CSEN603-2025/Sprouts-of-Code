@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
       // Check if it's a demo account
       if (isDemoAccount(email, password)) {
         const role = getDemoAccountRole(email);
-        let user = { email, role };
+        let user = { email, role, id: 'admin' };
         if (role === 'FacultyAcademic') {
           user.name = 'Yasmine Elbehiry';
         }
@@ -45,7 +45,12 @@ export const AuthProvider = ({ children }) => {
       // Check if it's a company
       const company = dummyCompanies.find(c => c.email === email && password === "password");
       if (company) {
-        const user = { email, role: 'employer', name: company.name };
+        const user = { 
+          email, 
+          role: 'employer', 
+          name: company.name, 
+          id: company.id.toString() // Convert to string to match the format
+        };
         setUser(user);
         setIsAuthenticated(true);
         localStorage.setItem('user', JSON.stringify(user));
@@ -55,7 +60,12 @@ export const AuthProvider = ({ children }) => {
       // Check if it's a student
       const student = dummyStudents.find(s => s.email === email && password === "password");
       if (student) {
-        const user = { email, role: 'student', name: student.name };
+        const user = { 
+          email, 
+          role: 'student', 
+          name: student.name, 
+          id: student.id.toString() // Convert to string to match the format
+        };
         setUser(user);
         setIsAuthenticated(true);
         localStorage.setItem('user', JSON.stringify(user));
