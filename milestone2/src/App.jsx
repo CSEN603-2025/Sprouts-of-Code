@@ -50,6 +50,7 @@ import FacultyDashboard from './pages/FacultyAcademics/FacultyDashboard'
 import FacultyReports from './pages/FacultyAcademics/FacultyReports'
 
 import './App.css'
+import ViewStudentProfile from './pages/internshipOperations/ViewStudentProfile'
 
 // Protected Route component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -121,6 +122,14 @@ const App = () => {
                         element={
                           <ProtectedRoute allowedRoles={['admin']}>
                             <AdminStudents />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/students/:studentId"
+                        element={
+                          <ProtectedRoute allowedRoles={['admin']}>
+                            <ViewStudentProfile />
                           </ProtectedRoute>
                         }
                       />

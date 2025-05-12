@@ -24,17 +24,30 @@ const Navbar = ({ user, onLogout }) => {
   }
   
   useEffect(() => {
-    if (user && user.role === 'employer') {
+    if (user ) {
       // Fetch notifications from backend here
       // For now, use mock data:
-      setNotifications([
-        { id: 1, message: "Your application was accepted!", read: false },
-        { id: 2, message: "New applicant for your internship.", read: false },
-        { id: 3, message: "New applicant for your internship.", read: false },
-        
-    
-
-      ])
+      if (user.role === 'employer'){
+        setNotifications([
+          { id: 1, message: "You have recieved a new email.", read: false },
+          { id: 2, message: "Your application was accepted!", read: false },
+          { id: 3, message: "New applicant for your internship.", read: false },
+          
+        ])  
+      }else if (user.role === 'student'){
+        setNotifications([
+          { id: 1, message: "Your application was accepted!", read: false },
+          { id: 2, message: "Your application was rejected.", read: false },
+          { id: 3, message: "Your online meeting with a SCAD officer has been confirmed.", read: false },
+        ])
+      }
+        else{
+          setNotifications([
+            { id: 1, message: "A new company has submitted an application.", read: false },
+            { id: 2, message: "A Company wants to post an internship", read: false },
+            { id: 3, message: "A student has submitted their internship evaluation report.", read: false },
+          ])    
+        } 
     }
   }, [user])
 
@@ -79,7 +92,7 @@ const Navbar = ({ user, onLogout }) => {
             {user.role === 'admin' && (
               <>
                 <Link to="/admin" className="nav-link">Dashboard</Link>
-                <Link to="/admin/internships" className="nav-link">Internships</Link>
+                <Link to="/admin/internship-management" className="nav-link">Internships</Link>
                 <Link to="/analytics" className="nav-link">Analytics</Link>
               </>
             )}
@@ -103,7 +116,7 @@ const Navbar = ({ user, onLogout }) => {
               Logout
             </button>
           )}
-          {user && user.role === 'employer' && (
+          {user  && (
             <>
               <IconButton
                 aria-label="show notifications"
@@ -174,23 +187,19 @@ const Navbar = ({ user, onLogout }) => {
                     <>
                       <Link to="/student/profile" className="dropdown-item">My Profile</Link>
                       <Link to="/student/applications" className="dropdown-item">My Applications</Link>
-                      <Link to="/student/certificates" className="dropdown-item">My Certificates</Link>
                     </>
                   )}
                   
                   {user.role === 'employer' && (
                     <>
                       <Link to="/employer/profile" className="dropdown-item">Company Profile</Link>
-                      <Link to="/employer/jobs" className="dropdown-item">Job Postings</Link>
                       <Link to="/employer/applications" className="dropdown-item">Applications</Link>
                     </>
                   )}
                   
                   {user.role === 'admin' && (
                     <>
-                      <Link to="/admin/settings" className="dropdown-item">System Settings</Link>
-                      <Link to="/admin/users" className="dropdown-item">User Management</Link>
-                      <Link to="/admin/reports" className="dropdown-item">Reports</Link>
+
                     </>
                   )}
                   {user.role === 'FacultyAcademic' && (
@@ -203,10 +212,7 @@ const Navbar = ({ user, onLogout }) => {
                   )}
                   
                   {/* Common menu items for all roles */}
-                  <Link to="/settings" className="dropdown-item">Settings</Link>
-                  <button onClick={onLogout} className="dropdown-item logout">
-                    Logout
-                  </button>
+    
                 </div>
               )}
             </div>

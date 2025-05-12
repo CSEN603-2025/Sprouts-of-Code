@@ -1,228 +1,185 @@
 .view-student-profile {
-  padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .profile-header {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 30px;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .profile-header h1 {
   margin: 0;
-  color: var(--primary-black);
-  font-size: 24px;
+  font-size: 2rem;
+  color: #333;
 }
 
 .profile-content {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.profile-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 2rem;
 }
 
-.student-card {
+.profile-section {
   background: white;
-  border-radius: 12px;
-  padding: 24px;
-  text-align: center;
+  border-radius: 8px;
+  padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.profile-picture {
-  width: 150px;
-  height: 150px;
-  margin: 0 auto 16px;
-  border-radius: 50%;
-  overflow: hidden;
+.profile-section h2 {
+  margin: 0 0 1.5rem 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
 }
 
-.profile-picture img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.student-card h2 {
-  margin: 0 0 8px 0;
-  color: var(--primary-black);
-  font-size: 20px;
-}
-
-.student-id {
-  color: var(--dark-gray);
-  margin: 0 0 12px 0;
-  font-size: 14px;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background-color: #e8f5e9;
-  color: #198754;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 20px;
-}
-
-.student-info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
 .info-item {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--dark-gray);
-  font-size: 14px;
-}
-
-.info-item i {
-  width: 16px;
-  color: var(--primary-color);
-}
-
-.profile-tabs {
-  display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
-.tab-btn {
-  padding: 12px;
-  border: none;
-  background: white;
-  border-radius: 8px;
-  text-align: left;
-  font-size: 14px;
-  color: var(--dark-gray);
-  cursor: pointer;
-  transition: all 0.2s ease;
+.info-item.full-width {
+  grid-column: 1 / -1;
 }
 
-.tab-btn:hover {
-  background-color: #f8f9fa;
+.info-item label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
 }
 
-.tab-btn.active {
-  background-color: var(--primary-color);
-  color: white;
+.info-item p {
+  margin: 0;
+  color: #333;
 }
 
-.profile-details {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.info-item a {
+  color: #3498db;
+  text-decoration: none;
 }
 
-.section-card {
-  margin-bottom: 24px;
+.info-item a:hover {
+  text-decoration: underline;
 }
 
-.section-card h3 {
-  margin: 0 0 16px 0;
-  color: var(--primary-black);
-  font-size: 18px;
+.internships-list,
+.activities-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
-.contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.skills-list, .languages-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.skill-tag, .language-tag {
-  padding: 6px 12px;
-  background-color: #f8f9fa;
-  border-radius: 20px;
-  font-size: 14px;
-  color: var(--primary-black);
-}
-
-.applications-list, .internships-list, .certifications-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.application-card, .internship-card, .certification-card {
-  padding: 16px;
+.internship-card,
+.activity-card {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 1.25rem;
   border: 1px solid #eee;
-  border-radius: 8px;
 }
 
-.app-header, .internship-header, .cert-header {
+.internship-card h3,
+.activity-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.internship-card .role {
+  color: #666;
+  font-weight: 500;
+  margin: 0.25rem 0;
+}
+
+.internship-card .duration {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+}
+
+.internship-card .responsibilities {
+  margin: 0.5rem 0 0 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.documents-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.document-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #eee;
 }
 
-.app-header h4, .internship-header h4, .cert-header h4 {
-  margin: 0;
-  color: var(--primary-black);
-  font-size: 16px;
-}
-
-.app-details, .internship-details, .cert-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.company, .issuer {
-  color: var(--dark-gray);
-  font-size: 14px;
-  margin: 0;
-}
-
-.date {
-  color: #777;
-  font-size: 12px;
-  margin: 0;
-}
-
-.score-badge {
-  padding: 4px 12px;
-  background-color: #e3f2fd;
-  color: #0d6efd;
-  border-radius: 20px;
-  font-size: 12px;
+.document-item span {
   font-weight: 500;
+  color: #333;
 }
 
-@media (max-width: 768px) {
-  .profile-content {
-    grid-template-columns: 1fr;
-  }
+.document-item a {
+  color: #3498db;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: #e3f2fd;
+}
 
-  .profile-tabs {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 8px;
-  }
+.document-item a:hover {
+  background: #bbdefb;
+}
 
-  .tab-btn {
-    white-space: nowrap;
-  }
+.additional-documents {
+  margin-top: 1rem;
+}
+
+.additional-documents h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+.btn-outline {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background: #f8f9fa;
+  border-color: #ccc;
 }

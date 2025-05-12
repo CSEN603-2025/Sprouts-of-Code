@@ -36,7 +36,7 @@ export const StudentProvider = ({ children }) => {
   }
 
   const getStudentById = (id) => {
-    return students.find(student => student.id === id)
+    return students.find(s => String(s.id) === id)
   }
 
   const getStudentByEmail = (email) => {
