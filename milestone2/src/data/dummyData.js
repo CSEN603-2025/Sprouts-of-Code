@@ -1810,6 +1810,15 @@ export const dummyData = {
   // Appointments data
   appointments: [
     {
+      id: 22,
+      senderId: 1,
+      receiverId: "SCAD",
+      description: "Request for internship extension discussion",
+      date: "2024-03-20T10:00:00",
+      status: "pending",
+      duration: 30
+    },
+    {
       id: 1,
       senderId: 1,
       receiverId: 2,
