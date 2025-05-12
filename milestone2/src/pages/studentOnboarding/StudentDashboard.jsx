@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useStudent } from '../../context/StudentContext'
 import { useInternships } from '../../context/InternshipContext'
 import { useCompany } from '../../context/CompanyContext'
+import { useAppointments } from '../../context/AppointmentContext'
 import './StudentDashboard.css'
 import Paper from '@mui/material/Paper';
 import List from '@mui/material/List';
@@ -32,6 +33,8 @@ const StudentDashboard = () => {
   const { students } = useStudent();
   const { internships } = useInternships();
   const { companies } = useCompany();
+  const { appointments } = useAppointments();
+  const prevAppointmentsRef = useRef([]);
 
   // Get the logged-in student from context data
   const student = students.find(s => s.email === user.email);
@@ -110,67 +113,145 @@ const StudentDashboard = () => {
   const activeInternships = applications.filter(app => app.status === 'undergoing');
   const upcomingInterviews = applications.filter(app => app.status === 'interview').length;
 
-
   // Helper to get company name by companyId
   const getCompanyName = (companyId) => {
     const company = companies.find(c => c.id === companyId);
     return company ? company.name : 'Unknown Company';
   };
 
+  // Get suggested companies based on student's major
+  const getSuggestedCompanies = () => {
+    if (!student) return [];
+
+    // Map majors to relevant industries
+    const majorToIndustries = {
+      'Computer Science': ['Software Development', 'Artificial Intelligence', 'Data Science', 'Backend Development', 'Full Stack Development'],
+      'Computer Engineering': ['Software Development', 'Network Engineering', 'IoT Development', 'Hardware', 'Embedded Systems'],
+      'Software Engineering': ['Software Development', 'Full Stack Development', 'Backend Development', 'Frontend Development', 'DevOps'],
+      'Information Technology': ['Software Development', 'IT Support', 'System Administration', 'Database Management', 'Cloud Computing']
+    };
+
+    // Get relevant industries for the student's major
+    const relevantIndustries = majorToIndustries[student.major] || ['Software Development'];
+
+    // Get companies that have internships in relevant industries
+    const relevantCompanies = companies.filter(company => {
+      const companyInternships = internships.filter(internship => 
+        internship.companyId === company.id && 
+        relevantIndustries.some(industry => 
+          internship.industry.toLowerCase().includes(industry.toLowerCase())
+        )
+      );
+      return companyInternships.length > 0;
+    });
+
+    // If no companies found, return some default companies
+    if (relevantCompanies.length === 0) {
+      return companies.slice(0, 3).map(company => ({
+        id: company.id,
+        name: company.name,
+        industry: company.industry,
+        reason: "Popular company in the tech industry",
+        recommendedBy: "Multiple past interns",
+        logo: company.logo
+      }));
+    }
+
+    // Map companies to the required format
+    return relevantCompanies.slice(0, 3).map(company => {
+      const companyInternships = internships.filter(internship => 
+        internship.companyId === company.id && 
+        relevantIndustries.some(industry => 
+          internship.industry.toLowerCase().includes(industry.toLowerCase())
+        )
+      );
+
+      return {
+        id: company.id,
+        name: company.name,
+        industry: company.industry,
+        reason: `Matches your interest in ${student.major}`,
+        recommendedBy: `${companyInternships.length} relevant internships`,
+        logo: company.logo
+      };
+    });
+  };
+
+  const [suggestedCompanies] = useState(getSuggestedCompanies());
+
   const [notifications, setNotifications] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     // Load notifications from localStorage
-    const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
-    setNotifications(storedNotifications);
+    const loadNotifications = () => {
+      const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
+      setNotifications(storedNotifications);
+    };
+    
+    loadNotifications();
   }, [user]);
+
+  // Student appointment notifications
+  useEffect(() => {
+    if (!user || user.role !== 'student') return;
+    
+    // Notify for any accepted or rejected appointment where user is sender or receiver
+    const myAppointments = appointments.filter(
+      apt => (apt.senderId?.toString() === user.id?.toString() || apt.receiverId?.toString() === user.id?.toString()) &&
+        (apt.status === 'accepted' || apt.status === 'rejected')
+    );
+
+    myAppointments.forEach(apt => {
+      // Find the other party
+      let otherPartyName = 'SCAD';
+      if (apt.senderId?.toString() === user.id?.toString()) {
+        // User is sender, so receiver is other party
+        if (apt.receiverId !== 'SCAD') {
+          const other = students.find(s => s.id.toString() === apt.receiverId.toString());
+          if (other) otherPartyName = other.name;
+        }
+      } else {
+        // User is receiver, so sender is other party
+        if (apt.senderId !== 'SCAD') {
+          const other = students.find(s => s.id.toString() === apt.senderId.toString());
+          if (other) otherPartyName = other.name;
+        }
+      }
+      const date = new Date(apt.date).toLocaleString();
+      const message = `Your appointment with ${otherPartyName} on ${date} was ${apt.status}: ${apt.description}`;
+      
+      // Avoid duplicate notifications for the same appointment and status
+      setNotifications(prev => {
+        const alreadyExists = prev.some(n => n.message === message);
+        if (alreadyExists) return prev;
+        return [
+          { id: Date.now() + Math.random(), message, read: false },
+          ...prev
+        ];
+      });
+    });
+    
+    // Save notifications to localStorage
+    localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(notifications));
+    
+    prevAppointmentsRef.current = myAppointments.map(a => ({ ...a }));
+  }, [appointments, user, students]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleBellClick = (event) => {
     setAnchorEl(event.currentTarget);
+    // Mark all notifications as read
+    const updatedNotifications = notifications.map(n => ({ ...n, read: true }));
+    setNotifications(updatedNotifications);
+    // Update localStorage
+    localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const markAsRead = (notificationId) => {
-    const updatedNotifications = notifications.map(n => 
-      n.id === notificationId ? { ...n, read: true } : n
-    );
-    setNotifications(updatedNotifications);
-    localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
-  };
-  const [suggestedCompanies] = useState([
-    {
-      id: 1,
-      name: "TechNova",
-      industry: "Software",
-      reason: "Matches your interest in Frontend Development",
-      recommendedBy: "2 past interns",
-      logo: "https://via.placeholder.com/40"
-    },
-    {
-      id: 2,
-      name: "GreenEnergy",
-      industry: "Renewable Energy",
-      reason: "Popular among students interested in sustainability",
-      recommendedBy: "5 past interns",
-      logo: "https://via.placeholder.com/40"
-    },
-    {
-      id: 3,
-      name: "FinWise",
-      industry: "Finance",
-      reason: "Recommended by past interns",
-      recommendedBy: "3 past interns",
-      logo: "https://via.placeholder.com/40"
-    },
-    // ... more companies ...
-  ]);
 
   return (
     <div className="student-dashboard">
@@ -220,11 +301,10 @@ const StudentDashboard = () => {
                       borderBottom: '1px solid #eee',
                       cursor: 'pointer',
                     }}
-                    onClick={() => markAsRead(n.id)}
                   >
                     <ListItemText 
                       primary={n.message}
-                      secondary={n.time}
+                      secondary={new Date(n.id).toLocaleString()}
                     />
                   </ListItem>
                 ))
@@ -262,35 +342,35 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-          <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Suggested Companies
-      </Typography>
-      <List sx={{ maxHeight: 220, overflow: 'auto' }}>
-        {suggestedCompanies.map(company => (
-          <ListItem key={company.id} alignItems="flex-start">
-            <ListItemAvatar>
-              <Avatar src={company.logo} alt={company.name} />
-            </ListItemAvatar>
-            <ListItemText
-              primary={company.name}
-              secondary={
-                <>
-                  <Typography component="span" variant="body2" color="text.primary">
-                    {company.industry}
-                  </Typography>
-                  {" — " + company.reason}
-                  <br />
-                  <Typography component="span" variant="caption" color="text.secondary">
-                    {company.recommendedBy}
-                  </Typography>
-                </>
-              }
-            />
-          </ListItem>
-        ))}
-      </List>
-</Paper>
+      <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Suggested Companies
+        </Typography>
+        <List sx={{ maxHeight: 220, overflow: 'auto' }}>
+          {suggestedCompanies.map(company => (
+            <ListItem key={company.id} alignItems="flex-start">
+              <ListItemAvatar>
+                <Avatar src={company.logo} alt={company.name} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={company.name}
+                secondary={
+                  <>
+                    <Typography component="span" variant="body2" color="text.primary">
+                      {company.industry}
+                    </Typography>
+                    {" — " + company.reason}
+                    <br />
+                    <Typography component="span" variant="caption" color="text.secondary">
+                      {company.recommendedBy}
+                    </Typography>
+                  </>
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
       
       <div className="dashboard-sections">
         <div className="card">

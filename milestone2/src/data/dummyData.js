@@ -1810,12 +1810,21 @@ export const dummyData = {
   // Appointments data
   appointments: [
     {
+      id: 29,
+      senderId: 3,
+      receiverId: 1,
+      description: "Request for internship extension discussion",
+      date: "2024-03-20T10:00:00",
+      status: "pending",
+      duration: 30
+    },
+    {
       id: 22,
       senderId: 1,
       receiverId: "SCAD",
       description: "Request for internship extension discussion",
       date: "2024-03-20T10:00:00",
-      status: "pending",
+      status: "accepted",
       duration: 30
     },
     {
@@ -2207,7 +2216,7 @@ export const addAppointment = (appointment) => {
 };
 
 export const updateAppointmentStatus = (id, newStatus) => {
-  const appointment = dummyData.appointments.find(a => a.id === id);
+  const appointment = dummyData.appointments.find(a => a.id.toString() === id.toString());
   if (appointment) {
     appointment.status = newStatus;
     return true;
