@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useCompany } from './CompanyContext'
+import { useStudent } from './StudentContext'
 import { demoAccounts, dummyCompanies, dummyStudents } from '../data/dummyData'
 import { isDemoAccount, getDemoAccountRole } from '../data/dummyData'
 
@@ -13,6 +15,8 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
+  const { companies } = useCompany();
+  const { students } = useStudent();
   const [user, setUser] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -29,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // Check if it's a demo account
+      // Check if it's a demo account (admin/faculty)
       if (isDemoAccount(email, password)) {
         const role = getDemoAccountRole(email);
         let user = { email, role, id: 'admin' };
@@ -42,14 +46,15 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user };
       }
 
-      // Check if it's a company
-      const company = dummyCompanies.find(c => c.email === email && password === "password");
+      // Use companies from CompanyContext (latest in app state)
+      const company = companies.find(c => c.email === email && password === "password");
       if (company) {
         const user = { 
           email, 
           role: 'employer', 
           name: company.name, 
-          id: company.id.toString() // Convert to string to match the format
+          id: company.id.toString(),
+          logo: company.logo || company.companyLogo || null // Add logo for navbar
         };
         setUser(user);
         setIsAuthenticated(true);
@@ -57,8 +62,8 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user };
       }
 
-      // Check if it's a student
-      const student = dummyStudents.find(s => s.email === email && password === "password");
+      // Use students from StudentContext (latest in app state)
+      const student = students.find(s => s.email === email && password === "password");
       if (student) {
         const user = { 
           email, 

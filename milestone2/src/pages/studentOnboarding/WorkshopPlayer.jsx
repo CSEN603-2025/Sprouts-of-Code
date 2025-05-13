@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProWorkshops } from '../../data/dummyData';
 import { useAuth } from '../../context/AuthContext';
+import { useStudent } from '../../context/StudentContext';
+import { useWorkshops } from '../../context/WorkshopContext';
 import testVideo from '../../assets/test video.mp4';
 import Certificate from './Certificate';
 import './WorkshopPlayer.css';
@@ -9,6 +10,8 @@ import './WorkshopPlayer.css';
 const WorkshopPlayer = () => {
   const { workshopId } = useParams();
   const { user } = useAuth();
+  const { addCertificate, getStudentCertificates } = useStudent();
+  const { getWorkshopById, loading } = useWorkshops();
   const navigate = useNavigate();
   const [workshop, setWorkshop] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
@@ -24,9 +27,15 @@ const WorkshopPlayer = () => {
 
   useEffect(() => {
     // Get workshop details
-    const workshops = getProWorkshops();
-    const currentWorkshop = workshops.find(w => w.id === parseInt(workshopId));
+    const currentWorkshop = getWorkshopById(parseInt(workshopId));
     setWorkshop(currentWorkshop);
+
+    // Check if student already has a certificate for this workshop
+    const studentCertificates = getStudentCertificates(user.id);
+    const hasCertificate = studentCertificates.some(cert => cert.workshopId === parseInt(workshopId));
+    if (hasCertificate) {
+      setShowCertificate(true);
+    }
 
     // Load saved notes
     const savedNotes = localStorage.getItem(`workshop_notes_${workshopId}_${user?.id}`);
@@ -51,7 +60,7 @@ const WorkshopPlayer = () => {
 
       return () => clearInterval(interval);
     }
-  }, [workshopId, user]);
+  }, [workshopId, user, getStudentCertificates, getWorkshopById]);
 
   useEffect(() => {
     // Auto-scroll chat to bottom
@@ -59,12 +68,16 @@ const WorkshopPlayer = () => {
   }, [chatMessages]);
 
   const handleVideoEnded = () => {
+    if (workshop) {
+      // Check if certificate already exists
+      const studentCertificates = getStudentCertificates(user.id);
+      const hasCertificate = studentCertificates.some(cert => cert.workshopId === workshop.id);
+      
+      if (!hasCertificate) {
+        // Add certificate to student's profile
+        addCertificate(user.id, workshop);
+      }
     setShowCertificate(true);
-    // Save completion status
-    const completedWorkshops = JSON.parse(localStorage.getItem(`completed_workshops_${user?.id}`) || '[]');
-    if (!completedWorkshops.includes(workshopId)) {
-      completedWorkshops.push(workshopId);
-      localStorage.setItem(`completed_workshops_${user?.id}`, JSON.stringify(completedWorkshops));
     }
   };
 
@@ -98,8 +111,8 @@ const WorkshopPlayer = () => {
     setFeedback('');
   };
 
-  if (!workshop) {
-    return <div>Loading...</div>;
+  if (loading || !workshop) {
+    return <div className="loading">Loading workshop...</div>;
   }
 
   return (
@@ -142,6 +155,9 @@ const WorkshopPlayer = () => {
               <h3>Speaker</h3>
               <p className="speaker-name">{workshop.speaker}</p>
               <p className="speaker-title">{workshop.speakerTitle}</p>
+              {workshop.speakerBio && (
+                <p className="speaker-bio">{workshop.speakerBio}</p>
+              )}
             </div>
 
             <div className="workshop-details">
@@ -152,6 +168,19 @@ const WorkshopPlayer = () => {
                   <span key={index} className="topic-tag">{topic}</span>
                 ))}
               </div>
+              {workshop.agenda && workshop.agenda.length > 0 && (
+                <div className="agenda-section">
+                  <h4>Agenda</h4>
+                  <ul className="agenda-list">
+                    {workshop.agenda.map((item, index) => (
+                      <li key={index}>
+                        <span className="agenda-time">{item.startTime} - {item.endTime}</span>
+                        <span className="agenda-topic">{item.topic}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>

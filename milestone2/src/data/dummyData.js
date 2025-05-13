@@ -1390,7 +1390,7 @@ export const dummyData = {
       location: "Cairo, Egypt",
       isRemote: false,
       salary: "4500 EGP/month",
-      status: "pending",
+      status: "active",
       applicants: []
     },
     {
@@ -1621,37 +1621,55 @@ export const dummyData = {
       id: 1,
       title: "Advanced Interview Techniques",
       type: "upcoming",
-      date: "2025-05-20",
-      time: "14:00",
+      startDate: "2025-05-20",
+      startTime: "14:00",
+      endDate: "2025-05-20",
+      endTime: "16:00",
       duration: "2 hours",
       speaker: "Sarah Johnson",
       speakerTitle: "Senior Tech Recruiter at Google",
       description: "Learn advanced interview techniques and how to handle complex technical questions.",
-      //maxParticipants: 50,
-      //currentParticipants: 35,
       isProOnly: true,
       topics: ["Technical Interviews", "Problem Solving", "Communication Skills"],
-      //requirements: ["Completed at least 3 months of internship", "Basic interview experience"],
       materials: ["Interview Preparation Guide", "Common Questions List"],
-      // registrationDeadline: "2025-05-19"
+      agenda: [
+        { time: "14:00 - 14:15", topic: "Introduction and Workshop Overview" },
+        { time: "14:15 - 14:45", topic: "Technical Interview Best Practices" },
+        { time: "14:45 - 15:15", topic: "Problem-Solving Strategies" },
+        { time: "15:15 - 15:45", topic: "Communication Techniques" },
+        { time: "15:45 - 16:00", topic: "Q&A Session" }
+      ]
     },
     {
       id: 2,
       title: "Career Path Planning in Tech",
       type: "live",
-      time: "15:30",
+      startDate: "2025-05-21",
+      startTime: "15:30",
+      endDate: "2025-05-21",
+      endTime: "17:00",
       duration: "1.5 hours",
       speaker: "Michael Chen",
       speakerTitle: "Engineering Manager at Microsoft",
       description: "Understanding different career paths in technology and how to plan your journey.",
       isProOnly: true,
       topics: ["Career Planning", "Tech Industry Trends", "Skill Development"],
-      materials: ["Career Path Guide", "Skill Assessment Tool"],    },
+      materials: ["Career Path Guide", "Skill Assessment Tool"],
+      agenda: [
+        { time: "15:30 - 15:45", topic: "Introduction to Tech Career Paths" },
+        { time: "15:45 - 16:15", topic: "Industry Trends and Opportunities" },
+        { time: "16:15 - 16:45", topic: "Skill Development Roadmap" },
+        { time: "16:45 - 17:00", topic: "Interactive Q&A" }
+      ]
+    },
     {
       id: 3,
       title: "Building Your Tech Portfolio",
       type: "pre-recorded",
-      date: "2025-04-15",
+      startDate: "2025-04-15",
+      startTime: "10:00",
+      endDate: "2025-04-15",
+      endTime: "13:00",
       duration: "3 hours",
       speaker: "Alex Rodriguez",
       speakerTitle: "Senior Developer at Amazon",
@@ -1659,31 +1677,44 @@ export const dummyData = {
       isProOnly: true,
       topics: ["Portfolio Development", "Project Showcase", "GitHub Best Practices"],
       materials: ["Portfolio Template", "Project Ideas List", "GitHub Guide"],
-      videoUrl: "https://example.com/workshops/portfolio-building"
+      videoUrl: "https://example.com/workshops/portfolio-building",
+      agenda: [
+        { time: "10:00 - 10:30", topic: "Portfolio Planning and Structure" },
+        { time: "10:30 - 11:30", topic: "Project Selection and Documentation" },
+        { time: "11:30 - 12:30", topic: "GitHub Optimization" },
+        { time: "12:30 - 13:00", topic: "Portfolio Review and Feedback" }
+      ]
     },
     {
       id: 4,
       title: "Networking in Tech Industry",
       type: "upcoming",
-      date: "2025-05-25",
-      time: "16:00",
+      startDate: "2025-05-25",
+      startTime: "16:00",
+      endDate: "2025-05-25",
+      endTime: "18:00",
       duration: "2 hours",
       speaker: "Emily Brown",
       speakerTitle: "Tech Community Lead at LinkedIn",
       description: "Master the art of networking in the tech industry and build valuable connections.",
-      //maxParticipants: 45,
-      //currentParticipants: 30,
       isProOnly: true,
       topics: ["Professional Networking", "LinkedIn Optimization", "Industry Events"],
-      //requirements: ["Completed at least 3 months of internship"],
       materials: ["Networking Guide", "LinkedIn Profile Template"],
-      // registrationDeadline: "2025-05-24"
+      agenda: [
+        { time: "16:00 - 16:20", topic: "Networking Fundamentals" },
+        { time: "16:20 - 17:00", topic: "LinkedIn Profile Optimization" },
+        { time: "17:00 - 17:40", topic: "Industry Event Strategies" },
+        { time: "17:40 - 18:00", topic: "Networking Practice Session" }
+      ]
     },
     {
       id: 5,
       title: "Advanced System Design",
       type: "pre-recorded",
-      date: "2025-04-20",
+      startDate: "2025-04-20",
+      startTime: "09:00",
+      endDate: "2025-04-20",
+      endTime: "13:00",
       duration: "4 hours",
       speaker: "David Wilson",
       speakerTitle: "Principal Engineer at Netflix",
@@ -1691,63 +1722,89 @@ export const dummyData = {
       isProOnly: true,
       topics: ["System Architecture", "Scalability", "Performance Optimization"],
       materials: ["System Design Patterns", "Case Studies", "Practice Problems"],
-      videoUrl: "https://example.com/workshops/system-design"
+      videoUrl: "https://example.com/workshops/system-design",
+      agenda: [
+        { time: "09:00 - 09:30", topic: "System Design Fundamentals" },
+        { time: "09:30 - 10:30", topic: "Architecture Patterns" },
+        { time: "10:30 - 11:30", topic: "Scalability Strategies" },
+        { time: "11:30 - 12:30", topic: "Performance Optimization" },
+        { time: "12:30 - 13:00", topic: "Case Study Analysis" }
+      ]
     },
     {
       id: 6,
       title: "Tech Leadership Workshop",
       type: "live",
-      time: "13:00",
+      startDate: "2025-05-22",
+      startTime: "13:00",
+      endDate: "2025-05-22",
+      endTime: "15:30",
       duration: "2.5 hours",
       speaker: "Lisa Thompson",
       speakerTitle: "VP of Engineering at Spotify",
       description: "Learn essential leadership skills for tech professionals and how to lead technical teams.",
-      //maxParticipants: 35,
-      //currentParticipants: 35,
       isProOnly: true,
       topics: ["Technical Leadership", "Team Management", "Communication"],
-      //requirements: ["Completed at least 3 months of internship", "Team project experience"],
-      materials: ["Leadership Guide", "Team Management Templates"]
+      materials: ["Leadership Guide", "Team Management Templates"],
+      agenda: [
+        { time: "13:00 - 13:30", topic: "Leadership Fundamentals" },
+        { time: "13:30 - 14:30", topic: "Team Management Strategies" },
+        { time: "14:30 - 15:00", topic: "Technical Leadership Skills" },
+        { time: "15:00 - 15:30", topic: "Interactive Leadership Scenarios" }
+      ]
     },
     {
       id: 7,
       title: "Machine Learning Fundamentals",
       type: "upcoming",
-      date: "2025-06-01",
-      time: "10:00",
+      startDate: "2025-06-01",
+      startTime: "10:00",
+      endDate: "2025-06-01",
+      endTime: "13:00",
       duration: "3 hours",
       speaker: "Dr. James Wilson",
       speakerTitle: "AI Research Lead at DeepMind",
       description: "Introduction to machine learning concepts and practical applications for beginners.",
-      //maxParticipants: 60,
-      //currentParticipants: 45,
       isProOnly: true,
       topics: ["ML Basics", "Neural Networks", "Practical Applications"],
-      //requirements: ["Basic Python knowledge", "Completed at least 3 months of internship"],
       materials: ["ML Fundamentals Guide", "Python Code Examples", "Practice Datasets"],
-      // registrationDeadline: "2025-05-31"
+      agenda: [
+        { time: "10:00 - 10:30", topic: "Introduction to Machine Learning" },
+        { time: "10:30 - 11:30", topic: "Neural Networks Basics" },
+        { time: "11:30 - 12:30", topic: "Practical Applications" },
+        { time: "12:30 - 13:00", topic: "Hands-on Exercise" }
+      ]
     },
     {
       id: 8,
       title: "Cloud Architecture Best Practices",
       type: "live",
-      time: "11:00",
+      startDate: "2025-05-23",
+      startTime: "11:00",
+      endDate: "2025-05-23",
+      endTime: "13:00",
       duration: "2 hours",
       speaker: "Maria Garcia",
       speakerTitle: "Cloud Solutions Architect at AWS",
       description: "Learn how to design and implement scalable cloud architectures using AWS services.",
-      //maxParticipants: 50,
-      //currentParticipants: 50,
       isProOnly: true,
       topics: ["Cloud Architecture", "AWS Services", "Scalability Patterns"],
-      //requirements: ["Basic cloud knowledge", "Completed at least 3 months of internship"],
-      materials: ["Architecture Templates", "Best Practices Guide"]
+      materials: ["Architecture Templates", "Best Practices Guide"],
+      agenda: [
+        { time: "11:00 - 11:30", topic: "Cloud Architecture Principles" },
+        { time: "11:30 - 12:00", topic: "AWS Services Overview" },
+        { time: "12:00 - 12:30", topic: "Scalability Patterns" },
+        { time: "12:30 - 13:00", topic: "Architecture Design Exercise" }
+      ]
     },
     {
       id: 9,
       title: "Cybersecurity Essentials",
       type: "pre-recorded",
-      date: "2025-05-01",
+      startDate: "2025-05-01",
+      startTime: "09:00",
+      endDate: "2025-05-01",
+      endTime: "12:30",
       duration: "3.5 hours",
       speaker: "John Smith",
       speakerTitle: "Security Lead at Cisco",
@@ -1755,47 +1812,67 @@ export const dummyData = {
       isProOnly: true,
       topics: ["Security Basics", "Threat Detection", "Secure Coding"],
       materials: ["Security Checklist", "Code Examples", "Practice Scenarios"],
-      videoUrl: "https://example.com/workshops/cybersecurity"
+      videoUrl: "https://example.com/workshops/cybersecurity",
+      agenda: [
+        { time: "09:00 - 09:30", topic: "Security Fundamentals" },
+        { time: "09:30 - 10:30", topic: "Threat Detection Methods" },
+        { time: "10:30 - 11:30", topic: "Secure Coding Practices" },
+        { time: "11:30 - 12:00", topic: "Security Testing" },
+        { time: "12:00 - 12:30", topic: "Case Study Analysis" }
+      ]
     },
     {
       id: 10,
       title: "DevOps Pipeline Automation",
       type: "upcoming",
-      date: "2025-06-05",
-      time: "14:00",
+      startDate: "2025-06-05",
+      startTime: "14:00",
+      endDate: "2025-06-05",
+      endTime: "16:30",
       duration: "2.5 hours",
       speaker: "Rachel Chen",
       speakerTitle: "DevOps Engineer at GitHub",
       description: "Learn how to automate your development pipeline using modern DevOps tools and practices.",
-      //maxParticipants: 40,
-      //currentParticipants: 25,
       isProOnly: true,
       topics: ["CI/CD", "Docker", "Kubernetes Basics"],
-      //requirements: ["Basic Git knowledge", "Completed at least 3 months of internship"],
       materials: ["Pipeline Templates", "Docker Examples", "Best Practices Guide"],
-      // registrationDeadline: "2025-06-04"
+      agenda: [
+        { time: "14:00 - 14:30", topic: "CI/CD Fundamentals" },
+        { time: "14:30 - 15:30", topic: "Docker and Containerization" },
+        { time: "15:30 - 16:00", topic: "Kubernetes Basics" },
+        { time: "16:00 - 16:30", topic: "Pipeline Automation Exercise" }
+      ]
     },
     {
       id: 11,
       title: "Mobile App Development with React Native",
       type: "live",
-      time: "15:00",
+      startDate: "2025-05-24",
+      startTime: "15:00",
+      endDate: "2025-05-24",
+      endTime: "17:00",
       duration: "2 hours",
       speaker: "Tom Anderson",
       speakerTitle: "Mobile Lead at Instagram",
       description: "Build cross-platform mobile applications using React Native and modern development practices.",
-      //maxParticipants: 45,
-      //currentParticipants: 45,
       isProOnly: true,
       topics: ["React Native", "Mobile UI/UX", "Performance Optimization"],
-      //requirements: ["Basic React knowledge", "Completed at least 3 months of internship"],
-      materials: ["React Native Guide", "UI Components", "Performance Tips"]
+      materials: ["React Native Guide", "UI Components", "Performance Tips"],
+      agenda: [
+        { time: "15:00 - 15:30", topic: "React Native Overview" },
+        { time: "15:30 - 16:00", topic: "Mobile UI/UX Design" },
+        { time: "16:00 - 16:30", topic: "Performance Optimization" },
+        { time: "16:30 - 17:00", topic: "Live Coding Session" }
+      ]
     },
     {
       id: 12,
       title: "Data Visualization Masterclass",
       type: "pre-recorded",
-      date: "2025-05-05",
+      startDate: "2025-05-05",
+      startTime: "10:00",
+      endDate: "2025-05-05",
+      endTime: "13:00",
       duration: "3 hours",
       speaker: "Sarah Lee",
       speakerTitle: "Data Visualization Expert at Tableau",
@@ -1803,19 +1880,34 @@ export const dummyData = {
       isProOnly: true,
       topics: ["Data Visualization", "Chart Types", "Best Practices"],
       materials: ["Visualization Templates", "Color Schemes", "Case Studies"],
-      videoUrl: "https://example.com/workshops/data-viz"
+      videoUrl: "https://example.com/workshops/data-viz",
+      agenda: [
+        { time: "10:00 - 10:30", topic: "Data Visualization Principles" },
+        { time: "10:30 - 11:30", topic: "Chart Types and Selection" },
+        { time: "11:30 - 12:30", topic: "Best Practices and Design" },
+        { time: "12:30 - 13:00", topic: "Interactive Visualization Exercise" }
+      ]
     }
   ],
 
   // Appointments data
   appointments: [
     {
+      id: 29,
+      senderId: 3,
+      receiverId: 1,
+      description: "Request for internship extension discussion",
+      date: "2024-03-20T10:00:00",
+      status: "pending",
+      duration: 30
+    },
+    {
       id: 22,
       senderId: 1,
       receiverId: "SCAD",
       description: "Request for internship extension discussion",
       date: "2024-03-20T10:00:00",
-      status: "pending",
+      status: "accepted",
       duration: 30
     },
     {
@@ -2207,7 +2299,7 @@ export const addAppointment = (appointment) => {
 };
 
 export const updateAppointmentStatus = (id, newStatus) => {
-  const appointment = dummyData.appointments.find(a => a.id === id);
+  const appointment = dummyData.appointments.find(a => a.id.toString() === id.toString());
   if (appointment) {
     appointment.status = newStatus;
     return true;

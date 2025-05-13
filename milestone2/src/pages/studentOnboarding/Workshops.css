@@ -331,3 +331,20 @@
 .view-certificate-button:hover {
   background-color: #e6c200 !important;
 } 
+
+.certificate-card.deleted-workshop {
+  background-color: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  opacity: 0.8;
+}
+
+.certificate-card.deleted-workshop .certificate-card-title {
+  color: #666;
+}
+
+.deleted-workshop-message {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  font-style: italic;
+} 
