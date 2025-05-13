@@ -7,6 +7,8 @@ import { InternshipProvider } from './context/InternshipContext'
 import { EvaluationProvider } from './context/EvaluationContext'
 import { ReportPeriodProvider } from './context/ReportPeriodContext'
 import { AppointmentProvider } from './context/AppointmentContext'
+import { InternshipReportProvider } from './context/InternshipReportContext'
+import { WorkshopProvider } from './context/WorkshopContext'
 import Layout from './components/layout/Layout'
 
 // Auth Pages
@@ -23,6 +25,7 @@ import AdminInternships from './pages/admin/AdminInternships'
 import InternshipManagement from './pages/internshipOperations/InternshipManagement'
 import AdminEvaluations from './pages/internshipOperations/AdminEvaluations'
 import AdminAppointments from './pages/admin/AdminAppointments'
+import WorkshopManagement from './pages/admin/WorkshopManagement'
 
 // Employer Pages
 import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
@@ -30,6 +33,8 @@ import InternshipOperations from './pages/employerInterface/InternshipOperations
 import EmployerProfile from './pages/employerInterface/EmployerProfile'
 import EmployerApplications from './pages/employerInterface/EmployerApplications'
 import EmployerInterns from './pages/employerInterface/EmployerInterns'
+import ViewStudentProfile from './pages/internshipOperations/ViewStudentProfile'
+
 
 // Student Pages
 import StudentDashboard from './pages/studentOnboarding/StudentDashboard'
@@ -95,6 +100,8 @@ const App = () => {
                 <InternshipProvider>
                   <EvaluationProvider>
                     <ReportPeriodProvider>
+                      <InternshipReportProvider>
+                        <WorkshopProvider>
                       <Routes>
                         {/* Public Routes */}
                         <Route path="/login" element={<Login />} />
@@ -129,6 +136,14 @@ const App = () => {
                             </ProtectedRoute>
                           }
                         />
+                               <Route
+                        path="/admin/students/:studentId"
+                        element={
+                          <ProtectedRoute allowedRoles={['admin']}>
+                            <ViewStudentProfile />
+                          </ProtectedRoute>
+                        }
+                      />
                         <Route
                           path="/admin/employers"
                           element={
@@ -169,6 +184,14 @@ const App = () => {
                             </ProtectedRoute>
                           }
                         />
+                            <Route
+                              path="/admin/workshops"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <WorkshopManagement />
+                                </ProtectedRoute>
+                              }
+                            />
 
                         {/* Employer Routes */}
                         <Route
@@ -348,6 +371,8 @@ const App = () => {
                           }
                         />
                       </Routes>
+                        </WorkshopProvider>
+                      </InternshipReportProvider>
                     </ReportPeriodProvider>
                   </EvaluationProvider>
                 </InternshipProvider>

@@ -1,15 +1,18 @@
 import { useStudent } from '../../context/StudentContext';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AdminStudents.css';
 
 const AdminStudents = () => {
   const { students } = useStudent();
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const navigate = useNavigate();
   const [internshipStatusFilter, setInternshipStatusFilter] = useState('All');
 
   const handleViewDetails = (student) => {
     setSelectedStudent(student);
   };
+
 
   const closeModal = () => {
     setSelectedStudent(null);
@@ -55,6 +58,7 @@ const AdminStudents = () => {
               <h3>{student.name}</h3>
               <p>{student.email}</p>
               <button className="btn btn-outline" onClick={() => handleViewDetails(student)}>View Details</button>
+              <button className="btn btn-outline"  onClick={() => navigate(`/admin/students/${student.id}`)}>View Profile</button>
             </div>
           ))
         ) : (

@@ -286,23 +286,22 @@ const Navbar = ({ user, onLogout }) => {
                     <>
                       <Link to="/student/profile" className="dropdown-item">My Profile</Link>
                       <Link to="/student/applications" className="dropdown-item">My Applications</Link>
-                      <Link to="/student/certificates" className="dropdown-item">My Certificates</Link>
                     </>
                   )}
                   
                   {user.role === 'employer' && (
                     <>
                       <Link to="/employer/profile" className="dropdown-item">Company Profile</Link>
-                      <Link to="/employer/jobs" className="dropdown-item">Job Postings</Link>
+                      {/* <Link to="/employer/jobs" className="dropdown-item">Job Postings</Link> */}
                       <Link to="/employer/applications" className="dropdown-item">Applications</Link>
                     </>
                   )}
                   
                   {user.role === 'admin' && (
                     <>
-                      <Link to="/admin/settings" className="dropdown-item">System Settings</Link>
+                      {/* <Link to="/admin/settings" className="dropdown-item">System Settings</Link>
                       <Link to="/admin/users" className="dropdown-item">User Management</Link>
-                      <Link to="/admin/reports" className="dropdown-item">Reports</Link>
+                      <Link to="/admin/reports" className="dropdown-item">Reports</Link> */}
                     </>
                   )}
                   {user.role === 'FacultyAcademic' && (
@@ -315,10 +314,10 @@ const Navbar = ({ user, onLogout }) => {
                   )}
                   
                   {/* Common menu items for all roles */}
-                  <Link to="/settings" className="dropdown-item">Settings</Link>
+                  {/* <Link to="/settings" className="dropdown-item">Settings</Link>
                   <button onClick={onLogout} className="dropdown-item logout">
                     Logout
-                  </button>
+                  </button> */}
                 </div>
               )}
             </div>

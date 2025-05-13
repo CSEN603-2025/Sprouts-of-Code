@@ -5,39 +5,44 @@ import { useAuth } from '../../context/AuthContext';
 import { useInternships } from '../../context/InternshipContext';
 import { useStudent } from '../../context/StudentContext';
 import { useCompany } from '../../context/CompanyContext';
+import { useInternshipReport } from '../../context/InternshipReportContext';
+import EvaluationForm from '../../components/internship/EvaluationForm';
+import ReportForm from '../../components/internship/ReportForm';
 import './MyApplications.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const MyApplications = () => {
   const { user } = useAuth();
   const { internships } = useInternships();
   const { students } = useStudent();
   const { companies } = useCompany();
+  const { getEvaluation, getReport } = useInternshipReport();
   
   // Get the logged-in student using their email
-  const loggedInStudent = students.find(student => student.email === user.email);
+  const loggedInStudent = students?.find(student => student.email === user?.email);
 
   // Transform the student's applications into the format we need
   const [applications, setApplications] = useState([]);
 
   useEffect(() => {
-    if (loggedInStudent) {
+    if (loggedInStudent?.appliedInternships) {
       const transformedApplications = loggedInStudent.appliedInternships.map(app => {
-        const internship = internships.find(i => i.id === app.internshipId);
-        const company = companies.find(c => c.id === internship?.companyId);
+        const internship = internships?.find(i => i.id === app.internshipId);
+        const company = companies?.find(c => c.id === internship?.companyId);
         
         return {
           id: internship?.id,
-          company: company?.name,
-          position: internship?.position,
+          company: company?.name || 'Unknown Company',
+          position: internship?.position || 'Unknown Position',
           status: app.status,
-          date: internship?.startDate,
-          description: internship?.description,
-          requirements: internship?.requirements?.join(', '),
-          location: internship?.location,
-          duration: internship?.duration,
-          salary: internship?.salary,
+          date: internship?.startDate || 'No date',
+          description: internship?.description || 'No description available',
+          requirements: internship?.requirements?.join(', ') || 'No requirements listed',
+          location: internship?.location || 'Location not specified',
+          duration: internship?.duration || 'Duration not specified',
+          salary: internship?.salary || 'Salary not specified',
           type: internship?.isRemote ? 'Remote' : 'On-site',
-          startDate: internship?.startDate
+          startDate: internship?.startDate || 'Start date not specified'
         };
       }).filter(Boolean); // Filter out any null values
 
@@ -48,6 +53,8 @@ const MyApplications = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [expandedCompleted, setExpandedCompleted] = useState([]);
+  const [showEvaluation, setShowEvaluation] = useState(null);
+  const [showReport, setShowReport] = useState(null);
 
   // Filter applications based on search and status
   const filteredApplications = applications.filter(app => {
@@ -328,7 +335,7 @@ const MyApplications = () => {
         )}
       </div>
       
-      {/* Completed Internships Section at the end of the page */}
+      {/* Completed Internships Section */}
       {completedInternships.length > 0 && (
         <div className="completed-internships-section">
           <h2>Completed Internships</h2>
@@ -338,11 +345,15 @@ const MyApplications = () => {
                 <div className="completed-summary">
                   <span className="completed-position">{intern.position}</span>
                   <span className="completed-company">{intern.company}</span>
-                  <button className="view-more-btn" onClick={() => toggleCompletedExpand(intern.id)}>
+                  <button 
+                    className="view-more-btn" 
+                    onClick={() => toggleCompletedExpand(intern.id)}
+                  >
                     {expandedCompleted.includes(intern.id) ? 'Hide Details' : 'View More'}
                   </button>
                 </div>
                 {expandedCompleted.includes(intern.id) && (
+                  <>
                   <div className="completed-details">
                     <div><strong>Location:</strong> {intern.location}</div>
                     <div><strong>Duration:</strong> {intern.duration}</div>
@@ -352,9 +363,50 @@ const MyApplications = () => {
                     <div><strong>Requirements:</strong> {intern.requirements}</div>
                     <div><strong>Description:</strong> {intern.description}</div>
                   </div>
+                    <div className="action-buttons">
+                      <button 
+                        className="action-btn evaluation-btn"
+                        onClick={() => setShowEvaluation(intern.id)}
+                      >
+                        <i className="fas fa-star"></i>
+                        {getEvaluation(user?.id, intern.id) ? 'View/Edit Evaluation' : 'Create Evaluation'}
+                      </button>
+                      <button 
+                        className="action-btn report-btn"
+                        onClick={() => setShowReport(intern.id)}
+                      >
+                        <i className="fas fa-file-alt"></i>
+                        {getReport(user?.id, intern.id) ? 'View/Edit Report' : 'Create Report'}
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Evaluation Modal */}
+      {showEvaluation && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <EvaluationForm
+              internshipId={showEvaluation}
+              onClose={() => setShowEvaluation(null)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {showReport && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <ReportForm
+              internshipId={showReport}
+              onClose={() => setShowReport(null)}
+            />
           </div>
         </div>
       )}

@@ -13,6 +13,7 @@ export const useStudent = () => {
 
 export const StudentProvider = ({ children }) => {
   const [students, setStudents] = useState(dummyStudents)
+  const [forceUpdate, setForceUpdate] = useState(0)
 
   // Load workshop registrations and certificates from localStorage on mount
   useEffect(() => {
@@ -64,7 +65,7 @@ export const StudentProvider = ({ children }) => {
   }
 
   const getStudentById = (id) => {
-    return students.find(student => student.id === id)
+    return students.find(s => String(s.id) === id)
   }
 
   const getStudentByEmail = (email) => {
@@ -96,31 +97,40 @@ export const StudentProvider = ({ children }) => {
       const studentRegistrations = storedRegistrations[studentId] || []
       
       if (!studentRegistrations.includes(workshopId)) {
+        // Update localStorage
         storedRegistrations[studentId] = [...studentRegistrations, workshopId]
         localStorage.setItem('workshop_registrations', JSON.stringify(storedRegistrations))
 
-        // Then update state
-        setStudents(prev => 
-          prev.map(student => 
+        // Update state
+        setStudents(prev => {
+          const updatedStudents = prev.map(student => 
             student.id === studentId 
               ? { ...student, registeredWorkshops: [...(student.registeredWorkshops || []), workshopId] }
               : student
           )
-        )
+          return updatedStudents
+        })
 
-        // Add notification to existing notifications
+        // Add notification
         const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${studentId}`) || '[]')
         const newNotification = {
           id: Date.now(),
-          message: `Registration successful for "${workshopTitle}". You will receive a reminder before the workshop.`,
-          time: new Date().toISOString(),
-          read: false
+          message: `Successfully registered for "${workshopTitle}". You will receive a reminder before the workshop.`,
+          read: false,
+          time: new Date().toISOString()
         }
+        
         const updatedNotifications = [newNotification, ...storedNotifications]
         localStorage.setItem(`notifications_${studentId}`, JSON.stringify(updatedNotifications))
+        
+        // Force a re-render
+        setForceUpdate(prev => prev + 1)
+        return true
       }
+      return false
     } catch (error) {
       console.error('Error registering for workshop:', error)
+      return false
     }
   }
 
@@ -131,31 +141,40 @@ export const StudentProvider = ({ children }) => {
       const studentRegistrations = storedRegistrations[studentId] || []
       
       if (studentRegistrations.includes(workshopId)) {
+        // Update localStorage
         storedRegistrations[studentId] = studentRegistrations.filter(id => id !== workshopId)
         localStorage.setItem('workshop_registrations', JSON.stringify(storedRegistrations))
 
-        // Then update state
-        setStudents(prev => 
-          prev.map(student => 
+        // Update state
+        setStudents(prev => {
+          const updatedStudents = prev.map(student => 
             student.id === studentId 
               ? { ...student, registeredWorkshops: (student.registeredWorkshops || []).filter(id => id !== workshopId) }
               : student
           )
-        )
+          return updatedStudents
+        })
 
-        // Add notification to existing notifications
+        // Add notification
         const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${studentId}`) || '[]')
         const newNotification = {
           id: Date.now(),
           message: `Successfully unregistered from "${workshopTitle}".`,
-          time: new Date().toISOString(),
-          read: false
+          read: false,
+          time: new Date().toISOString()
         }
+        
         const updatedNotifications = [newNotification, ...storedNotifications]
         localStorage.setItem(`notifications_${studentId}`, JSON.stringify(updatedNotifications))
+        
+        // Force a re-render
+        setForceUpdate(prev => prev + 1)
+        return true
       }
+      return false
     } catch (error) {
       console.error('Error unregistering from workshop:', error)
+      return false
     }
   }
 
@@ -168,13 +187,16 @@ export const StudentProvider = ({ children }) => {
       // If there's a mismatch between state and localStorage, update state
       const student = getStudentById(studentId)
       if (student && student.registeredWorkshops?.includes(workshopId) !== studentRegistrations.includes(workshopId)) {
-        setStudents(prev => 
-          prev.map(student => 
+        setStudents(prev => {
+          const updatedStudents = prev.map(student => 
             student.id === studentId 
               ? { ...student, registeredWorkshops: studentRegistrations }
               : student
           )
-        )
+          return updatedStudents
+        })
+        // Force a re-render
+        setForceUpdate(prev => prev + 1)
       }
       
       return studentRegistrations.includes(workshopId)
@@ -236,7 +258,8 @@ export const StudentProvider = ({ children }) => {
     unregisterFromWorkshop,
     isRegisteredForWorkshop,
     addCertificate,
-    getStudentCertificates
+    getStudentCertificates,
+    forceUpdate
   }
 
   return (

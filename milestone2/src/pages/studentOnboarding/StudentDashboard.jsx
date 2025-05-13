@@ -182,15 +182,43 @@ const StudentDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
+  // Load notifications from localStorage
   useEffect(() => {
-    // Load notifications from localStorage
     const loadNotifications = () => {
+      console.log('Loading notifications for user:', user?.id);
       const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
+      console.log('Loaded notifications:', storedNotifications);
       setNotifications(storedNotifications);
     };
     
     loadNotifications();
-  }, [user]);
+
+    // Add event listener for storage changes
+    const handleStorageChange = (e) => {
+      console.log('Storage change detected:', e.key);
+      if (e.key === `notifications_${user?.id}`) {
+        console.log('Notifications storage changed, reloading...');
+        loadNotifications();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [user?.id]);
+
+  // Add a polling effect to check for new notifications
+  useEffect(() => {
+    const pollNotifications = () => {
+    const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
+      if (JSON.stringify(storedNotifications) !== JSON.stringify(notifications)) {
+        console.log('New notifications found during poll:', storedNotifications);
+    setNotifications(storedNotifications);
+      }
+    };
+
+    const interval = setInterval(pollNotifications, 2000); // Check every 2 seconds
+    return () => clearInterval(interval);
+  }, [user?.id, notifications]);
 
   // Student appointment notifications
   useEffect(() => {
@@ -202,39 +230,45 @@ const StudentDashboard = () => {
         (apt.status === 'accepted' || apt.status === 'rejected')
     );
 
-    myAppointments.forEach(apt => {
-      // Find the other party
-      let otherPartyName = 'SCAD';
-      if (apt.senderId?.toString() === user.id?.toString()) {
-        // User is sender, so receiver is other party
-        if (apt.receiverId !== 'SCAD') {
-          const other = students.find(s => s.id.toString() === apt.receiverId.toString());
-          if (other) otherPartyName = other.name;
+    // Check for new appointments that weren't in the previous state
+    const newAppointments = myAppointments.filter(newApt => 
+      !prevAppointmentsRef.current.some(prevApt => 
+        prevApt.id === newApt.id && prevApt.status === newApt.status
+      )
+    );
+
+    if (newAppointments.length > 0) {
+      const newNotifications = newAppointments.map(apt => {
+        // Find the other party
+        let otherPartyName = 'SCAD';
+        if (apt.senderId?.toString() === user.id?.toString()) {
+          if (apt.receiverId !== 'SCAD') {
+            const other = students.find(s => s.id.toString() === apt.receiverId.toString());
+            if (other) otherPartyName = other.name;
+          }
+        } else {
+          if (apt.senderId !== 'SCAD') {
+            const other = students.find(s => s.id.toString() === apt.senderId.toString());
+            if (other) otherPartyName = other.name;
+          }
         }
-      } else {
-        // User is receiver, so sender is other party
-        if (apt.senderId !== 'SCAD') {
-          const other = students.find(s => s.id.toString() === apt.senderId.toString());
-          if (other) otherPartyName = other.name;
-        }
-      }
-      const date = new Date(apt.date).toLocaleString();
-      const message = `Your appointment with ${otherPartyName} on ${date} was ${apt.status}: ${apt.description}`;
-      
-      // Avoid duplicate notifications for the same appointment and status
-      setNotifications(prev => {
-        const alreadyExists = prev.some(n => n.message === message);
-        if (alreadyExists) return prev;
-        return [
-          { id: Date.now() + Math.random(), message, read: false },
-          ...prev
-        ];
+        const date = new Date(apt.date).toLocaleString();
+        return {
+          id: Date.now() + Math.random(),
+          message: `Your appointment with ${otherPartyName} on ${date} was ${apt.status}: ${apt.description}`,
+          read: false
+        };
       });
-    });
+
+      // Update notifications state and localStorage
+      setNotifications(prev => {
+        const updatedNotifications = [...newNotifications, ...prev];
+        localStorage.setItem(`notifications_${user.id}`, JSON.stringify(updatedNotifications));
+        return updatedNotifications;
+      });
+    }
     
-    // Save notifications to localStorage
-    localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(notifications));
-    
+    // Update previous appointments reference
     prevAppointmentsRef.current = myAppointments.map(a => ({ ...a }));
   }, [appointments, user, students]);
 
@@ -243,10 +277,11 @@ const StudentDashboard = () => {
   const handleBellClick = (event) => {
     setAnchorEl(event.currentTarget);
     // Mark all notifications as read
-    const updatedNotifications = notifications.map(n => ({ ...n, read: true }));
-    setNotifications(updatedNotifications);
-    // Update localStorage
-    localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
+    setNotifications(prev => {
+      const updatedNotifications = prev.map(n => ({ ...n, read: true }));
+      localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
+      return updatedNotifications;
+    });
   };
 
   const handleClose = () => {
@@ -342,35 +377,35 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-      <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Suggested Companies
-        </Typography>
-        <List sx={{ maxHeight: 220, overflow: 'auto' }}>
-          {suggestedCompanies.map(company => (
-            <ListItem key={company.id} alignItems="flex-start">
-              <ListItemAvatar>
-                <Avatar src={company.logo} alt={company.name} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={company.name}
-                secondary={
-                  <>
-                    <Typography component="span" variant="body2" color="text.primary">
-                      {company.industry}
-                    </Typography>
-                    {" — " + company.reason}
-                    <br />
-                    <Typography component="span" variant="caption" color="text.secondary">
-                      {company.recommendedBy}
-                    </Typography>
-                  </>
-                }
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
+          <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Suggested Companies
+      </Typography>
+      <List sx={{ maxHeight: 220, overflow: 'auto' }}>
+        {suggestedCompanies.map(company => (
+          <ListItem key={company.id} alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar src={company.logo} alt={company.name} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={company.name}
+              secondary={
+                <>
+                  <Typography component="span" variant="body2" color="text.primary">
+                    {company.industry}
+                  </Typography>
+                  {" — " + company.reason}
+                  <br />
+                  <Typography component="span" variant="caption" color="text.secondary">
+                    {company.recommendedBy}
+                  </Typography>
+                </>
+              }
+            />
+          </ListItem>
+        ))}
+      </List>
+</Paper>
       
       <div className="dashboard-sections">
         <div className="card">

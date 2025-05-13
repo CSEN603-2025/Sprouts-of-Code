@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProWorkshops } from '../../data/dummyData';
 import { useAuth } from '../../context/AuthContext';
 import { useStudent } from '../../context/StudentContext';
+import { useWorkshops } from '../../context/WorkshopContext';
 import testVideo from '../../assets/test video.mp4';
 import Certificate from './Certificate';
 import './WorkshopPlayer.css';
@@ -11,6 +11,7 @@ const WorkshopPlayer = () => {
   const { workshopId } = useParams();
   const { user } = useAuth();
   const { addCertificate, getStudentCertificates } = useStudent();
+  const { getWorkshopById, loading } = useWorkshops();
   const navigate = useNavigate();
   const [workshop, setWorkshop] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
@@ -26,8 +27,7 @@ const WorkshopPlayer = () => {
 
   useEffect(() => {
     // Get workshop details
-    const workshops = getProWorkshops();
-    const currentWorkshop = workshops.find(w => w.id === parseInt(workshopId));
+    const currentWorkshop = getWorkshopById(parseInt(workshopId));
     setWorkshop(currentWorkshop);
 
     // Check if student already has a certificate for this workshop
@@ -60,7 +60,7 @@ const WorkshopPlayer = () => {
 
       return () => clearInterval(interval);
     }
-  }, [workshopId, user, getStudentCertificates]);
+  }, [workshopId, user, getStudentCertificates, getWorkshopById]);
 
   useEffect(() => {
     // Auto-scroll chat to bottom
@@ -77,7 +77,7 @@ const WorkshopPlayer = () => {
         // Add certificate to student's profile
         addCertificate(user.id, workshop);
       }
-      setShowCertificate(true);
+    setShowCertificate(true);
     }
   };
 
@@ -111,8 +111,8 @@ const WorkshopPlayer = () => {
     setFeedback('');
   };
 
-  if (!workshop) {
-    return <div>Loading...</div>;
+  if (loading || !workshop) {
+    return <div className="loading">Loading workshop...</div>;
   }
 
   return (
@@ -155,6 +155,9 @@ const WorkshopPlayer = () => {
               <h3>Speaker</h3>
               <p className="speaker-name">{workshop.speaker}</p>
               <p className="speaker-title">{workshop.speakerTitle}</p>
+              {workshop.speakerBio && (
+                <p className="speaker-bio">{workshop.speakerBio}</p>
+              )}
             </div>
 
             <div className="workshop-details">
@@ -165,6 +168,19 @@ const WorkshopPlayer = () => {
                   <span key={index} className="topic-tag">{topic}</span>
                 ))}
               </div>
+              {workshop.agenda && workshop.agenda.length > 0 && (
+                <div className="agenda-section">
+                  <h4>Agenda</h4>
+                  <ul className="agenda-list">
+                    {workshop.agenda.map((item, index) => (
+                      <li key={index}>
+                        <span className="agenda-time">{item.startTime} - {item.endTime}</span>
+                        <span className="agenda-topic">{item.topic}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
