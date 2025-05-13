@@ -108,7 +108,7 @@ const WorkshopManagement = () => {
                   <ul className="agenda-list">
                     {workshop.agenda?.map((item, index) => (
                       <li key={index}>
-                        <span className="agenda-time">{item.startTime} - {item.endTime}</span>
+                        <span className="agenda-time">{item.time}</span>
                         <span className="agenda-topic">{item.topic}</span>
                       </li>
                     ))}
