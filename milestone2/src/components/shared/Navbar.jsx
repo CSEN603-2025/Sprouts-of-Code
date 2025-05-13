@@ -78,14 +78,14 @@ const Navbar = ({ user, onLogout }) => {
               <>
                 <Link to="/student" className="nav-link">Dashboard</Link>
                 <Link to="/student/profile" className="nav-link">Profile</Link>
-                <Link to="/internship" className="nav-link">Internship</Link>
+                <Link to="/student/internships" className="nav-link">Internship</Link>
               </>
             )}
             
             {user.role === 'employer' && (
               <>
                 <Link to="/employer" className="nav-link">Dashboard</Link>
-                <Link to="/employer/jobs" className="nav-link">Job Postings</Link>
+                <Link to="/employer/internships" className="nav-link">Job Postings</Link>
               </>
             )}
             
@@ -172,11 +172,19 @@ const Navbar = ({ user, onLogout }) => {
           {user ? (
             <div className="profile-dropdown">
               <button className="profile-button" onClick={toggleDropdown}>
-                <img 
-                  src={user.profilePic || 'https://via.placeholder.com/40'} 
-                  alt="Profile" 
-                  className="profile-image" 
-                />
+                {user.role === 'employer' && user.logo ? (
+                  <img
+                    src={typeof user.logo === 'string' ? user.logo : URL.createObjectURL(user.logo)}
+                    alt="Company Logo"
+                    className="profile-image"
+                  />
+                ) : (
+                  <img
+                    src={user.profilePic || 'https://via.placeholder.com/40'}
+                    alt="Profile"
+                    className="profile-image"
+                  />
+                )}
                 <span className="profile-name">{user.name}</span>
               </button>
               

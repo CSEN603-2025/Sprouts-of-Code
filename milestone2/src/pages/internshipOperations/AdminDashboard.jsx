@@ -156,34 +156,6 @@ const AdminDashboard = () => {
             ))}
           </div>
         </div>
-        
-        <div className="card quick-actions">
-          <div className="card-header">
-            <h2 className="card-title">Quick Actions</h2>
-          </div>
-          
-          <div className="actions-grid">
-            <Link to="/admin/students/create" className="action-card">
-              <div className="action-icon">👨‍🎓</div>
-              <div className="action-label">Add Student</div>
-            </Link>
-            
-            <Link to="/admin/employers/create" className="action-card">
-              <div className="action-icon">🏢</div>
-              <div className="action-label">Add Employer</div>
-            </Link>
-            
-            <Link to="/admin/internships/create" className="action-card">
-              <div className="action-icon">📝</div>
-              <div className="action-label">Create Internship</div>
-            </Link>
-            
-            <Link to="/analytics/reports" className="action-card">
-              <div className="action-icon">📊</div>
-              <div className="action-label">Generate Report</div>
-            </Link>
-          </div>
-        </div>
       </div>
     </div>
   )
