@@ -1,65 +1,164 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import './Navbar.css'
-import { FaBell } from 'react-icons/fa'
-import IconButton from '@mui/material/IconButton'
-import Badge from '@mui/material/Badge'
-import Menu from '@mui/material/Menu'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
-import NotificationsIcon from '@mui/icons-material/Notifications'
+import { useAppointments } from '../../context/AppointmentContext'
+import { useAuth } from '../../context/AuthContext'
+import { useStudent } from '../../context/StudentContext'
+import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
+import CallIcon from '@mui/icons-material/Call'
 
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
 
+// Modal style for call notification
+const modalStyle = {
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  zIndex: 2000,
+  minWidth: 320,
+  textAlign: 'center',
+}
+
+// Extra style for call icon and message
+const callIconStyle = {
+  fontSize: 48,
+  color: '#1976d2',
+  marginBottom: 12,
+}
+const callMessageStyle = {
+  fontSize: 20,
+  fontWeight: 500,
+  margin: '12px 0',
+}
+const callButtonGroupStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  gap: 16,
+  marginTop: 20,
+}
+
 const Navbar = ({ user, onLogout }) => {
+  const { appointments } = useAppointments();
+  const { students } = useStudent();
+  const { user: authUser } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [notifications, setNotifications] = useState([])
-  const [showNotifications, setShowNotifications] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
+  // const [notifications, setNotifications] = useState([])
+  // const [showNotifications, setShowNotifications] = useState(false)
+  // const [anchorEl, setAnchorEl] = useState(null)
+  const prevAppointmentsRef = useRef([]);
+  // State for simulating a call notification
+  const [callNotification, setCallNotification] = useState(null);
+  const navigate = useNavigate();
   
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen)
   }
   
+  // useEffect(() => {
+  //   if (user && user.role === 'employer') {
+  //     setNotifications([
+  //       { id: 1, message: "Your application was accepted!", read: false },
+  //       { id: 2, message: "New applicant for your internship.", read: false },
+  //       { id: 3, message: "New applicant for your internship.", read: false },
+  //     ])
+  //   }
+  // }, [user])
+
+  // Student appointment notifications
   useEffect(() => {
-    if (user ) {
-      // Fetch notifications from backend here
-      // For now, use mock data:
-      if (user.role === 'employer'){
-        setNotifications([
-          { id: 1, message: "You have recieved a new email.", read: false },
-          { id: 2, message: "Your application was accepted!", read: false },
-          { id: 3, message: "New applicant for your internship.", read: false },
-          
-        ])  
-      }else if (user.role === 'student'){
-        setNotifications([
-          { id: 1, message: "Your application was accepted!", read: false },
-          { id: 2, message: "Your application was rejected.", read: false },
-          { id: 3, message: "Your online meeting with a SCAD officer has been confirmed.", read: false },
-        ])
+    if (!user || user.role !== 'student') return;
+    console.log('[Navbar] user:', user);
+    console.log('[Navbar] students:', students);
+    console.log('[Navbar] appointments:', appointments);
+    console.log('[Navbar] user.id:', user.id, typeof user.id);
+    appointments.forEach((apt, idx) => {
+      console.log(`[Navbar] appointment[${idx}]: id=${apt.id}, senderId=${apt.senderId} (${typeof apt.senderId}), receiverId=${apt.receiverId} (${typeof apt.receiverId})`);
+    });
+    // Notify for any accepted or rejected appointment where user is sender or receiver
+    // const myAppointments = appointments.filter(
+    //   apt => (apt.senderId?.toString() === user.id?.toString() || apt.receiverId?.toString() === user.id?.toString()) &&
+    //     (apt.status === 'accepted' || apt.status === 'rejected')
+    // );
+    // console.log('[Navbar] myAppointments:', myAppointments);
+    // myAppointments.forEach(apt => {
+    //   // Find the other party
+    //   let otherPartyName = 'SCAD';
+    //   if (apt.senderId?.toString() === user.id?.toString()) {
+    //     // User is sender, so receiver is other party
+    //     if (apt.receiverId !== 'SCAD') {
+    //       const other = students.find(s => s.id.toString() === apt.receiverId.toString());
+    //       if (other) otherPartyName = other.name;
+    //       console.log(`[Navbar] Found receiver as other party:`, other);
+    //     }
+    //   } else {
+    //     // User is receiver, so sender is other party
+    //     if (apt.senderId !== 'SCAD') {
+    //       const other = students.find(s => s.id.toString() === apt.senderId.toString());
+    //       if (other) otherPartyName = other.name;
+    //       console.log(`[Navbar] Found sender as other party:`, other);
+    //     }
+    //   }
+    //   const date = new Date(apt.date).toLocaleString();
+    //   const message = `Your appointment with ${otherPartyName} on ${date} was ${apt.status}: ${apt.description}`;
+    //   // Avoid duplicate notifications for the same appointment and status
+    //   setNotifications(prev => {
+    //     const alreadyExists = prev.some(n => n.message === message);
+    //     if (alreadyExists) return prev;
+    //     console.log(`[Navbar] Adding notification:`, message);
+    //     return [
+    //       { id: Date.now() + Math.random(), message, read: false },
+    //       ...prev
+    //     ];
+    //   });
+    // });
+    // prevAppointmentsRef.current = myAppointments.map(a => ({ ...a }));
+  }, [appointments, user, students]);
+
+  // Listen for Ctrl+B to simulate a call from SCAD
+  useEffect(() => {
+    if (!user || user.role !== 'student') return;
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && (e.key === 'b' || e.key === 'B')) {
+        setCallNotification({
+          from: 'SCAD',
+          status: 'incoming',
+        });
       }
-        else{
-          setNotifications([
-            { id: 1, message: "A new company has submitted an application.", read: false },
-            { id: 2, message: "A Company wants to post an internship", read: false },
-            { id: 3, message: "A student has submitted their internship evaluation report.", read: false },
-          ])    
-        } 
-    }
-  }, [user])
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [user]);
 
-  const unreadCount = notifications.filter(n => !n.read).length
+  const handleAcceptCall = () => {
+    setCallNotification({ from: 'SCAD', status: 'accepted' });
+    setTimeout(() => {
+      setCallNotification(null);
+      navigate('/call');
+    }, 1000);
+  };
+  const handleRejectCall = () => {
+    setCallNotification({ from: 'SCAD', status: 'rejected' });
+    setTimeout(() => setCallNotification(null), 2000);
+  };
 
-  const handleBellClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+  // const unreadCount = notifications.filter(n => !n.read).length
 
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
+  // const handleBellClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  //   // Mark all notifications as read
+  //   setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  // }
+
+  // const handleClose = () => {
+  //   setAnchorEl(null)
+  // }
 
   return (
     <nav className="navbar">
@@ -92,7 +191,7 @@ const Navbar = ({ user, onLogout }) => {
             {user.role === 'admin' && (
               <>
                 <Link to="/admin" className="nav-link">Dashboard</Link>
-                <Link to="/admin/internship-management" className="nav-link">Internships</Link>
+                <Link to="/admin/internships" className="nav-link">Internships</Link>
                 <Link to="/analytics" className="nav-link">Analytics</Link>
               </>
             )}
@@ -116,7 +215,7 @@ const Navbar = ({ user, onLogout }) => {
               Logout
             </button>
           )}
-          {user  && (
+          {/* {(user && (user.role === 'employer' || user.role === 'student')) && (
             <>
               <IconButton
                 aria-label="show notifications"
@@ -168,7 +267,7 @@ const Navbar = ({ user, onLogout }) => {
                 </List>
               </Menu>
             </>
-          )}
+          )} */}
           {user ? (
             <div className="profile-dropdown">
               <button className="profile-button" onClick={toggleDropdown}>
@@ -201,13 +300,16 @@ const Navbar = ({ user, onLogout }) => {
                   {user.role === 'employer' && (
                     <>
                       <Link to="/employer/profile" className="dropdown-item">Company Profile</Link>
+                      {/* <Link to="/employer/jobs" className="dropdown-item">Job Postings</Link> */}
                       <Link to="/employer/applications" className="dropdown-item">Applications</Link>
                     </>
                   )}
                   
                   {user.role === 'admin' && (
                     <>
-
+                      {/* <Link to="/admin/settings" className="dropdown-item">System Settings</Link>
+                      <Link to="/admin/users" className="dropdown-item">User Management</Link>
+                      <Link to="/admin/reports" className="dropdown-item">Reports</Link> */}
                     </>
                   )}
                   {user.role === 'FacultyAcademic' && (
@@ -220,7 +322,10 @@ const Navbar = ({ user, onLogout }) => {
                   )}
                   
                   {/* Common menu items for all roles */}
-    
+                  {/* <Link to="/settings" className="dropdown-item">Settings</Link>
+                  <button onClick={onLogout} className="dropdown-item logout">
+                    Logout
+                  </button> */}
                 </div>
               )}
             </div>
@@ -231,9 +336,30 @@ const Navbar = ({ user, onLogout }) => {
           )}
         </div>
       </div>
+      {/* Call Notification Modal */}
+      <Modal open={!!callNotification && callNotification.status === 'incoming'} onClose={() => setCallNotification(null)}>
+        <Box sx={modalStyle}>
+          <CallIcon sx={callIconStyle} />
+          <h2 style={{ marginBottom: 8 }}>Incoming Call</h2>
+          <div style={callMessageStyle}>
+            <span style={{ color: '#1976d2' }}>{callNotification?.from}</span> is calling you.<br />
+            <span style={{ fontSize: 16, color: '#555' }}>Would you like to accept the call?</span>
+          </div>
+          <div style={callButtonGroupStyle}>
+            <button className="btn btn-primary" onClick={handleAcceptCall} aria-label="Accept call">Accept</button>
+            <button className="btn btn-secondary" onClick={handleRejectCall} aria-label="Reject call">Reject</button>
+          </div>
+        </Box>
+      </Modal>
+      {/* Call Result Modal */}
+      <Modal open={!!callNotification && callNotification.status !== 'incoming'} onClose={() => setCallNotification(null)}>
+        <Box sx={modalStyle}>
+          {callNotification?.status === 'accepted' && <h2>Call Accepted</h2>}
+          {callNotification?.status === 'rejected' && <h2>Call Rejected</h2>}
+        </Box>
+      </Modal>
     </nav>
   )
 }
-
 
 export default Navbar
