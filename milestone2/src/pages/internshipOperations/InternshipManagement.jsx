@@ -44,8 +44,6 @@ const InternshipManagement = () => {
           />
         </div>
         <div className="filter-options">
-          <button className={`filter-button ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
-          <button className={`filter-button ${filter === 'applications' ? 'active' : ''}`} onClick={() => setFilter('applications')}>Applications</button>
         </div>
       </div>
       <div className="internships-table-container">

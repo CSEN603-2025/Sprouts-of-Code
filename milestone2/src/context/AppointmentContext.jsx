@@ -9,7 +9,6 @@ export const AppointmentProvider = ({ children }) => {
   useEffect(() => {
     // Initialize with dummy data
     setAppointments(dummyAppointments);
-    console.log('[AppointmentContext] Loaded appointments:', dummyAppointments);
   }, []);
 
   const addAppointment = (appointment) => {
@@ -22,7 +21,7 @@ export const AppointmentProvider = ({ children }) => {
     if (updateDummyAppointmentStatus(id, newStatus)) {
       setAppointments(prevAppointments =>
         prevAppointments.map(appointment =>
-          appointment.id.toString() === id.toString()
+          appointment.id === id
             ? { ...appointment, status: newStatus }
             : appointment
         )

@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useStudent } from '../../context/StudentContext';
-import { useAppointments } from '../../context/AppointmentContext';
+import { dummyAppointments } from '../../data/dummyData';
 import './Appointments.css';
 
 const Appointments = () => {
   const { user } = useAuth();
   const { students } = useStudent();
-  const { appointments, updateAppointmentStatus } = useAppointments();
   const [sentAppointments, setSentAppointments] = useState([]);
   const [receivedAppointments, setReceivedAppointments] = useState([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
@@ -21,12 +20,18 @@ const Appointments = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Load appointments from context
-    const sent = appointments.filter(apt => apt.senderId.toString() === user?.id);
-    const received = appointments.filter(apt => apt.receiverId.toString() === user?.id);
+    // Load appointments from dummy data
+    const sent = dummyAppointments.filter(apt => {
+      console.log('Comparing:', apt.senderId, user?.id);
+      return apt.senderId.toString() === user?.id;
+    });
+    console.log(localStorage.getItem('user'));
+    const received = dummyAppointments.filter(apt => apt.receiverId.toString() === user?.id);
+    console.log('Sent Appointments:', sent);
+    console.log('Received Appointments:', received);
     setSentAppointments(sent);
     setReceivedAppointments(received);
-  }, [user, appointments]);
+  }, [user]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -124,11 +129,17 @@ const Appointments = () => {
   };
 
   const handleAccept = (appointmentId) => {
-    updateAppointmentStatus(appointmentId, 'accepted');
+    setReceivedAppointments(prev => prev.map(apt =>
+      apt.id === appointmentId ? { ...apt, status: 'accepted' } : apt
+    ));
+    setSentAppointments(prev => prev.map(apt =>
+      apt.id === appointmentId ? { ...apt, status: 'accepted' } : apt
+    ));
   };
 
   const handleCancelReceived = (appointmentId) => {
-    updateAppointmentStatus(appointmentId, 'rejected');
+    setReceivedAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+    setSentAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
   };
 
   const handleJoinCall = (appointment) => {
@@ -139,15 +150,6 @@ const Appointments = () => {
   const renderAppointmentCard = (appointment) => {
     const isSender = appointment.senderId.toString() === user?.id;
     const isReceiver = appointment.receiverId.toString() === user?.id;
-
-    // Find sender and receiver names
-    const senderName = appointment.senderId === 'SCAD'
-      ? 'SCAD'
-      : students.find(s => s.id.toString() === appointment.senderId.toString())?.name || 'Unknown';
-    const receiverName = appointment.receiverId === 'SCAD'
-      ? 'SCAD'
-      : students.find(s => s.id.toString() === appointment.receiverId.toString())?.name || 'Unknown';
-
     const startDate = new Date(appointment.date);
     const endDate = new Date(startDate.getTime() + Number(appointment.duration) * 60000);
     const period = `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
@@ -161,18 +163,6 @@ const Appointments = () => {
         </div>
         <div className="card-content">
           <div className="appointment-details">
-            {isSender && (
-              <div className="detail-item">
-                <i className="fas fa-user"></i>
-                <span><strong>To:</strong> {receiverName}</span>
-              </div>
-            )}
-            {isReceiver && (
-              <div className="detail-item">
-                <i className="fas fa-user"></i>
-                <span><strong>From:</strong> {senderName}</span>
-              </div>
-            )}
             <div className="detail-item">
               <i className="fas fa-calendar"></i>
               <span>{startDate.toLocaleDateString()}</span>

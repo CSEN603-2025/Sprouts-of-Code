@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useCompany } from '../../context/CompanyContext'
 import { usePendingCompany } from '../../context/PendingCompanyContext'
 import { useInternships } from '../../context/InternshipContext'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import Chart from 'chart.js/auto'
 import './Reports.css'
 
 const Reports = () => {
@@ -18,6 +21,13 @@ const Reports = () => {
     major: '',
     status: ''
   })
+
+  // Chart refs for each report type
+  const studentPieRef = useRef(null)
+  const studentBarRef = useRef(null)
+  const internshipBarRef = useRef(null)
+  const employerBarRef = useRef(null)
+  const chartInstances = useRef([])
 
   // Load saved reports from localStorage on component mount
   const [savedReports, setSavedReports] = useState(() => {
@@ -90,6 +100,85 @@ const Reports = () => {
   useEffect(() => {
     localStorage.setItem('savedReports', JSON.stringify(savedReports))
   }, [savedReports])
+
+  // Render charts for each report type when modal opens
+  useEffect(() => {
+    chartInstances.current.forEach(chart => chart && chart.destroy())
+    chartInstances.current = []
+    if (!selectedReport) return
+    if (selectedReport.type === 'student') {
+      // Pie chart for placement
+      if (studentPieRef.current) {
+        const data = selectedReport.details
+        chartInstances.current.push(new Chart(studentPieRef.current, {
+          type: 'pie',
+          data: {
+            labels: ['Placed', 'Not Placed'],
+            datasets: [{
+              data: [
+                parseInt(data.placedStudents || 0),
+                parseInt((data.totalStudents || 0) - (data.placedStudents || 0))
+              ],
+              backgroundColor: ['#4caf50', '#e0e0e0']
+            }]
+          },
+          options: { plugins: { legend: { display: true, position: 'bottom' } } }
+        }))
+      }
+      // Bar chart for top skills
+      if (studentBarRef.current && selectedReport.details.topSkills) {
+        chartInstances.current.push(new Chart(studentBarRef.current, {
+          type: 'bar',
+          data: {
+            labels: selectedReport.details.topSkills,
+            datasets: [{
+              label: 'Top Skills',
+              data: selectedReport.details.topSkills.map(() => 1),
+              backgroundColor: '#1976d2'
+            }]
+          },
+          options: { plugins: { legend: { display: false } } }
+        }))
+      }
+    } else if (selectedReport.type === 'internship') {
+      // Bar chart for internships by company
+      if (internshipBarRef.current && selectedReport.details.internshipsByCompany) {
+        chartInstances.current.push(new Chart(internshipBarRef.current, {
+          type: 'bar',
+          data: {
+            labels: selectedReport.details.internshipsByCompany.map(i => i.company),
+            datasets: [{
+              label: 'Internships',
+              data: selectedReport.details.internshipsByCompany.map(i => i.count),
+              backgroundColor: '#43a047'
+            }]
+          },
+          options: { plugins: { legend: { display: false } } }
+        }))
+      }
+    } else if (selectedReport.type === 'employer') {
+      // Bar chart for employers by industry
+      if (employerBarRef.current && selectedReport.details.industries) {
+        const industries = selectedReport.details.industries
+        chartInstances.current.push(new Chart(employerBarRef.current, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(industries),
+            datasets: [{
+              label: 'Employers',
+              data: Object.values(industries),
+              backgroundColor: '#ffa000'
+            }]
+          },
+          options: { plugins: { legend: { display: false } } }
+        }))
+      }
+    }
+    return () => {
+      chartInstances.current.forEach(chart => chart && chart.destroy())
+      chartInstances.current = []
+    }
+  }, [selectedReport])
 
   const handleGenerateReport = () => {
     setIsGenerating(true)
@@ -180,6 +269,59 @@ const Reports = () => {
 
   const handleDeleteReport = (reportId) => {
     setSavedReports(prev => prev.filter(report => report.id !== reportId))
+  }
+
+  const handleDownloadReport = async (report) => {
+    const doc = new jsPDF()
+    // Title
+    doc.setFontSize(18)
+    doc.text(report.name, 10, 20)
+    doc.setFontSize(12)
+    doc.text(`Date: ${report.date}`, 10, 30)
+    doc.text(`Format: ${report.format.toUpperCase()}`, 10, 38)
+    doc.text(`Size: ${report.size}`, 10, 46)
+    doc.text(`Status: ${report.status}`, 10, 54)
+    doc.text('---', 10, 60)
+    // Analytics
+    let y = 70
+    if (report.details) {
+      Object.entries(report.details).forEach(([key, value]) => {
+        if (typeof value !== 'object') {
+          doc.text(`${key.split(/(?=[A-Z])/).join(' ')}: ${value}`, 10, y)
+          y += 8
+        }
+      })
+    }
+    // Add charts
+    if (report.type === 'student') {
+      if (studentPieRef.current) {
+        const chartImg = await html2canvas(studentPieRef.current, { backgroundColor: null })
+        const imgData = chartImg.toDataURL('image/png')
+        doc.addImage(imgData, 'PNG', 10, y + 5, 90, 60)
+        y += 70
+      }
+      if (studentBarRef.current && report.details.topSkills) {
+        const chartImg = await html2canvas(studentBarRef.current, { backgroundColor: null })
+        const imgData = chartImg.toDataURL('image/png')
+        doc.addImage(imgData, 'PNG', 10, y + 5, 90, 60)
+        y += 70
+      }
+    } else if (report.type === 'internship') {
+      if (internshipBarRef.current && report.details.internshipsByCompany) {
+        const chartImg = await html2canvas(internshipBarRef.current, { backgroundColor: null })
+        const imgData = chartImg.toDataURL('image/png')
+        doc.addImage(imgData, 'PNG', 10, y + 5, 120, 60)
+        y += 70
+      }
+    } else if (report.type === 'employer') {
+      if (employerBarRef.current && report.details.industries) {
+        const chartImg = await html2canvas(employerBarRef.current, { backgroundColor: null })
+        const imgData = chartImg.toDataURL('image/png')
+        doc.addImage(imgData, 'PNG', 10, y + 5, 120, 60)
+        y += 70
+      }
+    }
+    doc.save(`${report.name.replace(/\s+/g, '_')}.pdf`)
   }
 
   return (
@@ -303,9 +445,7 @@ const Reports = () => {
                 </div>
                 <div className="report-actions-col">
                   <div className="action-buttons">
-                    <button className="action-button" onClick={() => handleViewReport(report)}>View</button>
-                    <button className="action-button">Download</button>
-                    <button className="action-button">Share</button>
+                    <button className="action-button" onClick={() => handleDownloadReport(report)}>Download</button>
                     <button className="action-button danger" onClick={() => handleDeleteReport(report.id)}>Delete</button>
                   </div>
                 </div>
@@ -389,10 +529,35 @@ const Reports = () => {
                   </div>
                 )}
               </div>
+
+              {selectedReport.type === 'student' && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0' }}>
+                  <h4>Placement Rate</h4>
+                  <canvas ref={studentPieRef} width={300} height={200} style={{ background: '#fff', borderRadius: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.07)', marginBottom: 24 }} />
+                  {selectedReport.details.topSkills && (
+                    <>
+                      <h4>Top Skills</h4>
+                      <canvas ref={studentBarRef} width={300} height={200} style={{ background: '#fff', borderRadius: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }} />
+                    </>
+                  )}
+                </div>
+              )}
+              {selectedReport.type === 'internship' && selectedReport.details.internshipsByCompany && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0' }}>
+                  <h4>Internships by Company</h4>
+                  <canvas ref={internshipBarRef} width={350} height={200} style={{ background: '#fff', borderRadius: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }} />
+                </div>
+              )}
+              {selectedReport.type === 'employer' && selectedReport.details.industries && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0' }}>
+                  <h4>Employers by Industry</h4>
+                  <canvas ref={employerBarRef} width={350} height={200} style={{ background: '#fff', borderRadius: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }} />
+                </div>
+              )}
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={handleCloseReport}>Close</button>
-              <button className="btn btn-primary">Download Report</button>
+              <button className="btn btn-primary" onClick={() => handleDownloadReport(selectedReport)}>Download Report</button>
             </div>
           </div>
         </div>

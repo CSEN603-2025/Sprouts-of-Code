@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProWorkshops } from '../../data/dummyData';
 import { useAuth } from '../../context/AuthContext';
 import { useStudent } from '../../context/StudentContext';
+import { useWorkshops } from '../../context/WorkshopContext';
 import { Dialog, DialogContent } from '@mui/material';
 import Certificate from './Certificate';
 import './Workshops.css';
@@ -10,24 +10,16 @@ import './Workshops.css';
 const Workshops = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { updateStudent } = useStudent();
+  const { 
+    isRegisteredForWorkshop, 
+    registerForWorkshop, 
+    unregisterFromWorkshop,
+    getStudentCertificates 
+  } = useStudent();
+  const { workshops, loading } = useWorkshops();
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all'); // all, upcoming, live, pre-recorded
-  const [workshops, setWorkshops] = useState([]);
-  const [registeredWorkshops, setRegisteredWorkshops] = useState(new Set());
-  const [completedWorkshops, setCompletedWorkshops] = useState([]);
+  const [filter, setFilter] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState(null);
-
-  useEffect(() => {
-    // Get workshops and check registration status
-    const allWorkshops = getProWorkshops();
-    // In a real app, this would come from an API
-    const userRegistrations = JSON.parse(localStorage.getItem(`workshop_registrations_${user?.id}`) || '[]');
-    const completed = JSON.parse(localStorage.getItem(`completed_workshops_${user?.id}`) || '[]');
-    setRegisteredWorkshops(new Set(userRegistrations));
-    setCompletedWorkshops(completed);
-    setWorkshops(allWorkshops);
-  }, [user]);
 
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
@@ -42,8 +34,8 @@ const Workshops = () => {
     navigate(`/student/workshops/${workshopId}`);
   };
 
-  const handleViewCertificate = (workshop) => {
-    setSelectedCertificate(workshop);
+  const handleViewCertificate = (certificate) => {
+    setSelectedCertificate(certificate);
   };
 
   const handleCloseCertificate = () => {
@@ -55,45 +47,46 @@ const Workshops = () => {
     console.log('Downloading certificate...');
   };
 
-  const addNotification = (message) => {
-    const newNotification = {
-      id: Date.now(),
-      message,
-      time: new Date().toLocaleString(),
-      read: false
-    };
-
-    // Get current notifications from localStorage
-    const currentNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
-    const updatedNotifications = [newNotification, ...currentNotifications];
-    
-    // Save to localStorage
-    localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
-  };
-
-  const handleRegistration = (workshopId, isRegistered) => {
-    const newRegistrations = isRegistered
-      ? [...registeredWorkshops].filter(id => id !== workshopId)
-      : [...registeredWorkshops, workshopId];
-    
-    setRegisteredWorkshops(new Set(newRegistrations));
-    localStorage.setItem(`workshop_registrations_${user?.id}`, JSON.stringify(newRegistrations));
+  const handleRegistration = async (workshopId, event) => {
+    // Prevent event propagation
+    event.preventDefault();
+    event.stopPropagation();
 
     const workshop = workshops.find(w => w.id === workshopId);
-    if (workshop) {
+    if (!workshop) return;
+
+    const button = event.currentTarget;
+    const isRegistered = isRegisteredForWorkshop(user.id, workshopId);
+    
+    try {
+      // Disable the button immediately
+      button.disabled = true;
+
       if (isRegistered) {
-        // Unregistration notification
-        addNotification(`You have unregistered from "${workshop.title}".`);
+        await unregisterFromWorkshop(user.id, workshopId, workshop.title);
       } else {
-        // Registration notification
-        addNotification(`You have successfully registered for "${workshop.title}"! You will receive a reminder before the workshop.`);
+        await registerForWorkshop(user.id, workshopId, workshop.title);
       }
+
+      // Force a re-render by updating a local state
+      setSearch(prev => prev); // This is a hack to force re-render without changing the actual search value
+    } catch (error) {
+      console.error('Error handling registration:', error);
+    } finally {
+      // Re-enable the button after operation completes
+      button.disabled = false;
     }
   };
 
+  // Get student's certificates
+  const studentCertificates = getStudentCertificates(user.id);
+
+  if (loading) {
+    return <div className="loading">Loading workshops...</div>;
+      }
+
   return (
     <div className="workshops-page">
-      
       <Dialog
         open={!!selectedCertificate}
         onClose={handleCloseCertificate}
@@ -111,23 +104,30 @@ const Workshops = () => {
           )}
         </DialogContent>
       </Dialog>
-      {completedWorkshops.length > 0 && (
+      {studentCertificates.length > 0 && (
         <div className="certificates-section">
           <h2>My Certificates</h2>
           <div className="certificates-grid">
-            {completedWorkshops.map(workshopId => {
-              const workshop = workshops.find(w => w.id === parseInt(workshopId));
-              if (!workshop) return null;
+            {studentCertificates.map(certificate => {
+              // Check if the workshop still exists
+              const workshopExists = workshops.some(w => w.id === certificate.workshopId);
               
               return (
-                <div key={workshopId} className="certificate-card">
-                  <h3 className="certificate-card-title">{workshop.title}</h3>
+                <div key={certificate.id} className={`certificate-card ${!workshopExists ? 'deleted-workshop' : ''}`}>
+                  <h3 className="certificate-card-title">
+                    {workshopExists ? certificate.title : 'Workshop No Longer Available'}
+                  </h3>
                   <p className="certificate-card-date">
-                    Completed on: {new Date().toLocaleDateString()}
+                    Completed on: {new Date(certificate.date).toLocaleDateString()}
                   </p>
+                  {!workshopExists && (
+                    <p className="deleted-workshop-message">
+                      This workshop has been removed from the platform
+                    </p>
+                  )}
                   <button
                     className="view-certificate-button"
-                    onClick={() => handleViewCertificate(workshop)}
+                    onClick={() => handleViewCertificate(certificate)}
                   >
                     View Certificate
                   </button>
@@ -196,10 +196,10 @@ const Workshops = () => {
                 {workshop.type === 'upcoming' && (
                   <div className="workshop-date">
                     <i className="fas fa-calendar"></i>
-                    <span>{workshop.date} at {workshop.time}</span>
+                    <span>{workshop.startDate} at {workshop.startTime}</span>
                   </div>
                 )}
-                <p className="description">{workshop.description}</p>
+                <p className="description">{workshop.shortDescription || workshop.description}</p>
                 <div className="topics">
                   {workshop.topics.map((topic, index) => (
                     <span key={index} className="topic-tag">{topic}</span>
@@ -209,10 +209,11 @@ const Workshops = () => {
               <div className="workshop-footer">
                 {workshop.type === 'upcoming' && (
                   <button 
-                    className={`btn ${registeredWorkshops.has(workshop.id) ? 'btn-secondary' : 'btn-primary'}`}
-                    onClick={() => handleRegistration(workshop.id, registeredWorkshops.has(workshop.id))}
+                    className={`btn ${isRegisteredForWorkshop(user.id, workshop.id) ? 'btn-secondary' : 'btn-primary'}`}
+                    onClick={(e) => handleRegistration(workshop.id, e)}
+                    data-workshop-id={workshop.id}
                   >
-                    {registeredWorkshops.has(workshop.id) ? 'Unregister' : 'Register Now'}
+                    {isRegisteredForWorkshop(user.id, workshop.id) ? 'Unregister' : 'Register Now'}
                   </button>
                 )}
                 {workshop.type === 'live' && (

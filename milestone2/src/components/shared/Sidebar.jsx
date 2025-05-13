@@ -15,8 +15,9 @@ const Sidebar = ({ user }) => {
           { label: 'My Profile', path: '/student/profile', icon: '👤' },
           { label: 'Applications', path: '/student/applications', icon: '📝' },
           { label: 'Internships', path: '/student/internships', icon: '💼' },
-          { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
-          { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
+          // { label: 'Work Logs', path: '/internship/logs', icon: '📓' },
+          // { label: 'Certificates', path: '/student/certificates', icon: '🎓' },
+          // { label: 'Appointments', path: '/student/appointments', icon: '🎥' },
         ];
         if (user.isPro) {
           baseItems.push(
@@ -40,11 +41,12 @@ const Sidebar = ({ user }) => {
           { label: 'Students', path: '/admin/students', icon: '👨‍🎓' },
           { label: 'Employers', path: '/admin/employers', icon: '🏢' },
           { label: 'Internships', path: '/admin/internship-management', icon: '💼' },
+          { label: 'CareerWorkshops', path: '/admin/workshops', icon: '🧑‍💻' },
           { label: 'Analytics', path: '/analytics', icon: '📈' },
           { label: 'Evaluations', path: '/admin/evaluations', icon: '📝' },
           { label: 'Reports', path: '/analytics/reports', icon: '📊' },
           { label: 'Appointments', path: '/admin/appointments', icon: '📅' },
-          { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
+          // { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
         ]
       case 'FacultyAcademic':
         return [
@@ -53,7 +55,7 @@ const Sidebar = ({ user }) => {
           { label: 'Student List', path: '/faculty/students', icon: '👨‍🎓' },
           { label: 'Appointments', path: '/faculty/appointments', icon: '📅' },
           { label: 'Reports', path: '/faculty/reports', icon: '📄' },
-          { label: 'Settings', path: '/faculty/settings', icon: '⚙️' },
+          // { label: 'Settings', path: '/faculty/settings', icon: '⚙️' },
         ];
       default:
         return []
