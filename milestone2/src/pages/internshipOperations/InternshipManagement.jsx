@@ -43,7 +43,9 @@ const InternshipManagement = () => {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
+        <div className="filter-options">
         </div>
+      </div>
       <div className="internships-table-container">
         <table className="internships-table">
           <thead>
