@@ -15,72 +15,32 @@ export const WorkshopProvider = ({ children }) => {
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Load workshops from localStorage on mount
   useEffect(() => {
-    const loadWorkshops = () => {
-      try {
-        const storedWorkshops = localStorage.getItem('workshops');
-        if (storedWorkshops) {
-          setWorkshops(JSON.parse(storedWorkshops));
-        } else {
-          setWorkshops(dummyData.workshops);
-          localStorage.setItem('workshops', JSON.stringify(dummyData.workshops));
-        }
-      } catch (error) {
-        console.error('Error loading workshops:', error);
-        setWorkshops(dummyData.workshops);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadWorkshops();
+    // Initialize with dummy data
+    setWorkshops(dummyData.workshops);
+    setLoading(false);
   }, []);
 
-  // Save workshops to localStorage whenever they change
-  useEffect(() => {
-    if (!loading) {
-      localStorage.setItem('workshops', JSON.stringify(workshops));
-    }
-  }, [workshops, loading]);
-
   const createWorkshop = (workshopData) => {
-    try {
-      const newWorkshop = {
-        id: Date.now(),
-        ...workshopData,
-        isProOnly: true
-      };
-      setWorkshops(prev => [...prev, newWorkshop]);
-      return newWorkshop;
-    } catch (error) {
-      console.error('Error creating workshop:', error);
-      return null;
-    }
+    const newWorkshop = {
+      id: Math.max(...workshops.map(w => w.id)) + 1,
+      ...workshopData,
+      isProOnly: true
+    };
+    setWorkshops(prev => [...prev, newWorkshop]);
+    return newWorkshop;
   };
 
   const updateWorkshop = (id, workshopData) => {
-    try {
-      setWorkshops(prev => 
-        prev.map(workshop => 
-          workshop.id === id ? { ...workshop, ...workshopData } : workshop
-        )
-      );
-      return true;
-    } catch (error) {
-      console.error('Error updating workshop:', error);
-      return false;
-    }
+    setWorkshops(prev => 
+      prev.map(workshop => 
+        workshop.id === id ? { ...workshop, ...workshopData } : workshop
+      )
+    );
   };
 
   const deleteWorkshop = (id) => {
-    try {
-      setWorkshops(prev => prev.filter(workshop => workshop.id !== id));
-      return true;
-    } catch (error) {
-      console.error('Error deleting workshop:', error);
-      return false;
-    }
+    setWorkshops(prev => prev.filter(workshop => workshop.id !== id));
   };
 
   const getWorkshopById = (id) => {
@@ -92,24 +52,19 @@ export const WorkshopProvider = ({ children }) => {
   };
 
   const validateWorkshopDates = (workshopData) => {
-    try {
-      const now = new Date();
-      const startDate = new Date(`${workshopData.startDate}T${workshopData.startTime}`);
-      const endDate = new Date(`${workshopData.endDate}T${workshopData.endTime}`);
+    const now = new Date();
+    const startDate = new Date(`${workshopData.startDate}T${workshopData.startTime}`);
+    const endDate = new Date(`${workshopData.endDate}T${workshopData.endTime}`);
 
-      switch (workshopData.type) {
-        case 'upcoming':
-          return startDate > now;
-        case 'live':
-          return startDate <= now && endDate >= now;
-        case 'pre-recorded':
-          return endDate < now;
-        default:
-          return false;
-      }
-    } catch (error) {
-      console.error('Error validating workshop dates:', error);
-      return false;
+    switch (workshopData.type) {
+      case 'upcoming':
+        return startDate > now;
+      case 'live':
+        return startDate <= now && endDate >= now;
+      case 'pre-recorded':
+        return endDate < now;
+      default:
+        return false;
     }
   };
 

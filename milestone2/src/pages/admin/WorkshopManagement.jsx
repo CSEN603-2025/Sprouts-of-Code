@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useWorkshops } from '../../context/WorkshopContext';
 import WorkshopForm from '../../components/workshop/WorkshopForm';
 import './WorkshopManagement.css';
@@ -8,45 +8,26 @@ const WorkshopManagement = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   const [filter, setFilter] = useState('all');
-  const [filteredWorkshops, setFilteredWorkshops] = useState([]);
 
-  // Update filtered workshops when workshops or filter changes
-  useEffect(() => {
-    const filtered = filter === 'all' 
-      ? workshops 
-      : workshops.filter(w => w.type === filter);
-    setFilteredWorkshops(filtered);
-  }, [workshops, filter]);
-
-  const handleCreate = useCallback(() => {
+  const handleCreate = () => {
     setSelectedWorkshop(null);
     setIsFormOpen(true);
-  }, []);
+  };
 
-  const handleEdit = useCallback((workshop) => {
+  const handleEdit = (workshop) => {
     setSelectedWorkshop(workshop);
     setIsFormOpen(true);
-  }, []);
+  };
 
-  const handleDelete = useCallback(async (id) => {
+  const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this workshop?')) {
-      try {
-        const success = await deleteWorkshop(id);
-        if (!success) {
-          console.error('Failed to delete workshop');
-          // You could add a toast notification here
-        }
-      } catch (error) {
-        console.error('Error deleting workshop:', error);
-        // You could add a toast notification here
-      }
+      deleteWorkshop(id);
     }
-  }, [deleteWorkshop]);
+  };
 
-  const handleCloseForm = useCallback(() => {
-    setIsFormOpen(false);
-    setSelectedWorkshop(null);
-  }, []);
+  const filteredWorkshops = filter === 'all' 
+    ? workshops 
+    : workshops.filter(w => w.type === filter);
 
   return (
     <div className="workshop-management">
@@ -106,7 +87,7 @@ const WorkshopManagement = () => {
                 <div className="agenda-section">
                   <p><strong>Agenda:</strong></p>
                   <ul className="agenda-list">
-                    {workshop.agenda?.map((item, index) => (
+                    {workshop.agenda.map((item, index) => (
                       <li key={index}>
                         <span className="agenda-time">{item.time}</span>
                         <span className="agenda-topic">{item.topic}</span>
@@ -139,7 +120,7 @@ const WorkshopManagement = () => {
           <div className="modal-content">
             <WorkshopForm
               workshop={selectedWorkshop}
-              onClose={handleCloseForm}
+              onClose={() => setIsFormOpen(false)}
             />
           </div>
         </div>

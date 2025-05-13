@@ -14,18 +14,12 @@ const Workshops = () => {
     isRegisteredForWorkshop, 
     registerForWorkshop, 
     unregisterFromWorkshop,
-    getStudentCertificates,
-    forceUpdate
+    getStudentCertificates 
   } = useStudent();
   const { workshops, loading } = useWorkshops();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState(null);
-  const [localForceUpdate, setLocalForceUpdate] = useState(0);
-
-  useEffect(() => {
-    setLocalForceUpdate(prev => prev + 1);
-  }, [forceUpdate]);
 
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
@@ -53,28 +47,34 @@ const Workshops = () => {
     console.log('Downloading certificate...');
   };
 
-  const handleRegistration = async (workshopId) => {
+  const handleRegistration = async (workshopId, event) => {
+    // Prevent event propagation
+    event.preventDefault();
+    event.stopPropagation();
+
     const workshop = workshops.find(w => w.id === workshopId);
     if (!workshop) return;
 
+    const button = event.currentTarget;
     const isRegistered = isRegisteredForWorkshop(user.id, workshopId);
     
     try {
-      let success;
+      // Disable the button immediately
+      button.disabled = true;
+
       if (isRegistered) {
-        success = await unregisterFromWorkshop(user.id, workshopId, workshop.title);
+        await unregisterFromWorkshop(user.id, workshopId, workshop.title);
       } else {
-        success = await registerForWorkshop(user.id, workshopId, workshop.title);
+        await registerForWorkshop(user.id, workshopId, workshop.title);
       }
 
-      if (!success) {
-        console.error('Failed to update registration status');
-      } else {
-        // Force a local re-render
-        setLocalForceUpdate(prev => prev + 1);
-      }
+      // Force a re-render by updating a local state
+      setSearch(prev => prev); // This is a hack to force re-render without changing the actual search value
     } catch (error) {
       console.error('Error handling registration:', error);
+    } finally {
+      // Re-enable the button after operation completes
+      button.disabled = false;
     }
   };
 
@@ -83,7 +83,7 @@ const Workshops = () => {
 
   if (loading) {
     return <div className="loading">Loading workshops...</div>;
-  }
+      }
 
   return (
     <div className="workshops-page">
@@ -210,7 +210,8 @@ const Workshops = () => {
                 {workshop.type === 'upcoming' && (
                   <button 
                     className={`btn ${isRegisteredForWorkshop(user.id, workshop.id) ? 'btn-secondary' : 'btn-primary'}`}
-                    onClick={() => handleRegistration(workshop.id)}
+                    onClick={(e) => handleRegistration(workshop.id, e)}
+                    data-workshop-id={workshop.id}
                   >
                     {isRegisteredForWorkshop(user.id, workshop.id) ? 'Unregister' : 'Register Now'}
                   </button>

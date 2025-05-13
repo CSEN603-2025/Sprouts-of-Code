@@ -185,9 +185,7 @@ const StudentDashboard = () => {
   // Load notifications from localStorage
   useEffect(() => {
     const loadNotifications = () => {
-      console.log('Loading notifications for user:', user?.id);
       const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
-      console.log('Loaded notifications:', storedNotifications);
       setNotifications(storedNotifications);
     };
     
@@ -195,9 +193,7 @@ const StudentDashboard = () => {
 
     // Add event listener for storage changes
     const handleStorageChange = (e) => {
-      console.log('Storage change detected:', e.key);
       if (e.key === `notifications_${user?.id}`) {
-        console.log('Notifications storage changed, reloading...');
         loadNotifications();
       }
     };
@@ -205,74 +201,6 @@ const StudentDashboard = () => {
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [user?.id]);
-
-  // Add a polling effect to check for new notifications
-  useEffect(() => {
-    const pollNotifications = () => {
-    const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
-      if (JSON.stringify(storedNotifications) !== JSON.stringify(notifications)) {
-        console.log('New notifications found during poll:', storedNotifications);
-    setNotifications(storedNotifications);
-      }
-    };
-
-    const interval = setInterval(pollNotifications, 2000); // Check every 2 seconds
-    return () => clearInterval(interval);
-  }, [user?.id, notifications]);
-
-  // Student appointment notifications
-  useEffect(() => {
-    if (!user || user.role !== 'student') return;
-    
-    // Notify for any accepted or rejected appointment where user is sender or receiver
-    const myAppointments = appointments.filter(
-      apt => (apt.senderId?.toString() === user.id?.toString() || apt.receiverId?.toString() === user.id?.toString()) &&
-        (apt.status === 'accepted' || apt.status === 'rejected')
-    );
-
-    // Check for new appointments that weren't in the previous state
-    const newAppointments = myAppointments.filter(newApt => 
-      !prevAppointmentsRef.current.some(prevApt => 
-        prevApt.id === newApt.id && prevApt.status === newApt.status
-      )
-    );
-
-    if (newAppointments.length > 0) {
-      const newNotifications = newAppointments.map(apt => {
-        // Find the other party
-        let otherPartyName = 'SCAD';
-        if (apt.senderId?.toString() === user.id?.toString()) {
-          if (apt.receiverId !== 'SCAD') {
-            const other = students.find(s => s.id.toString() === apt.receiverId.toString());
-            if (other) otherPartyName = other.name;
-          }
-        } else {
-          if (apt.senderId !== 'SCAD') {
-            const other = students.find(s => s.id.toString() === apt.senderId.toString());
-            if (other) otherPartyName = other.name;
-          }
-        }
-        const date = new Date(apt.date).toLocaleString();
-        return {
-          id: Date.now() + Math.random(),
-          message: `Your appointment with ${otherPartyName} on ${date} was ${apt.status}: ${apt.description}`,
-          read: false
-        };
-      });
-
-      // Update notifications state and localStorage
-      setNotifications(prev => {
-        const updatedNotifications = [...newNotifications, ...prev];
-        localStorage.setItem(`notifications_${user.id}`, JSON.stringify(updatedNotifications));
-        return updatedNotifications;
-      });
-    }
-    
-    // Update previous appointments reference
-    prevAppointmentsRef.current = myAppointments.map(a => ({ ...a }));
-  }, [appointments, user, students]);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleBellClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -307,7 +235,7 @@ const StudentDashboard = () => {
               marginRight: '1rem'
             }}
           >
-            <Badge badgeContent={unreadCount} color="error">
+            <Badge badgeContent={notifications.filter(n => !n.read).length} color="error">
               <NotificationsIcon sx={{ color: '#000', fontSize: '24px' }} />
             </Badge>
           </IconButton>

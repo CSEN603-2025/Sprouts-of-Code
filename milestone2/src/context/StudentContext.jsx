@@ -13,7 +13,6 @@ export const useStudent = () => {
 
 export const StudentProvider = ({ children }) => {
   const [students, setStudents] = useState(dummyStudents)
-  const [forceUpdate, setForceUpdate] = useState(0)
 
   // Load workshop registrations and certificates from localStorage on mount
   useEffect(() => {
@@ -90,28 +89,32 @@ export const StudentProvider = ({ children }) => {
   }
 
   // Workshop registration functions
-  const registerForWorkshop = (studentId, workshopId, workshopTitle) => {
+  const registerForWorkshop = async (studentId, workshopId, workshopTitle) => {
     try {
       // First update localStorage
       const storedRegistrations = JSON.parse(localStorage.getItem('workshop_registrations') || '{}')
       const studentRegistrations = storedRegistrations[studentId] || []
       
       if (!studentRegistrations.includes(workshopId)) {
-        // Update localStorage
+        // Update registrations in localStorage
         storedRegistrations[studentId] = [...studentRegistrations, workshopId]
         localStorage.setItem('workshop_registrations', JSON.stringify(storedRegistrations))
 
-        // Update state
+        // Update state in a single operation
         setStudents(prev => {
-          const updatedStudents = prev.map(student => 
-            student.id === studentId 
-              ? { ...student, registeredWorkshops: [...(student.registeredWorkshops || []), workshopId] }
-              : student
-          )
+          const updatedStudents = prev.map(student => {
+            if (student.id === studentId) {
+              return {
+                ...student,
+                registeredWorkshops: [...(student.registeredWorkshops || []), workshopId]
+              }
+            }
+            return student
+          })
           return updatedStudents
         })
 
-        // Add notification
+        // Add notification in a single operation
         const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${studentId}`) || '[]')
         const newNotification = {
           id: Date.now(),
@@ -122,40 +125,39 @@ export const StudentProvider = ({ children }) => {
         
         const updatedNotifications = [newNotification, ...storedNotifications]
         localStorage.setItem(`notifications_${studentId}`, JSON.stringify(updatedNotifications))
-        
-        // Force a re-render
-        setForceUpdate(prev => prev + 1)
-        return true
       }
-      return false
     } catch (error) {
       console.error('Error registering for workshop:', error)
-      return false
+      throw error
     }
   }
 
-  const unregisterFromWorkshop = (studentId, workshopId, workshopTitle) => {
+  const unregisterFromWorkshop = async (studentId, workshopId, workshopTitle) => {
     try {
       // First update localStorage
       const storedRegistrations = JSON.parse(localStorage.getItem('workshop_registrations') || '{}')
       const studentRegistrations = storedRegistrations[studentId] || []
       
       if (studentRegistrations.includes(workshopId)) {
-        // Update localStorage
+        // Update registrations in localStorage
         storedRegistrations[studentId] = studentRegistrations.filter(id => id !== workshopId)
         localStorage.setItem('workshop_registrations', JSON.stringify(storedRegistrations))
 
-        // Update state
+        // Update state in a single operation
         setStudents(prev => {
-          const updatedStudents = prev.map(student => 
-            student.id === studentId 
-              ? { ...student, registeredWorkshops: (student.registeredWorkshops || []).filter(id => id !== workshopId) }
-              : student
-          )
+          const updatedStudents = prev.map(student => {
+            if (student.id === studentId) {
+              return {
+                ...student,
+                registeredWorkshops: (student.registeredWorkshops || []).filter(id => id !== workshopId)
+              }
+            }
+            return student
+          })
           return updatedStudents
         })
 
-        // Add notification
+        // Add notification in a single operation
         const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${studentId}`) || '[]')
         const newNotification = {
           id: Date.now(),
@@ -166,39 +168,18 @@ export const StudentProvider = ({ children }) => {
         
         const updatedNotifications = [newNotification, ...storedNotifications]
         localStorage.setItem(`notifications_${studentId}`, JSON.stringify(updatedNotifications))
-        
-        // Force a re-render
-        setForceUpdate(prev => prev + 1)
-        return true
       }
-      return false
     } catch (error) {
       console.error('Error unregistering from workshop:', error)
-      return false
+      throw error
     }
   }
 
   const isRegisteredForWorkshop = (studentId, workshopId) => {
     try {
-      // Check localStorage first
+      // Only check localStorage - don't update state here
       const storedRegistrations = JSON.parse(localStorage.getItem('workshop_registrations') || '{}')
       const studentRegistrations = storedRegistrations[studentId] || []
-      
-      // If there's a mismatch between state and localStorage, update state
-      const student = getStudentById(studentId)
-      if (student && student.registeredWorkshops?.includes(workshopId) !== studentRegistrations.includes(workshopId)) {
-        setStudents(prev => {
-          const updatedStudents = prev.map(student => 
-            student.id === studentId 
-              ? { ...student, registeredWorkshops: studentRegistrations }
-              : student
-          )
-          return updatedStudents
-        })
-        // Force a re-render
-        setForceUpdate(prev => prev + 1)
-      }
-      
       return studentRegistrations.includes(workshopId)
     } catch (error) {
       console.error('Error checking workshop registration:', error)
@@ -258,8 +239,7 @@ export const StudentProvider = ({ children }) => {
     unregisterFromWorkshop,
     isRegisteredForWorkshop,
     addCertificate,
-    getStudentCertificates,
-    forceUpdate
+    getStudentCertificates
   }
 
   return (
