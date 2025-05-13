@@ -9,7 +9,12 @@ const PendingCompanies = () => {
   const handleApprove = (companyId) => {
     const approvedCompany = approveCompany(companyId);
     if (approvedCompany) {
-      addApprovedCompany(approvedCompany);
+      addApprovedCompany({
+        ...approvedCompany,
+        name: approvedCompany.companyName,
+        email: approvedCompany.companyEmail,
+        size: approvedCompany.companySize,
+      });
     }
   };
 
@@ -66,12 +71,19 @@ const PendingCompanies = () => {
             </div>
 
             {company.companyLogo && (
-              <div className="company-logo">
+              <div className="company-logo" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '18px 0 10px 0'}}>
                 <label className="company-logo-label">Company Logo:</label>
                 <img
                   src={URL.createObjectURL(company.companyLogo)}
                   alt="Company Logo"
                 />
+                <a
+                  href={URL.createObjectURL(company.companyLogo)}
+                  download={`${company.companyName}_logo`}
+                  style={{marginLeft: 12 }}
+                >
+                  Download Logo
+                </a>
               </div>
             )}
 
@@ -80,7 +92,16 @@ const PendingCompanies = () => {
                 <label>Submitted Documents:</label>
                 <ul>
                   {company.documents.map((doc, index) => (
-                    <li key={index}>{doc.name}</li>
+                    <li key={index}>
+                      {doc.name}
+                      <a
+                        href={URL.createObjectURL(doc)}
+                        download={doc.name}
+                        style={{ marginLeft: 8 }}
+                      >
+                        Download
+                      </a>
+                    </li>
                   ))}
                 </ul>
               </div>

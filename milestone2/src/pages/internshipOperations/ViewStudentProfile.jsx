@@ -5,6 +5,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useStudent } from '../../context/StudentContext';
 import './ViewStudentProfile.css';
 
+const STATUS_LABELS = {
+  applied: 'Applied',
+  completed: 'Completed',
+  undergoing: 'Undergoing',
+};
+
 const ViewStudentProfile = () => {
   const { studentId } = useParams();
   const navigate = useNavigate();
@@ -13,7 +19,7 @@ const ViewStudentProfile = () => {
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -21,12 +27,10 @@ const ViewStudentProfile = () => {
         if (!studentId) {
           throw new Error('No student ID provided');
         }
-    
         const studentData = await getStudentById(studentId);
         if (!studentData) {
           throw new Error('Student not found');
         }
-        
         setStudent(studentData);
       } catch (err) {
         setError(err.message);
@@ -35,7 +39,6 @@ const ViewStudentProfile = () => {
         setLoading(false);
       }
     };
-
     fetchStudent();
   }, [studentId, getStudentById]);
 
@@ -43,132 +46,94 @@ const ViewStudentProfile = () => {
   if (error) return <div className="error">Error: {error}</div>;
   if (!student) return <div className="error">Student not found</div>;
 
+  // Gather all internships with their status
+  const allInternships = [
+    ...(student.appliedInternships?.map(i => ({ ...i, status: i.status?.toLowerCase() || 'applied' })) || []),
+    ...(student.completedInternships?.map(id => ({ internshipId: id, status: 'completed' })) || []),
+  ];
+  // Remove duplicates (if any)
+  const uniqueInternships = Object.values(
+    allInternships.reduce((acc, curr) => {
+      acc[curr.internshipId] = curr;
+      return acc;
+    }, {})
+  );
+  // Only show applied, completed, undergoing
+  const filteredByStatus = uniqueInternships.filter(i => ['applied', 'completed', 'undergoing'].includes(i.status));
+  // Apply filter
+  const displayedInternships =
+    filter === 'all' ? filteredByStatus : filteredByStatus.filter(i => i.status === filter);
+
   return (
-    <div className="view-student-profile">
+    <div className="view-student-profile single-col-layout">
       <div className="profile-header">
-        <button className="btn btn-outline" onClick={() => navigate('/admin/students')}>
+        <button
+          className="btn btn-outline"
+          style={{ position: "absolute", left: 0, top: 0 }}
+          onClick={() => navigate('/admin/students')}
+        >
           ← Back
         </button>
         <h1>{student.name || 'Unnamed Student'}</h1>
       </div>
 
-      <div className="profile-content">
-        <div className="profile-section">
-          <h2>Personal Information</h2>
-          <div className="info-grid">
-            <div className="info-item">
-              <label>Full Name</label>
-              <p>{student.fullName || student.name || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <label>Email</label>
-              <p>{student.email || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <label>Phone</label>
-              <p>{student.phone || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <label>Major</label>
-              <p>{student.major || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <label>Semester</label>
-              <p>{student.semester || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <label>Graduation Year</label>
-              <p>{student.graduationYear || 'N/A'}</p>
-            </div>
-          </div>
+      {/* Student Info Card */}
+      <div className="student-info-card full-width">
+        <div className="student-info-list">
+          <p><strong>Email:</strong> {student.email || 'N/A'}</p>
+          <p><strong>University:</strong> {student.university || 'N/A'}</p>
+          <p><strong>Major:</strong> {student.major || 'N/A'}</p>
+          <p><strong>Graduation Year:</strong> {student.graduationYear || 'N/A'}</p>
+          {student.isPro && <div className="pro-badge">Pro Student</div>}
         </div>
+      </div>
 
-        <div className="profile-section">
-          <h2>Professional Information</h2>
-          <div className="info-grid">
-            <div className="info-item full-width">
-              <label>Bio</label>
-              <p>{student.bio || 'No bio provided'}</p>
-            </div>
-            <div className="info-item">
-              <label>Skills</label>
-              <p>{student.skills || 'No skills listed'}</p>
-            </div>
-            <div className="info-item">
-              <label>Job Interests</label>
-              <p>{student.jobInterests || 'No job interests specified'}</p>
-            </div>
-            <div className="info-item">
-              <label>LinkedIn</label>
-              <p>{student.linkedin ? <a href={student.linkedin} target="_blank" rel="noopener noreferrer">{student.linkedin}</a> : 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <label>GitHub</label>
-              <p>{student.github ? <a href={student.github} target="_blank" rel="noopener noreferrer">{student.github}</a> : 'N/A'}</p>
-            </div>
-          </div>
+      {/* Overview Section */}
+      <div className="profile-details full-width">
+        <div className="overview-section">
+          <p style={{ textAlign: 'center', fontWeight: 500, fontSize: '1.1rem' }}>
+            This student is a {student.isPro ? 'Pro' : 'Standard'} user.
+          </p>
         </div>
-
-        <div className="profile-section">
-          <h2>Previous Internships</h2>
-          {student.internships?.length > 0 ? (
-            <div className="internships-list">
-              {student.internships.map((internship, index) => (
-                <div key={index} className="internship-card">
-                  <h3>{internship.company}</h3>
-                  <p className="role">{internship.role}</p>
-                  <p className="duration">{internship.duration}</p>
-                  <p className="responsibilities">{internship.responsibilities}</p>
+        <div className="internship-filter-bar">
+          <button
+            className={`internship-filter-btn${filter === 'all' ? ' active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All
+          </button>
+          <button
+            className={`internship-filter-btn${filter === 'applied' ? ' active' : ''}`}
+            onClick={() => setFilter('applied')}
+          >
+            Applied
+          </button>
+          <button
+            className={`internship-filter-btn${filter === 'undergoing' ? ' active' : ''}`}
+            onClick={() => setFilter('undergoing')}
+          >
+            Undergoing
+          </button>
+          <button
+            className={`internship-filter-btn${filter === 'completed' ? ' active' : ''}`}
+            onClick={() => setFilter('completed')}
+          >
+            Completed
+          </button>
+        </div>
+        <div className="internship-cards-grid single-col">
+          {displayedInternships.length ? (
+            displayedInternships.map(({ internshipId, status }) => (
+              <div key={internshipId} className="internship-card">
+                <div className="internship-card-header">
+                  <span className="internship-id">Internship ID: {internshipId}</span>
+                  <span className={`status-badge ${status}`}>{STATUS_LABELS[status] || status}</span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p>No previous internships recorded</p>
-          )}
-        </div>
-
-        <div className="profile-section">
-          <h2>College Activities</h2>
-          {student.activities?.length > 0 ? (
-            <div className="activities-list">
-              {student.activities.map((activity, index) => (
-                <div key={index} className="activity-card">
-                  <h3>{activity.name}</h3>
-                  <p>{activity.description}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>No college activities recorded</p>
-          )}
-        </div>
-
-        <div className="profile-section">
-          <h2>Documents</h2>
-          <div className="documents-section">
-            {student.documents?.cv ? (
-              <div className="document-item">
-                <span>CV</span>
-                <a href={URL.createObjectURL(student.documents.cv)} target="_blank" rel="noopener noreferrer">View CV</a>
               </div>
-            ) : (
-              <p>No CV uploaded</p>
-            )}
-            
-            {student.documents?.additionalDocuments?.length > 0 ? (
-              <div className="additional-documents">
-                <h3>Additional Documents</h3>
-                {student.documents.additionalDocuments.map((doc, index) => (
-                  <div key={index} className="document-item">
-                    <span>{doc.name}</span>
-                    <a href={URL.createObjectURL(doc)} target="_blank" rel="noopener noreferrer">View Document</a>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>No additional documents uploaded</p>
-            )}
-          </div>
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', color: '#888', marginTop: '24px' }}>No internships found for this filter.</p>
+          )}
         </div>
       </div>
     </div>

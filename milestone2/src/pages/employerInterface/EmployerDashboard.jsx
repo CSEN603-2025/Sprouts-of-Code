@@ -47,31 +47,6 @@ const EmployerDashboard = () => {
           </Link>
         </div>
       </div>
-      
-      <div className="quick-actions card">
-        <div className="card-header">
-          <h2>Quick Actions</h2>
-        </div>
-        
-        <div className="actions-grid">
-          <button className="action-button">
-            <span className="action-icon">📝</span>
-            Create New Internship
-          </button>
-          <button className="action-button">
-            <span className="action-icon">👥</span>
-            View Applications
-          </button>
-          <button className="action-button">
-            <span className="action-icon">📊</span>
-            View Analytics
-          </button>
-          <button className="action-button">
-            <span className="action-icon">⚙️</span>
-            Update Profile
-          </button>
-        </div>
-      </div>
     </div>
   )
 }
