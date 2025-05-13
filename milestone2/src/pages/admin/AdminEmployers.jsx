@@ -18,8 +18,8 @@ const AdminEmployers = () => {
 
   // Handle filtering
   const filteredCompanies = approvedCompanies.filter(company => {
-    const matchesSearch = company.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesIndustry = selectedIndustry === 'All' || company.industry === selectedIndustry;
+    const matchesSearch = (company.name || '').toLowerCase().includes(searchText.toLowerCase());
+    const matchesIndustry = selectedIndustry === 'All' || (company.industry || '') === selectedIndustry;
     return matchesSearch && matchesIndustry;
   });
 

@@ -5,6 +5,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useStudent } from '../../context/StudentContext';
 import './ViewStudentProfile.css';
 
+const STATUS_LABELS = {
+  applied: 'Applied',
+  completed: 'Completed',
+  undergoing: 'Undergoing',
+};
+
 const ViewStudentProfile = () => {
   const { studentId } = useParams();
   const navigate = useNavigate();
@@ -13,7 +19,7 @@ const ViewStudentProfile = () => {
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -21,12 +27,10 @@ const ViewStudentProfile = () => {
         if (!studentId) {
           throw new Error('No student ID provided');
         }
-    
         const studentData = await getStudentById(studentId);
         if (!studentData) {
           throw new Error('Student not found');
         }
-        
         setStudent(studentData);
       } catch (err) {
         setError(err.message);
@@ -35,7 +39,6 @@ const ViewStudentProfile = () => {
         setLoading(false);
       }
     };
-
     fetchStudent();
   }, [studentId, getStudentById]);
 
@@ -43,81 +46,95 @@ const ViewStudentProfile = () => {
   if (error) return <div className="error">Error: {error}</div>;
   if (!student) return <div className="error">Student not found</div>;
 
+  // Gather all internships with their status
+  const allInternships = [
+    ...(student.appliedInternships?.map(i => ({ ...i, status: i.status?.toLowerCase() || 'applied' })) || []),
+    ...(student.completedInternships?.map(id => ({ internshipId: id, status: 'completed' })) || []),
+  ];
+  // Remove duplicates (if any)
+  const uniqueInternships = Object.values(
+    allInternships.reduce((acc, curr) => {
+      acc[curr.internshipId] = curr;
+      return acc;
+    }, {})
+  );
+  // Only show applied, completed, undergoing
+  const filteredByStatus = uniqueInternships.filter(i => ['applied', 'completed', 'undergoing'].includes(i.status));
+  // Apply filter
+  const displayedInternships =
+    filter === 'all' ? filteredByStatus : filteredByStatus.filter(i => i.status === filter);
+
   return (
-    <div className="view-student-profile">
+    <div className="view-student-profile single-col-layout">
       <div className="profile-header">
-        <button className="btn btn-outline" onClick={() => navigate('/admin/students')}>
-          ← Back 
+        <button
+          className="btn btn-outline"
+          style={{ position: "absolute", left: 0, top: 0 }}
+          onClick={() => navigate('/admin/students')}
+        >
+          ← Back
         </button>
         <h1>{student.name || 'Unnamed Student'}</h1>
       </div>
 
-      <div className="profile-sidebar">
-        <p><strong>Email:</strong> {student.email || 'N/A'}</p>
-        <p><strong>University:</strong> {student.university || 'N/A'}</p>
-        <p><strong>Major:</strong> {student.major || 'N/A'}</p>
-        <p><strong>Graduation Year:</strong> {student.graduationYear || 'N/A'}</p>
-        {student.isPro && <div className="pro-badge">Pro Student</div>}
+      {/* Student Info Card */}
+      <div className="student-info-card full-width">
+        <div className="student-info-list">
+          <p><strong>Email:</strong> {student.email || 'N/A'}</p>
+          <p><strong>University:</strong> {student.university || 'N/A'}</p>
+          <p><strong>Major:</strong> {student.major || 'N/A'}</p>
+          <p><strong>Graduation Year:</strong> {student.graduationYear || 'N/A'}</p>
+          {student.isPro && <div className="pro-badge">Pro Student</div>}
+        </div>
+      </div>
 
-        <div className="profile-tabs">
+      {/* Overview Section */}
+      <div className="profile-details full-width">
+        <div className="overview-section">
+          <p style={{ textAlign: 'center', fontWeight: 500, fontSize: '1.1rem' }}>
+            This student is a {student.isPro ? 'Pro' : 'Standard'} user.
+          </p>
+        </div>
+        <div className="internship-filter-bar">
           <button
-            className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
+            className={`internship-filter-btn${filter === 'all' ? ' active' : ''}`}
+            onClick={() => setFilter('all')}
           >
-            Overview
+            All
           </button>
           <button
-            className={`tab-btn ${activeTab === 'applied' ? 'active' : ''}`}
-            onClick={() => setActiveTab('applied')}
+            className={`internship-filter-btn${filter === 'applied' ? ' active' : ''}`}
+            onClick={() => setFilter('applied')}
           >
             Applied
           </button>
           <button
-            className={`tab-btn ${activeTab === 'completed' ? 'active' : ''}`}
-            onClick={() => setActiveTab('completed')}
+            className={`internship-filter-btn${filter === 'undergoing' ? ' active' : ''}`}
+            onClick={() => setFilter('undergoing')}
+          >
+            Undergoing
+          </button>
+          <button
+            className={`internship-filter-btn${filter === 'completed' ? ' active' : ''}`}
+            onClick={() => setFilter('completed')}
           >
             Completed
           </button>
         </div>
-      </div>
-
-      <div className="profile-details">
-        {activeTab === 'overview' && (
-          <div className="overview-section">
-            <p>This student is a {student.isPro ? 'Pro' : 'Standard'} user.</p>
-          </div>
-        )}
-
-        {activeTab === 'applied' && (
-          <div className="applications-section">
-            <h3>Applied Internships</h3>
-            {student.appliedInternships?.length ? (
-              student.appliedInternships.map(({ internshipId, status }) => (
-                <div key={internshipId} className="application-card">
-                  <p>ID: {internshipId}</p>
-                  <p>Status: {status?.charAt(0).toUpperCase() + status?.slice(1) || 'Unknown'}</p>
+        <div className="internship-cards-grid single-col">
+          {displayedInternships.length ? (
+            displayedInternships.map(({ internshipId, status }) => (
+              <div key={internshipId} className="internship-card">
+                <div className="internship-card-header">
+                  <span className="internship-id">Internship ID: {internshipId}</span>
+                  <span className={`status-badge ${status}`}>{STATUS_LABELS[status] || status}</span>
                 </div>
-              ))
-            ) : (
-              <p>No applications yet.</p>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'completed' && (
-          <div className="completed-section">
-            <h3>Completed Internships</h3>
-            {student.completedInternships?.length ? (
-              <ul>
-                {student.completedInternships.map(id => (
-                  <li key={id}>Internship ID: {id}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>None completed yet.</p>
-            )}
-          </div>
-        )}
+              </div>
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', color: '#888', marginTop: '24px' }}>No internships found for this filter.</p>
+          )}
+        </div>
       </div>
     </div>
   );

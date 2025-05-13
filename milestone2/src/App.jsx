@@ -92,98 +92,98 @@ const DefaultRedirect = () => {
 const App = () => {
   return (
     <Router>
-      <AuthProvider>
-        <AppointmentProvider>
-          <CompanyProvider>
-            <PendingCompanyProvider>
-              <StudentProvider>
+      <CompanyProvider>
+        <StudentProvider>
+          <AuthProvider>
+            <AppointmentProvider>
+              <PendingCompanyProvider>
                 <InternshipProvider>
                   <EvaluationProvider>
                     <ReportPeriodProvider>
                       <InternshipReportProvider>
                         <WorkshopProvider>
-                      <Routes>
-                        {/* Public Routes */}
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/submission-success" element={<SubmissionSuccess />} />
+                          <Routes>
+                            {/* Public Routes */}
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/submission-success" element={<SubmissionSuccess />} />
 
-                        {/* Admin Routes */}
-                        <Route
-                          path="/admin"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AdminDashboard />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/company-registration"
-                          element={<CompanyRegistration />}
-                        />
-                        <Route
-                          path="/admin/pending-companies"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <PendingCompanies />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/students"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AdminStudents />
-                            </ProtectedRoute>
-                          }
-                        />
-                               <Route
-                        path="/admin/students/:studentId"
-                        element={
-                          <ProtectedRoute allowedRoles={['admin']}>
-                            <ViewStudentProfile />
-                          </ProtectedRoute>
-                        }
-                      />
-                        <Route
-                          path="/admin/employers"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AdminEmployers />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/internships"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AdminInternships />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/internship-management"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <InternshipManagement />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/evaluations"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AdminEvaluations />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/appointments"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AdminAppointments />
-                            </ProtectedRoute>
-                          }
-                        />
+                            {/* Admin Routes */}
+                            <Route
+                              path="/admin"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <AdminDashboard />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/company-registration"
+                              element={<CompanyRegistration />}
+                            />
+                            <Route
+                              path="/admin/pending-companies"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <PendingCompanies />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/students"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <AdminStudents />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/students/:studentId"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <ViewStudentProfile />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/employers"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <AdminEmployers />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/internships"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <AdminInternships />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/internship-management"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <InternshipManagement />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/evaluations"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <AdminEvaluations />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/appointments"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <AdminAppointments />
+                                </ProtectedRoute>
+                              }
+                            />
                             <Route
                               path="/admin/workshops"
                               element={
@@ -193,194 +193,201 @@ const App = () => {
                               }
                             />
 
-                        {/* Employer Routes */}
-                        <Route
-                          path="/employer"
-                          element={
-                            <ProtectedRoute allowedRoles={['employer']}>
-                              <EmployerDashboard />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/employer/internships"
-                          element={
-                            <ProtectedRoute allowedRoles={['employer']}>
-                              <InternshipOperations />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/employer/profile"
-                          element={
-                            <ProtectedRoute allowedRoles={['employer']}>
-                              <EmployerProfile />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/employer/applications"
-                          element={
-                            <ProtectedRoute allowedRoles={['employer']}>
-                              <EmployerApplications />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/employer/interns"
-                          element={
-                            <ProtectedRoute allowedRoles={['employer']}>
-                              <EmployerInterns />
-                            </ProtectedRoute>
-                          }
-                        />
+                            {/* Employer Routes */}
+                            <Route
+                              path="/employer"
+                              element={
+                                <ProtectedRoute allowedRoles={['employer']}>
+                                  <EmployerDashboard />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/employer/internships"
+                              element={
+                                <ProtectedRoute allowedRoles={['employer']}>
+                                  <InternshipOperations />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/employer/profile"
+                              element={
+                                <ProtectedRoute allowedRoles={['employer']}>
+                                  <EmployerProfile />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/employer/applications"
+                              element={
+                                <ProtectedRoute allowedRoles={['employer']}>
+                                  <EmployerApplications />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/employer/interns"
+                              element={
+                                <ProtectedRoute allowedRoles={['employer']}>
+                                  <EmployerInterns />
+                                </ProtectedRoute>
+                              }
+                            />
 
-                        {/* Student Routes */}
-                        <Route
-                          path="/student"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <StudentDashboard />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/student/workshops"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <Workshops />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/student/workshops/:workshopId"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <WorkshopPlayer />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/student/profile"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <ProfileSetup />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/student/onboarding"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <StudentOnboarding />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/student/experience"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <InternshipExperience />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route path="/student/internships" element={<AllInternships />} />
-                        <Route
-                          path="/student/applications"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <MyApplications />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/student/profile-viewers"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <ProfileViewers />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/student/assessments"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <OnlineAssessments />
-                            </ProtectedRoute>
-                          }
-                        />
+                            {/* Student Routes */}
+                            <Route
+                              path="/student"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <StudentDashboard />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/workshops"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <Workshops />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/workshops/:workshopId"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <WorkshopPlayer />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/profile"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <ProfileSetup />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/onboarding"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <StudentOnboarding />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/experience"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <InternshipExperience />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/internships"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <AllInternships />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/applications"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <MyApplications />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/profile-viewers"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <ProfileViewers />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/assessments"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <OnlineAssessments />
+                                </ProtectedRoute>
+                              }
+                            />
 
-                        <Route
-                          path="/student/appointments"
-                          element={
-                            <ProtectedRoute allowedRoles={['student']}>
-                              <Appointments />
-                            </ProtectedRoute>
-                          }
-                        />
+                            <Route
+                              path="/student/appointments"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <Appointments />
+                                </ProtectedRoute>
+                              }
+                            />
 
-                        {/* Analytics Routes */}
-                        <Route
-                          path="/analytics"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <AnalyticsDashboard />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/analytics/reports"
-                          element={
-                            <ProtectedRoute allowedRoles={['admin']}>
-                              <Reports />
-                            </ProtectedRoute>
-                          }
-                        />
+                            {/* Analytics Routes */}
+                            <Route
+                              path="/analytics"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <AnalyticsDashboard />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/analytics/reports"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <Reports />
+                                </ProtectedRoute>
+                              }
+                            />
 
-                        {/* Faculty Routes */}
-                        <Route
-                          path="/faculty"
-                          element={
-                            <ProtectedRoute allowedRoles={['FacultyAcademic']}>
-                              <FacultyDashboard />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="/faculty/reports"
-                          element={
-                            <ProtectedRoute allowedRoles={['FacultyAcademic']}>
-                              <FacultyReports />
-                            </ProtectedRoute>
-                          }
-                        />
+                            {/* Faculty Routes */}
+                            <Route
+                              path="/faculty"
+                              element={
+                                <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                                  <FacultyDashboard />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/faculty/reports"
+                              element={
+                                <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                                  <FacultyReports />
+                                </ProtectedRoute>
+                              }
+                            />
 
-                        {/* Call Routes */}
-                        <Route
-                          path="/call"
-                          element={<CallMeeting />}
-                        />
+                            {/* Call Routes */}
+                            <Route
+                              path="/call"
+                              element={<CallMeeting />}
+                            />
 
-                        {/* Default Route */}
-                        <Route
-                          path="/"
-                          element={
-                            <ProtectedRoute>
-                              <DefaultRedirect />
-                            </ProtectedRoute>
-                          }
-                        />
-                      </Routes>
+                            {/* Default Route */}
+                            <Route
+                              path="/"
+                              element={
+                                <ProtectedRoute>
+                                  <DefaultRedirect />
+                                </ProtectedRoute>
+                              }
+                            />
+                          </Routes>
                         </WorkshopProvider>
                       </InternshipReportProvider>
                     </ReportPeriodProvider>
                   </EvaluationProvider>
                 </InternshipProvider>
-              </StudentProvider>
-            </PendingCompanyProvider>
-          </CompanyProvider>
-        </AppointmentProvider>
-      </AuthProvider>
+              </PendingCompanyProvider>
+            </AppointmentProvider>
+          </AuthProvider>
+        </StudentProvider>
+      </CompanyProvider>
     </Router>
   )
 }
