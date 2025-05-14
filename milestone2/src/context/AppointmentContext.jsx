@@ -1,31 +1,72 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { dummyAppointments, addAppointment as addDummyAppointment, updateAppointmentStatus as updateDummyAppointmentStatus } from '../data/dummyData';
+import { useStudent } from './StudentContext';
 
 const AppointmentContext = createContext();
 
 export const AppointmentProvider = ({ children }) => {
   const [appointments, setAppointments] = useState([]);
+  const { addNotification } = useStudent();
 
+  // Initialize appointments and create notifications
   useEffect(() => {
+    console.log('Initializing appointments and notifications');
+    
     // Initialize with dummy data
     setAppointments(dummyAppointments);
-  }, []);
+    
+    // Check if we've already shown dummy notifications
+    const hasShownDummyNotifications = localStorage.getItem('has_shown_dummy_notifications');
+    
+    if (!hasShownDummyNotifications) {
+      // Create notifications for existing dummy appointments
+      dummyAppointments.forEach(appointment => {
+        if (appointment.status === 'accepted' || appointment.status === 'rejected') {
+          const studentId = appointment.senderId === 'SCAD' ? appointment.receiverId : appointment.senderId;
+          const date = new Date(appointment.date).toLocaleString();
+          const message = `Your appointment with SCAD on ${date} was ${appointment.status}: ${appointment.description}`;
+          
+          // Always create notification for dummy appointments
+          console.log('Creating notification for dummy appointment:', appointment.id);
+          addNotification(studentId, message);
+        }
+      });
+      
+      // Mark that we've shown the dummy notifications
+      localStorage.setItem('has_shown_dummy_notifications', 'true');
+    }
+  }, [addNotification]);
 
   const addAppointment = (appointment) => {
     const newId = addDummyAppointment(appointment);
     setAppointments(prevAppointments => [...prevAppointments, { ...appointment, id: newId }]);
+    
+    // Create notification for the student
+    const studentId = appointment.senderId === 'SCAD' ? appointment.receiverId : appointment.senderId;
+    const date = new Date(appointment.date).toLocaleString();
+    const message = `New appointment request with SCAD on ${date}: ${appointment.description}`;
+    addNotification(studentId, message);
+    
     return newId;
   };
 
   const updateAppointmentStatus = (id, newStatus) => {
     if (updateDummyAppointmentStatus(id, newStatus)) {
-      setAppointments(prevAppointments =>
-        prevAppointments.map(appointment =>
-          appointment.id === id
-            ? { ...appointment, status: newStatus }
-            : appointment
-        )
-      );
+      setAppointments(prevAppointments => {
+        const updatedAppointments = prevAppointments.map(appointment => {
+          if (appointment.id === id) {
+            // Create notification for the student
+            const studentId = appointment.senderId === 'SCAD' ? appointment.receiverId : appointment.senderId;
+            const date = new Date(appointment.date).toLocaleString();
+            const message = `Your appointment with SCAD on ${date} was ${newStatus}: ${appointment.description}`;
+            addNotification(studentId, message);
+            
+            return { ...appointment, status: newStatus };
+          }
+          return appointment;
+        });
+        return updatedAppointments;
+      });
       return true;
     }
     return false;

@@ -71,22 +71,119 @@ export const StudentProvider = ({ children }) => {
     return students.find(student => student.email === email)
   }
 
-  // Add notification helper function
+  // Add notification helper function with improved logging and error handling
   const addNotification = (studentId, message) => {
+    if (!studentId) {
+      console.error('Cannot add notification: No student ID provided');
+      return;
+    }
+
+    console.log('Adding notification:', { studentId, message });
+    
+    // Ensure studentId is a string
+    const stringStudentId = studentId.toString();
+    
     const newNotification = {
       id: Date.now(),
       message,
       time: new Date().toISOString(),
       read: false
+    };
+
+    try {
+      // Get current notifications from localStorage
+      const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${stringStudentId}`) || '[]');
+      console.log('Current stored notifications:', storedNotifications);
+      
+      const updatedNotifications = [newNotification, ...storedNotifications];
+      console.log('Updated notifications to store:', updatedNotifications);
+      
+      // Save to localStorage
+      localStorage.setItem(`notifications_${stringStudentId}`, JSON.stringify(updatedNotifications));
+      console.log('Saved notifications to localStorage for student:', stringStudentId);
+
+      // Dispatch custom event to notify about the update
+      window.dispatchEvent(new Event('notificationUpdate'));
+    } catch (error) {
+      console.error('Error saving notification:', error);
+    }
+  };
+
+  // Check for new internship cycle and send notifications
+  const checkInternshipCycle = () => {
+    const reportStartDate = localStorage.getItem('reportStartDate');
+    console.log('Checking internship cycle. Start date:', reportStartDate);
+    
+    if (!reportStartDate) {
+      console.log('No start date found in localStorage');
+      return;
     }
 
-    // Get current notifications from localStorage
-    const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${studentId}`) || '[]')
-    const updatedNotifications = [newNotification, ...storedNotifications]
+    const startDate = new Date(reportStartDate);
+    const now = new Date();
+    const diffTime = startDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    // Save to localStorage
-    localStorage.setItem(`notifications_${studentId}`, JSON.stringify(updatedNotifications))
-  }
+    console.log('Date calculations:', {
+      startDate: startDate.toISOString(),
+      now: now.toISOString(),
+      diffDays
+    });
+
+    // Notify all students if a new cycle is about to begin
+    students.forEach(student => {
+      if (!student || !student.id) {
+        console.log('Invalid student data:', student);
+        return;
+      }
+
+      // Ensure student.id is a string
+      const stringStudentId = student.id.toString();
+      console.log('Processing student:', { id: stringStudentId, email: student.email });
+
+      // Check if we already notified about this cycle
+      const cycleNotificationKey = `cycle_notification_${stringStudentId}_${reportStartDate}`;
+      const hasNotified = localStorage.getItem(cycleNotificationKey);
+
+      if (!hasNotified) {
+        if (diffDays === 0) {
+          console.log('Adding notification for cycle start today');
+          addNotification(stringStudentId, 'A new internship cycle begins today! Check the available internships.');
+          localStorage.setItem(cycleNotificationKey, 'true');
+        } else if (diffDays > 0 && diffDays <= 7) {
+          console.log('Adding notification for upcoming cycle');
+          addNotification(stringStudentId, `A new internship cycle will begin in ${diffDays} days. Start preparing your applications!`);
+          localStorage.setItem(cycleNotificationKey, 'true');
+        }
+      }
+    });
+  };
+
+  // Initialize notifications for existing data
+  useEffect(() => {
+    console.log('Initializing notifications for existing data');
+    
+    // Check internship cycle
+    checkInternshipCycle();
+    
+    // Add event listener for reportStartDate changes
+    const handleStorageChange = (e) => {
+      if (e.key === 'reportStartDate') {
+        console.log('Report start date changed, checking cycle');
+        checkInternshipCycle();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Check periodically
+    const interval = setInterval(checkInternshipCycle, 60 * 60 * 1000); // Check every hour
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [students]);
 
   // Workshop registration functions
   const registerForWorkshop = async (studentId, workshopId, workshopTitle) => {
@@ -114,17 +211,8 @@ export const StudentProvider = ({ children }) => {
           return updatedStudents
         })
 
-        // Add notification in a single operation
-        const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${studentId}`) || '[]')
-        const newNotification = {
-          id: Date.now(),
-          message: `Successfully registered for "${workshopTitle}". You will receive a reminder before the workshop.`,
-          read: false,
-          time: new Date().toISOString()
-        }
-        
-        const updatedNotifications = [newNotification, ...storedNotifications]
-        localStorage.setItem(`notifications_${studentId}`, JSON.stringify(updatedNotifications))
+        // Add notification using the addNotification function
+        addNotification(studentId, `Successfully registered for "${workshopTitle}". You will receive a reminder before the workshop.`);
       }
     } catch (error) {
       console.error('Error registering for workshop:', error)
@@ -157,17 +245,8 @@ export const StudentProvider = ({ children }) => {
           return updatedStudents
         })
 
-        // Add notification in a single operation
-        const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${studentId}`) || '[]')
-        const newNotification = {
-          id: Date.now(),
-          message: `Successfully unregistered from "${workshopTitle}".`,
-          read: false,
-          time: new Date().toISOString()
-        }
-        
-        const updatedNotifications = [newNotification, ...storedNotifications]
-        localStorage.setItem(`notifications_${studentId}`, JSON.stringify(updatedNotifications))
+        // Add notification using the addNotification function
+        addNotification(studentId, `Successfully unregistered from "${workshopTitle}".`);
       }
     } catch (error) {
       console.error('Error unregistering from workshop:', error)
@@ -239,7 +318,9 @@ export const StudentProvider = ({ children }) => {
     unregisterFromWorkshop,
     isRegisteredForWorkshop,
     addCertificate,
-    getStudentCertificates
+    getStudentCertificates,
+    addNotification,
+    checkInternshipCycle
   }
 
   return (
@@ -248,3 +329,4 @@ export const StudentProvider = ({ children }) => {
     </StudentContext.Provider>
   )
 } 
+ 

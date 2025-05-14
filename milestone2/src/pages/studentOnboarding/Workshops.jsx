@@ -20,6 +20,7 @@ const Workshops = () => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState(null);
+  const [notificationTrigger, setNotificationTrigger] = useState(0);
 
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
@@ -68,8 +69,8 @@ const Workshops = () => {
         await registerForWorkshop(user.id, workshopId, workshop.title);
       }
 
-      // Force a re-render by updating a local state
-      setSearch(prev => prev); // This is a hack to force re-render without changing the actual search value
+      // Trigger notification update
+      setNotificationTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Error handling registration:', error);
     } finally {
