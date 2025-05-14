@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { dummyAppointments, addAppointment as addDummyAppointment, updateAppointmentStatus as updateDummyAppointmentStatus } from '../data/dummyData';
 import { useStudent } from './StudentContext';
+import { useAuth } from './AuthContext';
 
 const AppointmentContext = createContext();
 
 export const AppointmentProvider = ({ children }) => {
   const [appointments, setAppointments] = useState([]);
   const { addNotification } = useStudent();
+  const { user } = useAuth();
 
   // Initialize appointments and create notifications
   useEffect(() => {
@@ -15,27 +17,33 @@ export const AppointmentProvider = ({ children }) => {
     // Initialize with dummy data
     setAppointments(dummyAppointments);
     
-    // Check if we've already shown dummy notifications
-    const hasShownDummyNotifications = localStorage.getItem('has_shown_dummy_notifications');
+    if (!user || !user.id) {
+      console.log('No user logged in, skipping dummy notifications');
+      return;
+    }
+
+    // Check if we've already shown dummy notifications for this user
+    const hasShownDummyNotifications = localStorage.getItem(`has_shown_dummy_notifications_${user.id}`);
     
     if (!hasShownDummyNotifications) {
+      console.log('Creating dummy notifications for user:', user.id);
+      
       // Create notifications for existing dummy appointments
       dummyAppointments.forEach(appointment => {
         if (appointment.status === 'accepted' || appointment.status === 'rejected') {
-          const studentId = appointment.senderId === 'SCAD' ? appointment.receiverId : appointment.senderId;
           const date = new Date(appointment.date).toLocaleString();
           const message = `Your appointment with SCAD on ${date} was ${appointment.status}: ${appointment.description}`;
           
-          // Always create notification for dummy appointments
+          // Create notification for the logged-in user
           console.log('Creating notification for dummy appointment:', appointment.id);
-          addNotification(studentId, message);
+          addNotification(user.id, message);
         }
       });
       
-      // Mark that we've shown the dummy notifications
-      localStorage.setItem('has_shown_dummy_notifications', 'true');
+      // Mark that we've shown the dummy notifications for this user
+      localStorage.setItem(`has_shown_dummy_notifications_${user.id}`, 'true');
     }
-  }, [addNotification]);
+  }, [addNotification, user]);
 
   const addAppointment = (appointment) => {
     const newId = addDummyAppointment(appointment);
