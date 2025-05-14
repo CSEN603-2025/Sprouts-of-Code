@@ -26,6 +26,7 @@ import InternshipManagement from './pages/internshipOperations/InternshipManagem
 import AdminEvaluations from './pages/internshipOperations/AdminEvaluations'
 import AdminAppointments from './pages/admin/AdminAppointments'
 import WorkshopManagement from './pages/admin/WorkshopManagement'
+import SubmittedReports from './pages/admin/SubmittedReports'
 
 // Employer Pages
 import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
@@ -48,6 +49,7 @@ import OnlineAssessments from './pages/studentOnboarding/OnlineAssessments'
 import Workshops from './pages/studentOnboarding/Workshops'
 import WorkshopPlayer from './pages/studentOnboarding/WorkshopPlayer'
 import Appointments from './pages/studentOnboarding/Appointments'
+import SubmitReport from './pages/student/SubmitReport'
 
 // Analytics Pages
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
@@ -192,6 +194,14 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
+                            <Route
+                              path="/admin/submitted-reports"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <SubmittedReports />
+                                </ProtectedRoute>
+                              }
+                            />
 
                             {/* Employer Routes */}
                             <Route
@@ -322,6 +332,14 @@ const App = () => {
                               element={
                                 <ProtectedRoute allowedRoles={['student']}>
                                   <Appointments />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/submit-report/:internshipId"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <SubmitReport />
                                 </ProtectedRoute>
                               }
                             />

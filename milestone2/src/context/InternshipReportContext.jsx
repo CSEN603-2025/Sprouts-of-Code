@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { dummyStudents, dummyInternships } from '../data/dummyData';
 
 const InternshipReportContext = createContext();
 
@@ -124,17 +125,24 @@ export const InternshipReportProvider = ({ children }) => {
 
   const updateReport = (userId, internshipId, report) => {
     const { userReports } = getUserData(userId);
-    setReports(prev => ({
-      ...prev,
-      [userId]: {
-        ...userReports,
-        [internshipId]: {
-          ...userReports[internshipId],
-          ...report,
-          updatedAt: new Date().toISOString()
+    setReports(prev => {
+      const updatedReports = {
+        ...prev,
+        [userId]: {
+          ...userReports,
+          [internshipId]: {
+            ...userReports[internshipId],
+            ...report,
+            updatedAt: new Date().toISOString()
+          }
         }
-      }
-    }));
+      };
+      
+      // Save to localStorage immediately
+      localStorage.setItem('internship_reports', JSON.stringify(updatedReports));
+      
+      return updatedReports;
+    });
   };
 
   const deleteReport = (userId, internshipId) => {
@@ -154,19 +162,29 @@ export const InternshipReportProvider = ({ children }) => {
     return userReports[internshipId];
   };
 
-  const submitReport = (userId, internshipId) => {
-    const { userReports } = getUserData(userId);
-    setReports(prev => ({
-      ...prev,
-      [userId]: {
-        ...userReports,
-        [internshipId]: {
-          ...userReports[internshipId],
-          status: 'submitted',
-          submittedAt: new Date().toISOString()
+  const submitReport = (userId, internshipId, reportData) => {
+    const newReport = {
+      id: Date.now(),
+      studentId: userId,
+      internshipId: internshipId,
+      ...reportData,
+      status: 'submitted',
+      submissionDate: new Date().toISOString()
+    };
+
+    setReports(prev => {
+      const updatedReports = {
+        ...prev,
+        [userId]: {
+          ...(prev[userId] || {}),
+          [internshipId]: newReport
         }
-      }
-    }));
+      };
+      
+      localStorage.setItem('internship_reports', JSON.stringify(updatedReports));
+      
+      return updatedReports;
+    });
   };
 
   // Course selection functions

@@ -10,6 +10,7 @@ import EvaluationForm from '../../components/internship/EvaluationForm';
 import ReportForm from '../../components/internship/ReportForm';
 import './MyApplications.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Link } from 'react-router-dom';
 
 const MyApplications = () => {
   const { user } = useAuth();
