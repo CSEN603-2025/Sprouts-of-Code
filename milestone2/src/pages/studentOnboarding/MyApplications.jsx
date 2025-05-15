@@ -60,7 +60,7 @@ const MyApplications = () => {
 
   const filterOptions = [
     { value: 'all', label: 'All' },
-    { value: 'applied', label: 'Pending' },
+    { value: 'pending', label: 'Pending' },
     { value: 'undergoing', label: 'Accepted' },
     { value: 'completed', label: 'Completed' },
     { value: 'rejected', label: 'Rejected' }

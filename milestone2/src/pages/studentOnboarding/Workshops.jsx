@@ -22,6 +22,7 @@ const Workshops = () => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState(null);
+  const [certificatesVersion, setCertificatesVersion] = useState(0);
 
   const filterOptions = [
     { value: 'all', label: 'All' },
@@ -30,6 +31,11 @@ const Workshops = () => {
     { value: 'pre-recorded', label: 'Pre-recorded' }
   ];
 
+  useEffect(() => {
+    const handleStorage = () => setCertificatesVersion(v => v + 1);
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
@@ -82,7 +88,7 @@ const Workshops = () => {
     doc.setFontSize(18);
     doc.text(certificate.title, (pageWidth - doc.getTextWidth(certificate.title)) / 2, cursorY);
     cursorY += 20;
-
+    
     // Add completion date
     doc.setFontSize(14);
     const completionDate = new Date(certificate.date).toLocaleDateString();
@@ -136,8 +142,18 @@ const Workshops = () => {
     }
   };
 
-  // Get student's certificates
-  const studentCertificates = getStudentCertificates(user.id);
+  // Get student's certificates (always for the logged-in user)
+  const studentCertificates = user ? getStudentCertificates(user.id) : [];
+
+  // Deduplicate certificates by workshopId (keep the most recent by date)
+  const uniqueCertificatesMap = new Map();
+  studentCertificates.forEach(cert => {
+    const existing = uniqueCertificatesMap.get(cert.workshopId);
+    if (!existing || new Date(cert.date) > new Date(existing.date)) {
+      uniqueCertificatesMap.set(cert.workshopId, cert);
+    }
+  });
+  const uniqueCertificates = Array.from(uniqueCertificatesMap.values());
 
   if (loading) {
     return <div className="loading">Loading workshops...</div>;
@@ -162,11 +178,11 @@ const Workshops = () => {
           )}
         </DialogContent>
       </Dialog>
-      {studentCertificates.length > 0 && (
+      {uniqueCertificates.length > 0 && (
         <div className="certificates-section">
           <h2>My Certificates</h2>
           <div className="certificates-grid">
-            {studentCertificates.map(certificate => {
+            {uniqueCertificates.map(certificate => {
               // Check if the workshop still exists
               const workshopExists = workshops.some(w => w.id === certificate.workshopId);
               
@@ -184,12 +200,12 @@ const Workshops = () => {
                     </p>
                   )}
                   <div className="certificate-actions">
-                    <button
-                      className="view-certificate-button"
+                  <button
+                    className="view-certificate-button"
                       onClick={() => handleViewCertificate(certificate)}
-                    >
-                      View Certificate
-                    </button>
+                  >
+                    View Certificate
+                  </button>
                     <button
                       className="download-certificate-button"
                       onClick={() => handleDownloadCertificate(certificate)}
@@ -197,8 +213,6 @@ const Workshops = () => {
                       Download
                     </button>
                   </div>
-
-
                 </div>
               );
             })}
@@ -230,20 +244,34 @@ const Workshops = () => {
               </div>
               <div className="workshop-card-content">
                 <div className="speaker-info">
-                  <h4>{workshop.speaker}</h4>
-                  <p>{workshop.speakerTitle}</p>
+                  <h4>Speaker</h4>
+                  <p className="speaker-name">{workshop.speaker}</p>
+                  <p className="speaker-title">{workshop.speakerTitle}</p>
+                  {workshop.speakerBio && (
+                    <p className="speaker-bio">{workshop.speakerBio}</p>
+                  )}
                 </div>
-                {workshop.type === 'upcoming' && (
-                  <div className="workshop-date">
-                    <i className="fas fa-calendar"></i>
-                    <span>{workshop.startDate} at {workshop.startTime}</span>
-                  </div>
-                )}
-                <p className="description">{workshop.shortDescription || workshop.description}</p>
+                <div className="workshop-details">
+                  <h4>Workshop Details</h4>
+                  <p className="description">{workshop.shortDescription || workshop.description}</p>
                 <div className="topics">
                   {workshop.topics.map((topic, index) => (
                     <span key={index} className="topic-tag">{topic}</span>
                   ))}
+                  </div>
+                  {workshop.agenda && workshop.agenda.length > 0 && (
+                    <div className="agenda-section">
+                      <h4>Agenda:</h4>
+                      <ul className="agenda-list">
+                        {workshop.agenda.map((item, index) => (
+                          <li key={index} className="agenda-item">
+                            <span className="agenda-time">{item.time || `${item.startTime || ''}${item.endTime ? ' - ' + item.endTime : ''}`}</span>
+                            <span className="agenda-topic">{item.topic}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="workshop-footer">
@@ -258,7 +286,8 @@ const Workshops = () => {
                 )}
                 {workshop.type === 'live' && (
                   <button 
-                    className="workshop-join-button"
+                    className="workshop-join-button red"
+                    style={{ minWidth: '160px', fontSize: '1rem', padding: '0.75rem 1.5rem' }}
                     onClick={() => handleStartWorkshop(workshop.id)}
                   >
                     Join Now
@@ -267,6 +296,7 @@ const Workshops = () => {
                 {workshop.type === 'pre-recorded' && (
                   <button 
                     className="btn btn-primary"
+                    style={{ minWidth: '160px', fontSize: '1rem', padding: '0.75rem 1.5rem' }}
                     onClick={() => handleStartWorkshop(workshop.id)}
                   >
                     Watch Now

@@ -2158,13 +2158,13 @@ export const applyForInternship = (studentId, internshipId) => {
     // Add to student's applied internships
     student.appliedInternships.push({
       internshipId,
-      status: "applied"
+      status: "pending"
     });
     
     // Add to internship's applicants
     internship.applicants.push({
       studentId,
-      status: "applied"
+      status: "pending"
     });
     
     return true;
