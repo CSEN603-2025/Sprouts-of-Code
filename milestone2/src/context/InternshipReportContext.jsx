@@ -218,6 +218,39 @@ export const InternshipReportProvider = ({ children }) => {
     return userSelectedCourses[internshipId] || [];
   };
 
+  const submitAppeal = (userId, internshipId, appealMessage) => {
+    const { userReports } = getUserData(userId);
+    const report = userReports[internshipId];
+    
+    if (!report || (report.status !== 'flagged' && report.status !== 'rejected')) {
+      return false;
+    }
+
+    const updatedReport = {
+      ...report,
+      appeal: {
+        message: appealMessage,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      }
+    };
+
+    setReports(prev => {
+      const updatedReports = {
+        ...prev,
+        [userId]: {
+          ...userReports,
+          [internshipId]: updatedReport
+        }
+      };
+      
+      localStorage.setItem('internship_reports', JSON.stringify(updatedReports));
+      return updatedReports;
+    });
+
+    return true;
+  };
+
   const value = {
     evaluations,
     reports,
@@ -232,7 +265,8 @@ export const InternshipReportProvider = ({ children }) => {
     getReport,
     submitReport,
     toggleCourseSelection,
-    getSelectedCourses
+    getSelectedCourses,
+    submitAppeal
   };
 
   return (

@@ -209,3 +209,21 @@
   align-items: center;
   gap: 4px;
 }
+
+/* Video Section Styles */
+.video-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.requirement-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}

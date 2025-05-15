@@ -68,10 +68,10 @@ const FacultyReports = () => {
         notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been accepted.`;
         break;
       case 'rejected':
-        notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been rejected.`;
+        notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been rejected. Check your ${internship?.position} details to update or appeal your report.`;
         break;
       case 'flagged':
-        notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been flagged for review.`;
+        notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been flagged for review. Check your ${internship?.position} details to update or appeal your report.`;
         break;
       default:
         notificationMessage = `The status of your report for ${internship?.position} at ${company?.name} has been updated to ${newStatus}.`;

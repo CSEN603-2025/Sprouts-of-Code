@@ -38,6 +38,13 @@ const StudentDashboard = () => {
 
   // Get the logged-in student from context data
   const student = students.find(s => s.email === user.email);
+  
+  // Debug log
+  console.log('Student data:', {
+    email: user.email,
+    major: student?.major,
+    videoPath: student?.major ? `/assets/videos/internship-requirements-${student.major.toLowerCase().replace(/\s+/g, '-')}.mp4` : 'No major'
+  });
 
   // Map appliedInternships to actual internship data
   const applications = (student?.appliedInternships || []).map(app => {
@@ -353,6 +360,37 @@ const StudentDashboard = () => {
           <div className="stat-number">{activeInternships.length}</div>
         </div>
       </div>
+
+      {/* Internship Requirement Video Section */}
+      <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Internship Requirements for {student?.major}
+        </Typography>
+        <div className="video-container">
+          <video 
+            controls
+            className="requirement-video"
+            onError={(e) => {
+              console.error('Video Error:', e.target.error);
+              console.log('Attempted video source:', `/assets/videos/internship-requirements-${student?.major?.toLowerCase().replace(/\s+/g, '-')}.mp4`);
+            }}
+          >
+            <source 
+              src={`/assets/videos/internship-requirements-${student?.major?.toLowerCase().replace(/\s+/g, '-')}.mp4`} 
+              type="video/mp4" 
+            />
+            Your browser does not support the video tag.
+          </video>
+          {!student?.major && (
+            <Typography variant="body2" color="error">
+              No major selected. Please update your profile.
+            </Typography>
+          )}
+        </div>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Learn about the types of internships that count towards your internship requirements.
+        </Typography>
+      </Paper>
 
           <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
       <Typography variant="h6" gutterBottom>

@@ -104,6 +104,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 8px;
   }
   
   .status-badge.applied {
@@ -128,13 +129,12 @@
   
   .view-more-btn {
     flex: 1 1 0;
-    margin-left: 0;
+    margin-left: 8px;
     margin-right: 0;
     justify-self: flex-end;
     text-align: center;
     display: inline-block;
     max-width: 130px;
-    margin-left: 100px;
     padding: 8px 16px;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
@@ -144,6 +144,8 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    height: 38px;
+    box-sizing: border-box;
   }
   
   .view-more-btn:hover {
@@ -394,13 +396,23 @@
 }
 .view-more-btn {
   flex: 1 1 0;
-  margin-left: 0;
+  margin-left: 8px;
   margin-right: 0;
   justify-self: flex-end;
   text-align: center;
   display: inline-block;
   max-width: 130px;
-  margin-left: 100px;
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  color: #4a90e2;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 38px;
+  box-sizing: border-box;
 }
 .view-more-btn:hover {
   background: #4a90e2;
@@ -528,4 +540,48 @@
 
 .submit-report-btn:hover {
   background-color: #357abd;
+}
+
+.action-buttons-summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 0;
+  margin-left: 0;
+}
+
+.appeal-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+  max-width: 130px;
+  margin-left: 0;
+  margin-right: 0;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.appeal-btn:hover {
+  background-color: #c82333;
+}
+
+@media (max-width: 700px) {
+  .action-buttons-summary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .status-badge {
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
 }

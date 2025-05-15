@@ -24,6 +24,11 @@ const ReportForm = ({ internshipId, onClose }) => {
 
   useEffect(() => {
     const existingReport = getReport(user?.id, internshipId);
+    console.log('ReportForm - Existing report:', {
+      userId: user?.id,
+      internshipId,
+      report: existingReport
+    });
     if (existingReport) {
       setReport(existingReport);
     } else {
@@ -77,61 +82,6 @@ const ReportForm = ({ internshipId, onClose }) => {
     onClose();
   };
 
-  // const handleDownloadPDF = () => {
-  //   const internship = internships?.find(i => i.id === internshipId);
-  //   const company = companies?.find(c => c.id === internship?.companyId);
-  //   const internshipName = internship?.position || 'Unknown_Internship';
-  //   const companyName = company?.name || 'Unknown_Company';
-
-  //   const doc = new jsPDF();
-  //   const marginLeft = 20;
-  //   let cursorY = 30;
-
-  //   // Title
-  //   doc.setFontSize(18);
-  //   doc.setFont("Helvetica", "bold");
-  //   doc.text("Internship Report", marginLeft, 20);
-
-  //   doc.setFontSize(12);
-  //   doc.setFont("Helvetica", "normal");
-
-  //   // Helper to add a section
-  //   const addSection = (title, text) => {
-  //     doc.setFont("Helvetica", "bold");
-  //     doc.text(title, marginLeft, cursorY);
-  //     cursorY += 8;
-  //     doc.setFont("Helvetica", "normal");
-
-  //     const lines = doc.splitTextToSize(text || "N/A", 170);
-  //     if (cursorY + lines.length * 8 > 280) {
-  //       doc.addPage();
-  //       cursorY = 20;
-  //     }
-
-  //     doc.text(lines, marginLeft, cursorY);
-  //     cursorY += lines.length * 8 + 10;
-  //   };
-
-  //   addSection("Title", report.title);
-  //   addSection("Introduction", report.introduction);
-  //   addSection("Body", report.body);
-  //   addSection("Conclusion", report.conclusion);
-
-  //   const selected = availableCourses
-  //     .filter(course => selectedCourses.includes(course.id))
-  //     .map(course => `${course.code} - ${course.name}`)
-  //     .join(', ');
-
-  //   addSection("Courses That Helped During the Internship:", selected);
-
-  //   // Footer (optional)
-  //   doc.setFontSize(10);
-  //   doc.setTextColor(150);
-  //   doc.text(`The German University in Cairo`, marginLeft, 290);
-
-  //   // Save the file
-  //   doc.save(`${companyName}_${internshipName}_Report.pdf`);
-  // };
   const handleDownloadPDF = () => {
     const internship = internships?.find(i => i.id === internshipId);
     const company = companies?.find(c => c.id === internship?.companyId);

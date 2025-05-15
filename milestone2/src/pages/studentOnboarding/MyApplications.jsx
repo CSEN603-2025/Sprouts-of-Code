@@ -9,6 +9,7 @@ import { useInternshipReport } from '../../context/InternshipReportContext';
 import EvaluationForm from '../../components/internship/EvaluationForm';
 import ReportForm from '../../components/internship/ReportForm';
 import FilterBar from '../../components/shared/FilterBar';
+import AppealModal from '../../components/internship/AppealModal';
 
 import './MyApplications.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -31,6 +32,7 @@ const MyApplications = () => {
   const [filter, setFilter] = useState('all');
   const [showEvaluation, setShowEvaluation] = useState(null);
   const [showReport, setShowReport] = useState(null);
+  const [showAppeal, setShowAppeal] = useState(null);
 
   useEffect(() => {
     if (loggedInStudent?.appliedInternships) {
@@ -149,6 +151,15 @@ const MyApplications = () => {
                           <i className="fas fa-file-alt"></i>
                           {getReport(user?.id, app.id) ? 'View/Edit Report' : 'Create Report'}
                         </button>
+                        {/* Appeal Report button for completed & flagged/rejected, now in expanded details */}
+                        {getReport(user?.id, app.id)?.status === 'flagged' || getReport(user?.id, app.id)?.status === 'rejected' ? (
+                          <button 
+                            className="appeal-btn"
+                            onClick={() => setShowAppeal(app.id)}
+                          >
+                            Appeal Report
+                          </button>
+                        ) : null}
                       </div>
                     )}
                   </>
@@ -184,78 +195,14 @@ const MyApplications = () => {
           </div>
         </div>
       )}
-      
-      {/* Completed Internships Section
-      {completedInternships.length > 0 && (
-        <div className="completed-internships-section">
-          <h2>Completed Internships</h2>
-          <div className="completed-internships-list">
-            {completedInternships.map(intern => (
-              <div key={intern.id} className="completed-internship-card">
-                <div className="completed-summary">
-                  <span className="completed-position">{intern.position}</span>
-                  <span className="completed-company">{intern.company}</span>
-                  <button 
-                    className="view-more-btn" 
-                    onClick={() => toggleCompletedExpand(intern.id)}
-                  >
-                    {expandedCompleted.includes(intern.id) ? 'Hide Details' : 'View More'}
-                  </button>
-                </div>
-                {expandedCompleted.includes(intern.id) && (
-                  <>
-                    <div className="completed-details">
-                      <div><strong>Location:</strong> {intern.location}</div>
-                      <div><strong>Duration:</strong> {intern.duration}</div>
-                      <div><strong>Type:</strong> {intern.type}</div>
-                      <div><strong>Start Date:</strong> {intern.startDate}</div>
-                      <div><strong>Salary:</strong> {intern.salary}</div>
-                      <div><strong>Requirements:</strong> {intern.requirements}</div>
-                      <div><strong>Description:</strong> {intern.description}</div>
-                    </div>
-                    <div className="action-buttons">
-                      <button 
-                        className="action-btn evaluation-btn"
-                        onClick={() => setShowEvaluation(intern.id)}
-                      >
-                        <i className="fas fa-star"></i>
-                        {getEvaluation(user?.id, intern.id) ? 'View/Edit Evaluation' : 'Create Evaluation'}
-                      </button>
-                      <button 
-                        className="action-btn report-btn"
-                        onClick={() => setShowReport(intern.id)}
-                      >
-                        <i className="fas fa-file-alt"></i>
-                        {getReport(user?.id, intern.id) ? 'View/Edit Report' : 'Create Report'}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )} */}
 
-      {/* Evaluation Modal */}
-      {showEvaluation && (
+      {/* Appeal Modal */}
+      {showAppeal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <EvaluationForm
-              internshipId={showEvaluation}
-              onClose={() => setShowEvaluation(null)}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Report Modal */}
-      {showReport && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <ReportForm
-              internshipId={showReport}
-              onClose={() => setShowReport(null)}
+            <AppealModal
+              internshipId={showAppeal}
+              onClose={() => setShowAppeal(null)}
             />
           </div>
         </div>
