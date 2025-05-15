@@ -7,6 +7,7 @@ import { useStudent } from '../../context/StudentContext'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import CallIcon from '@mui/icons-material/Call'
+import LogoutIcon from '@mui/icons-material/Logout'
 
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
@@ -177,6 +178,7 @@ const Navbar = ({ user, onLogout }) => {
               onClick={onLogout} 
               className="btn logout-btn"
             >
+              <LogoutIcon style={{ fontSize: 20 }} />
               Logout
             </button>
           )}
