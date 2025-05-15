@@ -4,8 +4,11 @@ import { usePendingCompany } from '../../context/PendingCompanyContext'
 import { useInternships } from '../../context/InternshipContext'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
-import Chart from 'chart.js/auto'
+import { Chart, registerables } from 'chart.js'
 import './Reports.css'
+
+// Register Chart.js components
+Chart.register(...registerables)
 
 const Reports = () => {
   const { companies } = useCompany()
@@ -31,152 +34,231 @@ const Reports = () => {
 
   // Load saved reports from localStorage on component mount
   const [savedReports, setSavedReports] = useState(() => {
-    const saved = localStorage.getItem('savedReports')
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 1,
-        name: 'Internship Performance Q2 2023',
-        type: 'internship',
-        date: '2023-07-01',
-        format: 'pdf',
-        size: '2.4 MB',
-        major: 'Computer Science',
-        status: 'approved',
-        details: {
-          totalInternships: 45,
-          activeInternships: 30,
-          completedInternships: 15,
-          averageDuration: '3.5 months',
-          successRate: '92%',
-          feedback: {
-            positive: 85,
-            neutral: 10,
-            negative: 5
+    try {
+      const saved = localStorage.getItem('savedReports')
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 1,
+          name: 'Internship Performance Q2 2023',
+          type: 'internship',
+          date: '2023-07-01',
+          format: 'pdf',
+          size: '2.4 MB',
+          major: 'Computer Science',
+          status: 'approved',
+          details: {
+            totalInternships: 45,
+            activeInternships: 30,
+            completedInternships: 15,
+            averageDuration: '3.5 months',
+            successRate: '92%',
+            feedback: {
+              positive: 85,
+              neutral: 10,
+              negative: 5
+            }
+          }
+        },
+        {
+          id: 2,
+          name: 'Employer Engagement Report',
+          type: 'employer',
+          date: '2023-06-15',
+          format: 'excel',
+          size: '1.8 MB',
+          major: 'Business',
+          status: 'pending',
+          details: {
+            totalEmployers: 25,
+            activeEmployers: 20,
+            newEmployers: 5,
+            engagementRate: '85%',
+            industries: {
+              'Technology': 10,
+              'Finance': 8,
+              'Healthcare': 7
+            }
+          }
+        },
+        {
+          id: 3,
+          name: 'Student Placement Analysis',
+          type: 'student',
+          date: '2023-05-30',
+          format: 'pdf',
+          size: '3.2 MB',
+          major: 'Engineering',
+          status: 'flagged',
+          details: {
+            totalStudents: 150,
+            placedStudents: 120,
+            placementRate: '80%',
+            averageSalary: '$45,000',
+            topSkills: ['JavaScript', 'Python', 'Data Analysis']
           }
         }
-      },
-      {
-        id: 2,
-        name: 'Employer Engagement Report',
-        type: 'employer',
-        date: '2023-06-15',
-        format: 'excel',
-        size: '1.8 MB',
-        major: 'Business',
-        status: 'pending',
-        details: {
-          totalEmployers: 25,
-          activeEmployers: 20,
-          newEmployers: 5,
-          engagementRate: '85%',
-          industries: {
-            'Technology': 10,
-            'Finance': 8,
-            'Healthcare': 7
-          }
-        }
-      },
-      {
-        id: 3,
-        name: 'Student Placement Analysis',
-        type: 'student',
-        date: '2023-05-30',
-        format: 'pdf',
-        size: '3.2 MB',
-        major: 'Engineering',
-        status: 'flagged',
-        details: {
-          totalStudents: 150,
-          placedStudents: 120,
-          placementRate: '80%',
-          averageSalary: '$45,000',
-          topSkills: ['JavaScript', 'Python', 'Data Analysis']
-        }
-      }
-    ]
+      ]
+    } catch (error) {
+      console.error('Error loading saved reports:', error)
+      return []
+    }
   })
 
   // Save reports to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('savedReports', JSON.stringify(savedReports))
+    try {
+      localStorage.setItem('savedReports', JSON.stringify(savedReports))
+    } catch (error) {
+      console.error('Error saving reports:', error)
+    }
   }, [savedReports])
 
   // Render charts for each report type when modal opens
   useEffect(() => {
-    chartInstances.current.forEach(chart => chart && chart.destroy())
-    chartInstances.current = []
+    let charts = []
+
+    const cleanupCharts = () => {
+      charts.forEach(chart => {
+        if (chart && typeof chart.destroy === 'function') {
+          try {
+            chart.destroy()
+          } catch (error) {
+            console.error('Error destroying chart:', error)
+          }
+        }
+      })
+      charts = []
+    }
+
+    // Cleanup previous charts
+    cleanupCharts()
+
     if (!selectedReport) return
-    if (selectedReport.type === 'student') {
-      // Pie chart for placement
-      if (studentPieRef.current) {
-        const data = selectedReport.details
-        chartInstances.current.push(new Chart(studentPieRef.current, {
-          type: 'pie',
-          data: {
-            labels: ['Placed', 'Not Placed'],
-            datasets: [{
-              data: [
-                parseInt(data.placedStudents || 0),
-                parseInt((data.totalStudents || 0) - (data.placedStudents || 0))
-              ],
-              backgroundColor: ['#4caf50', '#e0e0e0']
-            }]
-          },
-          options: { plugins: { legend: { display: true, position: 'bottom' } } }
-        }))
-      }
-      // Bar chart for top skills
-      if (studentBarRef.current && selectedReport.details.topSkills) {
-        chartInstances.current.push(new Chart(studentBarRef.current, {
-          type: 'bar',
-          data: {
-            labels: selectedReport.details.topSkills,
-            datasets: [{
-              label: 'Top Skills',
-              data: selectedReport.details.topSkills.map(() => 1),
-              backgroundColor: '#1976d2'
-            }]
-          },
-          options: { plugins: { legend: { display: false } } }
-        }))
-      }
-    } else if (selectedReport.type === 'internship') {
-      // Bar chart for internships by company
-      if (internshipBarRef.current && selectedReport.details.internshipsByCompany) {
-        chartInstances.current.push(new Chart(internshipBarRef.current, {
-          type: 'bar',
-          data: {
-            labels: selectedReport.details.internshipsByCompany.map(i => i.company),
-            datasets: [{
-              label: 'Internships',
-              data: selectedReport.details.internshipsByCompany.map(i => i.count),
-              backgroundColor: '#43a047'
-            }]
-          },
-          options: { plugins: { legend: { display: false } } }
-        }))
-      }
-    } else if (selectedReport.type === 'employer') {
-      // Bar chart for employers by industry
-      if (employerBarRef.current && selectedReport.details.industries) {
-        const industries = selectedReport.details.industries
-        chartInstances.current.push(new Chart(employerBarRef.current, {
-          type: 'bar',
-          data: {
-            labels: Object.keys(industries),
-            datasets: [{
-              label: 'Employers',
-              data: Object.values(industries),
-              backgroundColor: '#ffa000'
-            }]
-          },
-          options: { plugins: { legend: { display: false } } }
-        }))
+
+    const createChart = (canvas, config) => {
+      if (!canvas) return null
+      try {
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return null
+        return new Chart(ctx, config)
+      } catch (error) {
+        console.error('Error creating chart:', error)
+        return null
       }
     }
+
+    // Small delay to ensure canvas is ready
+    const timeoutId = setTimeout(() => {
+      try {
+        if (selectedReport.type === 'student') {
+          // Pie chart for placement
+          if (studentPieRef.current) {
+            const data = selectedReport.details
+            const pieChart = createChart(studentPieRef.current, {
+              type: 'pie',
+              data: {
+                labels: ['Placed', 'Not Placed'],
+                datasets: [{
+                  data: [
+                    parseInt(data.placedStudents || 0),
+                    parseInt((data.totalStudents || 0) - (data.placedStudents || 0))
+                  ],
+                  backgroundColor: ['#4caf50', '#e0e0e0']
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: true, position: 'bottom' },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (pieChart) charts.push(pieChart)
+          }
+
+          // Bar chart for top skills
+          if (studentBarRef.current && selectedReport.details.topSkills) {
+            const barChart = createChart(studentBarRef.current, {
+              type: 'bar',
+              data: {
+                labels: selectedReport.details.topSkills,
+                datasets: [{
+                  label: 'Top Skills',
+                  data: selectedReport.details.topSkills.map(() => 1),
+                  backgroundColor: '#1976d2'
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: false },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (barChart) charts.push(barChart)
+          }
+        } else if (selectedReport.type === 'internship') {
+          // Bar chart for internships by company
+          if (internshipBarRef.current && selectedReport.details.internshipsByCompany) {
+            const barChart = createChart(internshipBarRef.current, {
+              type: 'bar',
+              data: {
+                labels: selectedReport.details.internshipsByCompany.map(i => i.company),
+                datasets: [{
+                  label: 'Internships',
+                  data: selectedReport.details.internshipsByCompany.map(i => i.count),
+                  backgroundColor: '#43a047'
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: false },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (barChart) charts.push(barChart)
+          }
+        } else if (selectedReport.type === 'employer') {
+          // Bar chart for employers by industry
+          if (employerBarRef.current && selectedReport.details.industries) {
+            const industries = selectedReport.details.industries
+            const barChart = createChart(employerBarRef.current, {
+              type: 'bar',
+              data: {
+                labels: Object.keys(industries),
+                datasets: [{
+                  label: 'Employers',
+                  data: Object.values(industries),
+                  backgroundColor: '#ffa000'
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: false },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (barChart) charts.push(barChart)
+          }
+        }
+      } catch (error) {
+        console.error('Error rendering charts:', error)
+      }
+    }, 100)
+
     return () => {
-      chartInstances.current.forEach(chart => chart && chart.destroy())
-      chartInstances.current = []
+      clearTimeout(timeoutId)
+      cleanupCharts()
     }
   }, [selectedReport])
 
@@ -264,6 +346,17 @@ const Reports = () => {
   }
 
   const handleCloseReport = () => {
+    // Cleanup charts before closing
+    chartInstances.current.forEach(chart => {
+      if (chart && typeof chart.destroy === 'function') {
+        try {
+          chart.destroy()
+        } catch (error) {
+          console.error('Error destroying chart:', error)
+        }
+      }
+    })
+    chartInstances.current = []
     setSelectedReport(null)
   }
 
