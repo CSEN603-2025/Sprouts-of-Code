@@ -3,13 +3,16 @@ import { dummyInternships } from '../data/dummyData';
 
 const InternshipContext = createContext();
 
-export const InternshipProvider = ({ children }) => {
-  const [internships, setInternships] = useState([]);
+export const useInternships = () => {
+  const context = useContext(InternshipContext);
+  if (!context) {
+    throw new Error('useInternships must be used within an InternshipProvider');
+  }
+  return context;
+};
 
-  useEffect(() => {
-    // Initialize with dummy data
-    setInternships(dummyInternships);
-  }, []);
+export const InternshipProvider = ({ children }) => {
+  const [internships, setInternships] = useState(dummyInternships);
 
   // Create
   const addInternship = (internship) => {
@@ -63,12 +66,4 @@ export const InternshipProvider = ({ children }) => {
       {children}
     </InternshipContext.Provider>
   );
-};
-
-export const useInternships = () => {
-  const context = useContext(InternshipContext);
-  if (!context) {
-    throw new Error('useInternships must be used within an InternshipProvider');
-  }
-  return context;
 }; 

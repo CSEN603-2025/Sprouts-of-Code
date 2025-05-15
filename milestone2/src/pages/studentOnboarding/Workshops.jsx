@@ -30,6 +30,7 @@ const Workshops = () => {
     { value: 'pre-recorded', label: 'Pre-recorded' }
   ];
 
+
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
     const matchesSearch = workshop.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -118,6 +119,7 @@ const Workshops = () => {
       button.disabled = true;
 
 
+
       if (isRegistered) {
         await unregisterFromWorkshop(user.id, workshopId, workshop.title);
       } else {
@@ -195,6 +197,7 @@ const Workshops = () => {
                       Download
                     </button>
                   </div>
+
 
                 </div>
               );

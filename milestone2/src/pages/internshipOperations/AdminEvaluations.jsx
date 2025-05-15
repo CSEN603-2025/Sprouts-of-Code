@@ -1,20 +1,12 @@
-import React, { useState } from 'react';
-import { useEvaluation } from '../../context/EvaluationContext';
+import React, { useState, useEffect } from 'react';
+import { useInternshipReport } from '../../context/InternshipReportContext';
 import { useCompany } from '../../context/CompanyContext';
 import { useInternships } from '../../context/InternshipContext';
 import { useStudent } from '../../context/StudentContext';
 import './AdminEvaluations.css';
 
-const EVAL_QUESTIONS = [
-  'Technical Skills',
-  'Communication',
-  'Teamwork',
-  'Problem Solving',
-  'Punctuality'
-];
-
 const AdminEvaluations = () => {
-  const { evaluations } = useEvaluation();
+  const { evaluations } = useInternshipReport();
   const { companies } = useCompany();
   const { internships } = useInternships();
   const { students } = useStudent();
@@ -22,6 +14,19 @@ const AdminEvaluations = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalEval, setModalEval] = useState(null);
   const [search, setSearch] = useState('');
+  const [transformedEvaluations, setTransformedEvaluations] = useState([]);
+
+  useEffect(() => {
+    // Transform evaluations from the nested structure to a flat array
+    const transformed = Object.entries(evaluations).flatMap(([userId, userEvaluations]) => 
+      Object.entries(userEvaluations).map(([internshipId, evaluation]) => ({
+        ...evaluation,
+        studentId: parseInt(userId),
+        internshipId: parseInt(internshipId)
+      }))
+    );
+    setTransformedEvaluations(transformed);
+  }, [evaluations]);
 
   const getCompanyName = (companyId) => companies.find(c => c.id === companyId)?.name || 'Unknown Company';
   const getInternship = (internshipId) => internships.find(i => i.id === internshipId);
@@ -61,8 +66,9 @@ const AdminEvaluations = () => {
             />
           </div>
           <div className="evaluations-list">
-            {evaluations.filter(ev => {
-              const companyName = getCompanyName(ev.companyId).toLowerCase();
+            {transformedEvaluations.filter(ev => {
+              const internship = getInternship(ev.internshipId);
+              const companyName = internship ? getCompanyName(internship.companyId).toLowerCase() : '';
               const student = getStudent(ev.studentId);
               const studentName = (student?.name || '').toLowerCase();
               const term = search.toLowerCase();
@@ -73,9 +79,10 @@ const AdminEvaluations = () => {
             }).length === 0 ? (
               <p style={{textAlign:'center', color:'#888'}}>No evaluations found.</p>
             ) : (
-              evaluations
+              transformedEvaluations
                 .filter(ev => {
-                  const companyName = getCompanyName(ev.companyId).toLowerCase();
+                  const internship = getInternship(ev.internshipId);
+                  const companyName = internship ? getCompanyName(internship.companyId).toLowerCase() : '';
                   const student = getStudent(ev.studentId);
                   const studentName = (student?.name || '').toLowerCase();
                   const term = search.toLowerCase();
@@ -85,8 +92,8 @@ const AdminEvaluations = () => {
                   );
                 })
                 .map(ev => {
-                  const companyName = getCompanyName(ev.companyId);
                   const internship = getInternship(ev.internshipId);
+                  const companyName = internship ? getCompanyName(internship.companyId) : 'Unknown Company';
                   const student = getStudent(ev.studentId);
                   return (
                     <div key={ev.id} className="evaluation-item">
@@ -108,7 +115,6 @@ const AdminEvaluations = () => {
                           <div><strong>Graduation Year:</strong> {student?.graduationYear}</div>
                           <div><strong>Internship Start:</strong> {internship?.startDate}</div>
                           <div><strong>Internship End:</strong> {internship?.endDate}</div>
-                          <div><strong>Supervisor:</strong> {ev.supervisor}</div>
                           <button className="btn btn-primary" onClick={() => handleViewEval(ev)}>
                             View Evaluation
                           </button>
@@ -124,30 +130,29 @@ const AdminEvaluations = () => {
       {modalOpen && modalEval && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h2>Evaluation Answers</h2>
-            <div className="evaluation-answers">
-              <span>1 = Poor, 5 = Excellent</span>
-            </div>
-            {EVAL_QUESTIONS.map((q, qIdx) => (
-              <div key={qIdx} className="evaluation-question">
-                <label>{q}</label>
-                <div className="radio-group">
-                  {[1,2,3,4,5].map(val => (
-                    <label key={val} className={modalEval.answers[qIdx] === val ? 'selected' : ''}>
-                      <input
-                        type="radio"
-                        name={`q${qIdx}-readonly`}
-                        value={val}
-                        checked={modalEval.answers[qIdx] === val}
-                        readOnly
-                        disabled
-                      />
-                      {val}
-                    </label>
-                  ))}
-                </div>
+            <h2>Evaluation Details</h2>
+            <div className="evaluation-details">
+              <div className="rating-section">
+                <h3>Rating: {modalEval.rating}/5</h3>
               </div>
-            ))}
+              <div className="pros-section">
+                <h3>Pros:</h3>
+                <p>{modalEval.pros}</p>
+              </div>
+              <div className="cons-section">
+                <h3>Cons:</h3>
+                <p>{modalEval.cons}</p>
+              </div>
+              <div className="recommendation-section">
+                <h3>Would Recommend: {modalEval.recommendation ? 'Yes' : 'No'}</h3>
+              </div>
+              {modalEval.comments && (
+                <div className="comments-section">
+                  <h3>Additional Comments:</h3>
+                  <p>{modalEval.comments}</p>
+                </div>
+              )}
+            </div>
             <div className="modal-footer">
               <button type="button" className="finalize-btn" onClick={closeModal}>Close</button>
             </div>

@@ -12,6 +12,7 @@ import FilterBar from '../../components/shared/FilterBar';
 
 import './MyApplications.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Link } from 'react-router-dom';
 
 const MyApplications = () => {
   const { user } = useAuth();
@@ -176,6 +177,58 @@ const MyApplications = () => {
               onClose={() => setShowReport(null)}
             />
 
+          </div>
+    
+
+      
+      {/* Completed Internships Section */}
+      {completedInternships.length > 0 && (
+        <div className="completed-internships-section">
+          <h2>Completed Internships</h2>
+          <div className="completed-internships-list">
+            {completedInternships.map(intern => (
+              <div key={intern.id} className="completed-internship-card">
+                <div className="completed-summary">
+                  <span className="completed-position">{intern.position}</span>
+                  <span className="completed-company">{intern.company}</span>
+                  <button 
+                    className="view-more-btn" 
+                    onClick={() => toggleCompletedExpand(intern.id)}
+                  >
+                    {expandedCompleted.includes(intern.id) ? 'Hide Details' : 'View More'}
+                  </button>
+                </div>
+                {expandedCompleted.includes(intern.id) && (
+                  <>
+                  <div className="completed-details">
+                    <div><strong>Location:</strong> {intern.location}</div>
+                    <div><strong>Duration:</strong> {intern.duration}</div>
+                    <div><strong>Type:</strong> {intern.type}</div>
+                    <div><strong>Start Date:</strong> {intern.startDate}</div>
+                    <div><strong>Salary:</strong> {intern.salary}</div>
+                    <div><strong>Requirements:</strong> {intern.requirements}</div>
+                    <div><strong>Description:</strong> {intern.description}</div>
+                  </div>
+                    <div className="action-buttons">
+                      <button 
+                        className="action-btn evaluation-btn"
+                        onClick={() => setShowEvaluation(intern.id)}
+                      >
+                        <i className="fas fa-star"></i>
+                        {getEvaluation(user?.id, intern.id) ? 'View/Edit Evaluation' : 'Create Evaluation'}
+                      </button>
+                      <button 
+                        className="action-btn report-btn"
+                        onClick={() => setShowReport(intern.id)}
+                      >
+                        <i className="fas fa-file-alt"></i>
+                        {getReport(user?.id, intern.id) ? 'View/Edit Report' : 'Create Report'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}

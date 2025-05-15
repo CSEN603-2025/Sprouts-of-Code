@@ -126,6 +126,7 @@ const Navbar = ({ user, onLogout }) => {
   // Listen for Ctrl+B to simulate a call from SCAD
   useEffect(() => {
     if (!user || user.role !== 'student') return;
+
     const handleKeyDown = (e) => {
       if (e.ctrlKey && (e.key === 'b' || e.key === 'B')) {
         setCallNotification({
