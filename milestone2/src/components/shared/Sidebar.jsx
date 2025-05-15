@@ -54,6 +54,8 @@ const Sidebar = ({ user }) => {
           { label: 'Dashboard', path: '/faculty', icon: '📊' },
           { label: 'My Profile', path: '/faculty/profile', icon: '👤' },
           { label: 'Student List', path: '/faculty/students', icon: '👨‍🎓' },
+          { label: 'Appointments', path: '/faculty/appointments', icon: '📅' },
+          { label: 'Reports', path: '/faculty/reports', icon: '📄' },
           { label: 'Submitted Reports', path: '/faculty/reports', icon: '📄' },
           // { label: 'Settings', path: '/faculty/settings', icon: '⚙️' },
         ];

@@ -5,6 +5,8 @@ import { useStudent } from '../../context/StudentContext';
 import { useWorkshops } from '../../context/WorkshopContext';
 import { Dialog, DialogContent } from '@mui/material';
 import Certificate from './Certificate';
+import FilterBar from '../../components/shared/FilterBar';
+import { jsPDF } from 'jspdf';
 import './Workshops.css';
 
 const Workshops = () => {
@@ -20,6 +22,14 @@ const Workshops = () => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState(null);
+
+  const filterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'upcoming', label: 'Upcoming' },
+    { value: 'live', label: 'Live' },
+    { value: 'pre-recorded', label: 'Pre-recorded' }
+  ];
+
 
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
@@ -42,9 +52,55 @@ const Workshops = () => {
     setSelectedCertificate(null);
   };
 
-  const handleDownloadCertificate = () => {
-    // In a real app, this would generate and download a PDF
-    console.log('Downloading certificate...');
+  const handleDownloadCertificate = (certificate) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginLeft = 20;
+    const lineHeight = 6;
+    let cursorY = 20;
+
+    // Add certificate title
+    doc.setFontSize(24);
+    doc.setFont("Helvetica", "bold");
+    const title = "Certificate of Completion";
+    const titleWidth = doc.getTextWidth(title);
+    doc.text(title, (pageWidth - titleWidth) / 2, cursorY);
+    cursorY += 20;
+
+    // Add student name
+    doc.setFontSize(18);
+    doc.text(`This is to certify that`, marginLeft, cursorY);
+    cursorY += 15;
+    doc.setFontSize(24);
+    doc.text(user.name, (pageWidth - doc.getTextWidth(user.name)) / 2, cursorY);
+    cursorY += 20;
+
+    // Add workshop details
+    doc.setFontSize(14);
+    doc.text(`has successfully completed the workshop`, marginLeft, cursorY);
+    cursorY += 15;
+    doc.setFontSize(18);
+    doc.text(certificate.title, (pageWidth - doc.getTextWidth(certificate.title)) / 2, cursorY);
+    cursorY += 20;
+
+    // Add completion date
+    doc.setFontSize(14);
+    const completionDate = new Date(certificate.date).toLocaleDateString();
+    doc.text(`Completed on: ${completionDate}`, (pageWidth - doc.getTextWidth(`Completed on: ${completionDate}`)) / 2, cursorY);
+    cursorY += 30;
+
+    // Add signature line
+    doc.setFontSize(12);
+    doc.text("Workshop Coordinator", pageWidth - 60, cursorY);
+    doc.line(pageWidth - 60, cursorY - 5, pageWidth - 20, cursorY - 5);
+
+    // Add footer
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text("The German University in Cairo", marginLeft, 290);
+
+    // Save the PDF
+    doc.save(`${certificate.title}-Certificate.pdf`);
   };
 
   const handleRegistration = async (workshopId, event) => {
@@ -61,6 +117,8 @@ const Workshops = () => {
     try {
       // Disable the button immediately
       button.disabled = true;
+
+
 
       if (isRegistered) {
         await unregisterFromWorkshop(user.id, workshopId, workshop.title);
@@ -125,57 +183,39 @@ const Workshops = () => {
                       This workshop has been removed from the platform
                     </p>
                   )}
-                  <button
-                    className="view-certificate-button"
-                    onClick={() => handleViewCertificate(certificate)}
-                  >
-                    View Certificate
-                  </button>
+                  <div className="certificate-actions">
+                    <button
+                      className="view-certificate-button"
+                      onClick={() => handleViewCertificate(certificate)}
+                    >
+                      View Certificate
+                    </button>
+                    <button
+                      className="download-certificate-button"
+                      onClick={() => handleDownloadCertificate(certificate)}
+                    >
+                      Download
+                    </button>
+                  </div>
+
+
                 </div>
               );
             })}
           </div>
         </div>
       )}
+
       <div className="page-header">
-        <h1>Career Workshops</h1>
-        <div className="filters-container">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search workshops..."
-              className="search-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="filter-buttons">
-            <button 
-              className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-              onClick={() => setFilter('all')}
-            >
-              All
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'upcoming' ? 'active' : ''}`}
-              onClick={() => setFilter('upcoming')}
-            >
-              Upcoming
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'live' ? 'active' : ''}`}
-              onClick={() => setFilter('live')}
-            >
-              Live
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'pre-recorded' ? 'active' : ''}`}
-              onClick={() => setFilter('pre-recorded')}
-            >
-              Pre-recorded
-            </button>
-          </div>
-        </div>
+        <h1>Workshops</h1>
+        <FilterBar
+          searchPlaceholder="Search workshops..."
+          searchValue={search}
+          onSearchChange={setSearch}
+          filterOptions={filterOptions}
+          activeFilter={filter}
+          onFilterChange={setFilter}
+        />
       </div>
 
       <div className="workshops-grid">
@@ -218,7 +258,7 @@ const Workshops = () => {
                 )}
                 {workshop.type === 'live' && (
                   <button 
-                    className="btn btn-primary"
+                    className="workshop-join-button"
                     onClick={() => handleStartWorkshop(workshop.id)}
                   >
                     Join Now

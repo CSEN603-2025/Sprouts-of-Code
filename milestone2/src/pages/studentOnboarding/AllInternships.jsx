@@ -1,44 +1,58 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dummyInternships, dummyCompanies, applyForInternship } from '../../data/dummyData';
+import FilterBar from '../../components/shared/FilterBar';
 import './AllInternships.css';
 
 const AllInternships = () => {
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [salaryFilter, setSalaryFilter] = useState('All'); // Filter by paid/unpaid
-  const [durationFilter, setDurationFilter] = useState('All'); // Filter by duration
+  const [search, setSearch] = useState('');
+  const [salaryFilter, setSalaryFilter] = useState('all');
+  const [durationFilter, setDurationFilter] = useState('all');
   const navigate = useNavigate();
 
   // Assuming studentId and studentCompanyId are stored in localStorage or context
   const studentId = 1; // Replace with actual student ID from auth context
   const studentCompanyId = 1; // Replace with actual company ID from the student context or localStorage
 
-  // Filter internships based on the salary and duration filters
-const filteredInternships = dummyInternships.filter((internship) => {
-  // Paid/Unpaid filter logic: unpaid if salary is '0', '0 EGP/month', or empty
-  const isUnpaid = !internship.salary || internship.salary.trim() === '0' || internship.salary.trim().toLowerCase() === '0 egp/month';
-  const isPaid = !isUnpaid;
-  const matchesPaid =
-    salaryFilter === 'All' ||
-    (salaryFilter === 'Paid' && isPaid) ||
-    (salaryFilter === 'Unpaid' && isUnpaid);
+  const salaryFilterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'paid', label: 'Paid' },
+    { value: 'unpaid', label: 'Unpaid' }
+  ];
 
-  // Extract numeric duration from the string (e.g. "2 months" → 2)
-  const durationMatch = internship.duration.match(/^(\d+)/);
-  const durationMonths = durationMatch ? parseInt(durationMatch[1], 10) : 0;
+  const durationFilterOptions = [
+    { value: 'all', label: 'All' },
+    { value: '1-month', label: '1 Month' },
+    { value: '2-months', label: '2 Months' },
+    { value: '3-months', label: '3 Months' },
+    { value: 'more-than-3', label: 'More than 3 Months' }
+  ];
 
-  // Duration filter
-  const matchesDuration =
-    durationFilter === 'All' ||
-    (durationFilter === '1 month' && durationMonths === 1) ||
-    (durationFilter === '2 months' && durationMonths === 2) ||
-    (durationFilter === '3 months' && durationMonths === 3) ||
-    (durationFilter === 'More than 3' && durationMonths > 3);
+  // Filter internships based on search and filters
+  const filteredInternships = dummyInternships.filter((internship) => {
+    const matchesSearch = internship.position.toLowerCase().includes(search.toLowerCase()) ||
+                         dummyCompanies.find(c => c.id === internship.companyId)?.name.toLowerCase().includes(search.toLowerCase());
 
-  return matchesPaid && matchesDuration;
-});
+    // Paid/Unpaid filter
+    const isUnpaid = !internship.salary || internship.salary.trim() === '0' || internship.salary.trim().toLowerCase() === '0 egp/month';
+    const matchesSalary = salaryFilter === 'all' ||
+                         (salaryFilter === 'paid' && !isUnpaid) ||
+                         (salaryFilter === 'unpaid' && isUnpaid);
+
+    // Duration filter
+    const durationMatch = internship.duration.match(/^(\d+)/);
+    const durationMonths = durationMatch ? parseInt(durationMatch[1], 10) : 0;
+    const matchesDuration = durationFilter === 'all' ||
+                           (durationFilter === '1-month' && durationMonths === 1) ||
+                           (durationFilter === '2-months' && durationMonths === 2) ||
+                           (durationFilter === '3-months' && durationMonths === 3) ||
+                           (durationFilter === 'more-than-3' && durationMonths > 3);
+
+    return matchesSearch && matchesSalary && matchesDuration;
+  });
 
   const handleViewDetails = (internship) => {
     setSelectedInternship(internship);
@@ -58,38 +72,25 @@ const filteredInternships = dummyInternships.filter((internship) => {
 
   return (
     <div className="all-internships">
-      <h1>Available Internships</h1>
-
-      {/* Dropdown for Paid/Unpaid Filter */}
-     <div className="filters">
-  <div className="dropdown">
-    <label htmlFor="salaryFilter">Filter by Salary:</label>
-    <select
-      id="salaryFilter"
-      value={salaryFilter}
-      onChange={(e) => setSalaryFilter(e.target.value)}
-    >
-      <option value="All">All</option>
-      <option value="Paid">Paid</option>
-      <option value="Unpaid">Unpaid</option>
-    </select>
-  </div>
-
-  <div className="dropdown">
-    <label htmlFor="durationFilter">Filter by Duration:</label>
-    <select
-      id="durationFilter"
-      value={durationFilter}
-      onChange={(e) => setDurationFilter(e.target.value)}
-    >
-      <option value="All">All</option>
-      <option value="1 month">1 Month</option>
-      <option value="2 months">2 Months</option>
-      <option value="3 months">3 Months</option>
-      <option value="More than 3">More than 3 Months</option>
-    </select>
-  </div>
-</div>
+      <div className="page-header">
+        <h1>Available Internships</h1>
+        <div className="filters-container">
+          <FilterBar
+            searchPlaceholder="Search internships..."
+            searchValue={search}
+            onSearchChange={setSearch}
+            filterOptions={salaryFilterOptions}
+            activeFilter={salaryFilter}
+            onFilterChange={setSalaryFilter}
+          />
+          <FilterBar
+            showSearch={false}
+            filterOptions={durationFilterOptions}
+            activeFilter={durationFilter}
+            onFilterChange={setDurationFilter}
+          />
+        </div>
+      </div>
 
       <div className="internships-grid">
         {filteredInternships.length > 0 ? (

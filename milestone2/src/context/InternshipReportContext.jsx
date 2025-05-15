@@ -125,6 +125,17 @@ export const InternshipReportProvider = ({ children }) => {
 
   const updateReport = (userId, internshipId, report) => {
     const { userReports } = getUserData(userId);
+    setReports(prev => ({
+      ...prev,
+      [userId]: {
+        ...userReports,
+        [internshipId]: {
+          ...userReports[internshipId],
+          ...report,
+          updatedAt: new Date().toISOString()
+        }
+      }
+    }));
     setReports(prev => {
       const updatedReports = {
         ...prev,
@@ -161,6 +172,7 @@ export const InternshipReportProvider = ({ children }) => {
     const { userReports } = getUserData(userId);
     return userReports[internshipId];
   };
+
 
   const submitReport = (userId, internshipId, reportData) => {
     const newReport = {

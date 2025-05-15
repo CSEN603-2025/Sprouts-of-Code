@@ -32,9 +32,13 @@ export const AppointmentProvider = ({ children }) => {
   };
 
   const getAppointmentsByUserId = (userId) => {
-    return appointments.filter(appointment =>
-      appointment.senderId === userId || appointment.receiverId === userId
-    );
+    if (!userId) return [];
+    const userIdStr = userId.toString();
+    return appointments.filter(appointment => {
+      const senderIdStr = appointment.senderId.toString();
+      const receiverIdStr = appointment.receiverId.toString();
+      return senderIdStr === userIdStr || receiverIdStr === userIdStr;
+    });
   };
 
   const getAppointmentsByStatus = (status) => {

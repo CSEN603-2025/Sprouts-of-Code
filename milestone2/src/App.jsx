@@ -49,6 +49,8 @@ import OnlineAssessments from './pages/studentOnboarding/OnlineAssessments'
 import Workshops from './pages/studentOnboarding/Workshops'
 import WorkshopPlayer from './pages/studentOnboarding/WorkshopPlayer'
 import Appointments from './pages/studentOnboarding/Appointments'
+import TakeAssessment from './pages/studentOnboarding/TakeAssessment'
+import AssessmentResults from './pages/studentOnboarding/AssessmentResults'
 import SubmitReport from './pages/student/SubmitReport'
 
 // Analytics Pages
@@ -194,6 +196,7 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
+
                             <Route
                               path="/admin/submitted-reports"
                               element={
@@ -326,6 +329,23 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
+                            <Route
+                              path="/student/assessments/:assessmentId"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <TakeAssessment />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/assessment-results/:assessmentId"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <AssessmentResults />
+                                </ProtectedRoute>
+                              }
+                            />
+
 
                             <Route
                               path="/student/appointments"

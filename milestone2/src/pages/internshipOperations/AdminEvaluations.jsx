@@ -48,7 +48,7 @@ const AdminEvaluations = () => {
 
   return (
     <div className="admin-dashboard">
-      <div className="dashboard-header">
+      <div className="page-header">
         <h1>All Evaluations</h1>
       </div>
       <div className="dashboard-content">
