@@ -185,29 +185,78 @@ const StudentDashboard = () => {
   // Load notifications from localStorage
   useEffect(() => {
     const loadNotifications = () => {
-      const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
-      setNotifications(storedNotifications);
+      if (!student || !student.id) {
+        console.log('No student data available');
+        return;
+      }
+
+      // Ensure student.id is a string
+      const stringStudentId = student.id.toString();
+      console.log('Loading notifications for student:', { id: stringStudentId, email: student.email });
+      
+      try {
+        // Get notifications from localStorage
+        const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${stringStudentId}`) || '[]');
+        console.log('Loaded notifications from localStorage:', storedNotifications);
+        
+        // Sort notifications by time (newest first)
+        const sortedNotifications = storedNotifications.sort((a, b) => b.id - a.id);
+        console.log('Sorted notifications:', sortedNotifications);
+        
+        setNotifications(sortedNotifications);
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+        setNotifications([]);
+      }
     };
     
+    // Load notifications immediately
     loadNotifications();
 
-    // Add event listener for storage changes
+    // Create a custom event for notification updates
+    const handleNotificationUpdate = () => {
+      console.log('Notification update event received');
+      loadNotifications();
+    };
+
+    // Add event listener for custom notification updates
+    window.addEventListener('notificationUpdate', handleNotificationUpdate);
+    
+    // Add event listener for storage changes (for cross-tab updates)
     const handleStorageChange = (e) => {
-      if (e.key === `notifications_${user?.id}`) {
+      if (!student || !student.id) return;
+      
+      const stringStudentId = student.id.toString();
+      console.log('Storage change detected:', { key: e.key, newValue: e.newValue });
+      
+      if (e.key === `notifications_${stringStudentId}`) {
+        console.log('Notifications changed, reloading');
         loadNotifications();
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [user?.id]);
+    
+    return () => {
+      window.removeEventListener('notificationUpdate', handleNotificationUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [student?.id]);
 
   const handleBellClick = (event) => {
     setAnchorEl(event.currentTarget);
     // Mark all notifications as read
     setNotifications(prev => {
       const updatedNotifications = prev.map(n => ({ ...n, read: true }));
-      localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
+      if (student?.id) {
+        const stringStudentId = student.id.toString();
+        console.log('Saving updated notifications:', updatedNotifications);
+        try {
+          localStorage.setItem(`notifications_${stringStudentId}`, JSON.stringify(updatedNotifications));
+        } catch (error) {
+          console.error('Error saving updated notifications:', error);
+        }
+      }
       return updatedNotifications;
     });
   };
