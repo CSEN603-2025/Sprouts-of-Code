@@ -16,7 +16,7 @@ const statusOptions = [
 
 const FacultyReports = () => {
   const { reports, updateReport } = useInternshipReport();
-  const { students } = useStudent();
+  const { students, addNotification } = useStudent();
   const { internships } = useInternships();
   const { companies } = useCompany();
   const { user } = useAuth();
@@ -56,6 +56,28 @@ const FacultyReports = () => {
     };
 
     updateReport(userId, internshipId, updatedReport);
+
+    // Add notification for the student
+    const student = students.find(s => s.id === parseInt(userId));
+    const internship = internships.find(i => i.id === parseInt(internshipId));
+    const company = companies.find(c => c.id === internship?.companyId);
+    
+    let notificationMessage = '';
+    switch (newStatus) {
+      case 'accepted':
+        notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been accepted.`;
+        break;
+      case 'rejected':
+        notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been rejected.`;
+        break;
+      case 'flagged':
+        notificationMessage = `Your report for ${internship?.position} at ${company?.name} has been flagged for review.`;
+        break;
+      default:
+        notificationMessage = `The status of your report for ${internship?.position} at ${company?.name} has been updated to ${newStatus}.`;
+    }
+
+    addNotification(userId, notificationMessage);
   };
 
   const handleViewReport = (report) => {
@@ -172,7 +194,6 @@ const FacultyReports = () => {
                 <th>Student</th>
                 <th>Internship</th>
                 <th>Company</th>
-                <th>Submission Date</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -183,7 +204,6 @@ const FacultyReports = () => {
                   <td>{report.studentName}</td>
                   <td>{report.internshipTitle}</td>
                   <td>{report.companyName}</td>
-                  <td>{new Date(report.submissionDate).toLocaleDateString()}</td>
                   <td>
                     <span className={`status-badge ${report.status}`}>
                       {statusOptions.find(opt => opt.value === report.status)?.label}
@@ -194,13 +214,13 @@ const FacultyReports = () => {
                       className="btn-view"
                       onClick={() => handleViewReport(report)}
                     >
-                      View
+                      View Report
                     </button>
                     <button
                       className="btn-download"
                       onClick={() => handleDownloadReport(report)}
                     >
-                      Download
+                      Download PDF
                     </button>
                     <select
                       value={report.status}

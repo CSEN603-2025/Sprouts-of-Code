@@ -324,10 +324,116 @@ const Reports = () => {
     doc.save(`${report.name.replace(/\s+/g, '_')}.pdf`)
   }
 
+  // Real-time statistics data
+  const realTimeStats = {
+    // Report status counts
+    reportStatus: {
+      accepted: savedReports.filter(r => r.status === 'approved').length,
+      rejected: savedReports.filter(r => r.status === 'rejected').length,
+      flagged: savedReports.filter(r => r.status === 'flagged').length
+    },
+    // Average review time (in days)
+    averageReviewTime: 3.5,
+    // Most frequent courses in internships
+    frequentCourses: internships.reduce((acc, internship) => {
+      const course = internship.course || 'Other';
+      acc[course] = (acc[course] || 0) + 1;
+      return acc;
+    }, {}),
+    // Top rated companies (based on student evaluations)
+    topRatedCompanies: companies
+      .map(company => ({
+        name: company.name,
+        rating: company.rating || 0
+      }))
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 3),
+    // Top companies by internship count
+    topCompaniesByInternships: companies
+      .map(company => ({
+        name: company.name,
+        count: internships.filter(i => i.companyId === company.id).length
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 3)
+  }
+
   return (
     <div className="reports-page">
       <div className="page-header">
         <h1>Reports</h1>
+      </div>
+
+      <div className="real-time-stats">
+        <div className="stats-section">
+          <h2>Report Status per Cycle</h2>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <h3>Accepted Reports</h3>
+              <div className="stat-number">{realTimeStats.reportStatus.accepted}</div>
+              <div className="stat-label">Approved</div>
+            </div>
+            <div className="stat-card">
+              <h3>Rejected Reports</h3>
+              <div className="stat-number">{realTimeStats.reportStatus.rejected}</div>
+              <div className="stat-label">Not Approved</div>
+            </div>
+            <div className="stat-card">
+              <h3>Flagged Reports</h3>
+              <div className="stat-number">{realTimeStats.reportStatus.flagged}</div>
+              <div className="stat-label">Under Review</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="stats-section">
+          <h2>Review Metrics</h2>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <h3>Average Review Time</h3>
+              <div className="stat-number">{realTimeStats.averageReviewTime}</div>
+              <div className="stat-label">Days</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="stats-section">
+          <h2>Most Popular Courses</h2>
+          <div className="stats-grid">
+            {Object.entries(realTimeStats.frequentCourses)
+              .sort(([,a], [,b]) => b - a)
+              .slice(0, 3)
+              .map(([course, count]) => (
+                <div key={course} className="stat-card">
+                  <h3>{course}</h3>
+                  <div className="stat-number">{count}</div>
+                  <div className="stat-label">Internships</div>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        <div className="stats-section">
+          <h2>Top Companies</h2>
+          <div className="stats-grid">
+            {realTimeStats.topRatedCompanies.map((company, index) => (
+              <div key={company.name} className="stat-card">
+                <h3>Top Rated #{index + 1}</h3>
+                <div className="stat-number">{company.name}</div>
+                <div className="stat-label">Rating: {company.rating.toFixed(1)}</div>
+              </div>
+            ))}
+          </div>
+          <div className="stats-grid">
+            {realTimeStats.topCompaniesByInternships.map((company, index) => (
+              <div key={company.name} className="stat-card">
+                <h3>Most Internships #{index + 1}</h3>
+                <div className="stat-number">{company.name}</div>
+                <div className="stat-label">{company.count} Internships</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="reports-container">

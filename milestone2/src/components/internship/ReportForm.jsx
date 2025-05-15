@@ -282,6 +282,16 @@ const ReportForm = ({ internshipId, onClose }) => {
           </div>
         </div>
 
+        {(getReport(user?.id, internshipId)?.status === 'flagged' || getReport(user?.id, internshipId)?.status === 'rejected') && 
+         getReport(user?.id, internshipId)?.adminComment && (
+          <div className="form-group admin-comment">
+            <label>Faculty/Admin Comments</label>
+            <div className={`comment-box ${getReport(user?.id, internshipId).status}`}>
+              <p>{getReport(user?.id, internshipId).adminComment}</p>
+            </div>
+          </div>
+        )}
+
         <div className="form-actions">
           <button type="submit" className="btn-primary">
             {getReport(user?.id, internshipId) ? 'Update Report' : 'Submit Report'}

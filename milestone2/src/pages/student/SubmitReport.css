@@ -142,4 +142,39 @@
   width: 200px;
   margin: 2rem auto 0;
   text-align: center;
+}
+
+.admin-comment {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.admin-comment h3 {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.comment-box {
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: white;
+  border-left: 4px solid;
+}
+
+.comment-box.flagged {
+  border-left-color: #ffc107;
+  background-color: #fff8e1;
+}
+
+.comment-box.rejected {
+  border-left-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.comment-box p {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
 } 
