@@ -3,23 +3,46 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  min-height: calc(100vh - 64px); /* Adjust based on your header height */
+  display: flex;
+  flex-direction: column;
 }
 
-.admin-list-page h1 {
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
   font-size: 2rem;
   color: #333;
-  margin-bottom: 20px;
+  margin: 0;
 }
 
-.admin-list-page p {
+.page-header p {
   color: #666;
-  margin-bottom: 20px;
+  margin: 10px 0 0 0;
+}
+
+.filter-bar {
+  margin: 1rem 0;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-bar select {
+  padding: 0.4rem;
+  margin-left: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .student-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
+  flex: 1;
 }
 
 .student-card {
@@ -32,6 +55,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  height: 100%;
 }
 
 .student-card:hover {
@@ -41,6 +65,7 @@
 .student-card h3 {
   margin: 0;
   color: #333;
+  font-size: 1.2rem;
 }
 
 .student-card p {
@@ -113,12 +138,10 @@
 .modal-content .btn:hover {
   background: #007bff;
   color: #fff;
-} 
-.filter-bar {
-  margin: 1rem 0;
 }
 
-.filter-bar select {
-  padding: 0.4rem;
-  margin-left: 0.5rem;
+@media (max-width: 768px) {
+  .student-cards {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
 }

@@ -1,128 +1,80 @@
 import { useCompany } from '../../context/CompanyContext';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AdminEmployers.css';
 
 const AdminEmployers = () => {
   const { companies } = useCompany();
-  const approvedCompanies = companies.filter(c => c.isApproved);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const navigate = useNavigate();
+  const [industryFilter, setIndustryFilter] = useState('All');
 
-  const [selectedEmployer, setSelectedEmployer] = useState(null);
-  const [searchText, setSearchText] = useState('');
-  const [selectedIndustry, setSelectedIndustry] = useState('All');
-
-  // Get unique industries
-  const industries = useMemo(() => {
-    const unique = new Set(approvedCompanies.map(c => c.industry));
-    return ['All', ...Array.from(unique)];
-  }, [approvedCompanies]);
-
-  // Handle filtering
-  const filteredCompanies = approvedCompanies.filter(company => {
-    const matchesSearch = (company.name || '').toLowerCase().includes(searchText.toLowerCase());
-    const matchesIndustry = selectedIndustry === 'All' || (company.industry || '') === selectedIndustry;
-    return matchesSearch && matchesIndustry;
-  });
-
-  const handleViewDetails = (employer) => {
-    setSelectedEmployer(employer);
+  const handleViewDetails = (company) => {
+    setSelectedCompany(company);
   };
 
   const closeModal = () => {
-    setSelectedEmployer(null);
+    setSelectedCompany(null);
   };
+
+  const handleFilterChange = (e) => {
+    setIndustryFilter(e.target.value);
+  };
+
+  const filteredCompanies = companies.filter(company => {
+    if (industryFilter === 'All') return true;
+    return company.industry.toLowerCase() === industryFilter.toLowerCase();
+  });
 
   return (
     <div className="admin-list-page">
-      <h1>All Employers</h1>
-      <p>
-        Total Employers: <strong>{filteredCompanies.length}</strong>
-      </p>
+      <div className="page-header">
+        <h1>All Employers</h1>
+        <p>Total Employers: <strong>{companies.length}</strong></p>
+      </div>
 
       <div className="filter-bar">
-        <input
-          type="text"
-          placeholder="Search by company name..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          className="search-input"
-        />
+        <label htmlFor="industryFilter">Filter by Industry: </label>
         <select
-          value={selectedIndustry}
-          onChange={(e) => setSelectedIndustry(e.target.value)}
-          className="industry-filter"
+          id="industryFilter"
+          value={industryFilter}
+          onChange={handleFilterChange}
         >
-          {industries.map((industry, idx) => (
-            <option key={idx} value={industry}>
-              {industry}
-            </option>
-          ))}
+          <option value="All">All</option>
+          <option value="Technology">Technology</option>
+          <option value="Finance">Finance</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Education">Education</option>
+          <option value="Manufacturing">Manufacturing</option>
+          <option value="Retail">Retail</option>
+          <option value="Other">Other</option>
         </select>
       </div>
 
       <div className="employer-cards">
-        {filteredCompanies.map(company => (
-          <div key={company.id} className="employer-card">
-            <div className="employer-header">
-              {company.logo && (
-                <img
-                  src={company.logo}
-                  alt={`${company.name} logo`}
-                  className="company-logo"
-                />
-              )}
+        {filteredCompanies.length > 0 ? (
+          filteredCompanies.map(company => (
+            <div key={company.id} className="employer-card">
               <h3>{company.name}</h3>
+              <p>{company.email}</p>
+              <p className="industry">{company.industry}</p>
+              <button className="btn btn-outline" onClick={() => handleViewDetails(company)}>View Details</button>
+              <button className="btn btn-outline" onClick={() => navigate(`/admin/employers/${company.id}`)}>View Profile</button>
             </div>
-            <div className="employer-info">
-              <p><strong>Industry:</strong> {company.industry}</p>
-              <p><strong>Size:</strong> {company.size}</p>
-              <p><strong>Email:</strong> {company.email}</p>
-            </div>
-            <button className="btn btn-outline" onClick={() => handleViewDetails(company)}>View Details</button>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No employers found for the selected industry.</p>
+        )}
       </div>
 
-      {selectedEmployer && (
+      {selectedCompany && (
         <div className="modal">
           <div className="modal-content">
-            <div className="modal-header">
-              <h2>{selectedEmployer.name}</h2>
-              <button className="close-btn" onClick={closeModal}>×</button>
-            </div>
-            <div className="modal-body">
-              {selectedEmployer.logo && (
-                <div className="modal-logo">
-                  <img
-                    src={selectedEmployer.logo}
-                    alt={`${selectedEmployer.name} logo`}
-                  />
-                </div>
-              )}
-              <div className="modal-details">
-                <div className="detail-group">
-                  <label>Industry:</label>
-                  <span>{selectedEmployer.industry}</span>
-                </div>
-                <div className="detail-group">
-                  <label>Company Size:</label>
-                  <span>{selectedEmployer.size}</span>
-                </div>
-                <div className="detail-group">
-                  <label>Email:</label>
-                  <span>{selectedEmployer.email}</span>
-                </div>
-                {selectedEmployer.documents && selectedEmployer.documents.length > 0 && (
-                  <div className="detail-group">
-                    <label>Submitted Documents:</label>
-                    <ul className="documents-list">
-                      {selectedEmployer.documents.map((doc, index) => (
-                        <li key={index}>{doc.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
+            <h2>{selectedCompany.name}</h2>
+            <p>Email: {selectedCompany.email}</p>
+            <p>Industry: {selectedCompany.industry}</p>
+            <p>Location: {selectedCompany.location}</p>
+            <button className="btn btn-outline" onClick={closeModal}>Close</button>
           </div>
         </div>
       )}

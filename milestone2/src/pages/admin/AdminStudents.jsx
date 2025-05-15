@@ -13,7 +13,6 @@ const AdminStudents = () => {
     setSelectedStudent(student);
   };
 
-
   const closeModal = () => {
     setSelectedStudent(null);
   };
@@ -24,18 +23,18 @@ const AdminStudents = () => {
 
   const filteredStudents = students.filter(student => {
     if (internshipStatusFilter === 'All') return true;
-
-    return student.appliedInternships.some(internship =>
+    return student.appliedInternships?.some(internship =>
       internship.status.toLowerCase() === internshipStatusFilter.toLowerCase()
     );
   });
 
   return (
     <div className="admin-list-page">
-      <h1>All Students</h1>
-      <p>Total Students: <strong>{students.length}</strong></p>
+      <div className="page-header">
+        <h1>All Students</h1>
+        <p>Total Students: <strong>{students.length}</strong></p>
+      </div>
 
-      {/* Internship status filter dropdown */}
       <div className="filter-bar">
         <label htmlFor="statusFilter">Filter by Internship Status: </label>
         <select
@@ -55,7 +54,7 @@ const AdminStudents = () => {
         {filteredStudents.length > 0 ? (
           filteredStudents.map(student => (
             <div key={student.id} className="student-card">
-              <h3>{student.name}</h3>
+              <h3>{student.name}</h3>   
               <p>{student.email}</p>
               <button className="btn btn-outline" onClick={() => handleViewDetails(student)}>View Details</button>
               <button className="btn btn-outline"  onClick={() => navigate(`/admin/students/${student.id}`)}>View Profile</button>

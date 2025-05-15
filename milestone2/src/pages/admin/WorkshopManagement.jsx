@@ -31,7 +31,7 @@ const WorkshopManagement = () => {
 
   return (
     <div className="workshop-management">
-      <div className="workshop-header">
+      <div className="page-header">
         <h1>Workshop Management</h1>
         <button className="create-btn" onClick={handleCreate}>
           Create Workshop
