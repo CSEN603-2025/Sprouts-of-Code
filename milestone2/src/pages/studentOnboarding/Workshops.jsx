@@ -117,6 +117,7 @@ const Workshops = () => {
       // Disable the button immediately
       button.disabled = true;
 
+
       if (isRegistered) {
         await unregisterFromWorkshop(user.id, workshopId, workshop.title);
       } else {
@@ -194,6 +195,7 @@ const Workshops = () => {
                       Download
                     </button>
                   </div>
+
                 </div>
               );
             })}

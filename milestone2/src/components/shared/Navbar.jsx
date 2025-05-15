@@ -9,6 +9,7 @@ import Box from '@mui/material/Box'
 import CallIcon from '@mui/icons-material/Call'
 import LogoutIcon from '@mui/icons-material/Logout'
 
+
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
 
@@ -171,7 +172,7 @@ const Navbar = ({ user, onLogout }) => {
           </Link>
         </div>
         
-    
+
         <div className="navbar-right">
           {user && (
             <button 

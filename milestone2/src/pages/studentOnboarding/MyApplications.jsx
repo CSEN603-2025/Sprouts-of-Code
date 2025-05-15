@@ -9,6 +9,7 @@ import { useInternshipReport } from '../../context/InternshipReportContext';
 import EvaluationForm from '../../components/internship/EvaluationForm';
 import ReportForm from '../../components/internship/ReportForm';
 import FilterBar from '../../components/shared/FilterBar';
+
 import './MyApplications.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -63,6 +64,11 @@ const MyApplications = () => {
     { value: 'completed', label: 'Completed' },
     { value: 'rejected', label: 'Rejected' }
   ];
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedCompleted, setExpandedCompleted] = useState([]);
+  const [showEvaluation, setShowEvaluation] = useState(null);
+  const [showReport, setShowReport] = useState(null);
 
   // Filter applications based on search and status
   const filteredApplications = applications.filter(app => {
@@ -148,6 +154,31 @@ const MyApplications = () => {
           <p>No applications found matching your filters.</p>
         )}
       </div>
+
+      {/* Evaluation Modal */}
+      {showEvaluation && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <EvaluationForm
+              internshipId={showEvaluation}
+              onClose={() => setShowEvaluation(null)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {showReport && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <ReportForm
+              internshipId={showReport}
+              onClose={() => setShowReport(null)}
+            />
+
+          </div>
+        </div>
+      )}
 
       {/* Evaluation Modal */}
       {showEvaluation && (

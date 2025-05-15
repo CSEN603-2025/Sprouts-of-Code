@@ -11,6 +11,26 @@ const AdminEmployers = () => {
 
   const handleViewDetails = (company) => {
     setSelectedCompany(company);
+  const [selectedEmployer, setSelectedEmployer] = useState(null);
+  const [searchText, setSearchText] = useState('');
+  const [selectedIndustry, setSelectedIndustry] = useState('All');
+
+  // Get unique industries
+  const industries = useMemo(() => {
+    const unique = new Set(approvedCompanies.map(c => c.industry));
+    return ['All', ...Array.from(unique)];
+  }, [approvedCompanies]);
+
+  // Handle filtering
+  const filteredCompanies = approvedCompanies.filter(company => {
+    const matchesSearch = (company.name || '').toLowerCase().includes(searchText.toLowerCase());
+    const matchesIndustry = selectedIndustry === 'All' || (company.industry || '') === selectedIndustry;
+    return matchesSearch && matchesIndustry;
+  });
+
+  const handleViewDetails = (employer) => {
+    setSelectedEmployer(employer);
+
   };
 
   const closeModal = () => {
