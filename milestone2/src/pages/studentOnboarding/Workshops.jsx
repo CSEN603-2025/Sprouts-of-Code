@@ -6,6 +6,7 @@ import { useWorkshops } from '../../context/WorkshopContext';
 import { Dialog, DialogContent } from '@mui/material';
 import Certificate from './Certificate';
 import FilterBar from '../../components/shared/FilterBar';
+import { jsPDF } from 'jspdf';
 import './Workshops.css';
 
 const Workshops = () => {
@@ -50,9 +51,55 @@ const Workshops = () => {
     setSelectedCertificate(null);
   };
 
-  const handleDownloadCertificate = () => {
-    // In a real app, this would generate and download a PDF
-    console.log('Downloading certificate...');
+  const handleDownloadCertificate = (certificate) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginLeft = 20;
+    const lineHeight = 6;
+    let cursorY = 20;
+
+    // Add certificate title
+    doc.setFontSize(24);
+    doc.setFont("Helvetica", "bold");
+    const title = "Certificate of Completion";
+    const titleWidth = doc.getTextWidth(title);
+    doc.text(title, (pageWidth - titleWidth) / 2, cursorY);
+    cursorY += 20;
+
+    // Add student name
+    doc.setFontSize(18);
+    doc.text(`This is to certify that`, marginLeft, cursorY);
+    cursorY += 15;
+    doc.setFontSize(24);
+    doc.text(user.name, (pageWidth - doc.getTextWidth(user.name)) / 2, cursorY);
+    cursorY += 20;
+
+    // Add workshop details
+    doc.setFontSize(14);
+    doc.text(`has successfully completed the workshop`, marginLeft, cursorY);
+    cursorY += 15;
+    doc.setFontSize(18);
+    doc.text(certificate.title, (pageWidth - doc.getTextWidth(certificate.title)) / 2, cursorY);
+    cursorY += 20;
+
+    // Add completion date
+    doc.setFontSize(14);
+    const completionDate = new Date(certificate.date).toLocaleDateString();
+    doc.text(`Completed on: ${completionDate}`, (pageWidth - doc.getTextWidth(`Completed on: ${completionDate}`)) / 2, cursorY);
+    cursorY += 30;
+
+    // Add signature line
+    doc.setFontSize(12);
+    doc.text("Workshop Coordinator", pageWidth - 60, cursorY);
+    doc.line(pageWidth - 60, cursorY - 5, pageWidth - 20, cursorY - 5);
+
+    // Add footer
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text("The German University in Cairo", marginLeft, 290);
+
+    // Save the PDF
+    doc.save(`${certificate.title}-Certificate.pdf`);
   };
 
   const handleRegistration = async (workshopId, event) => {
@@ -133,12 +180,20 @@ const Workshops = () => {
                       This workshop has been removed from the platform
                     </p>
                   )}
-                  <button
-                    className="view-certificate-button"
-                    onClick={() => handleViewCertificate(certificate)}
-                  >
-                    View Certificate
-                  </button>
+                  <div className="certificate-actions">
+                    <button
+                      className="view-certificate-button"
+                      onClick={() => handleViewCertificate(certificate)}
+                    >
+                      View Certificate
+                    </button>
+                    <button
+                      className="download-certificate-button"
+                      onClick={() => handleDownloadCertificate(certificate)}
+                    >
+                      Download
+                    </button>
+                  </div>
                 </div>
               );
             })}
