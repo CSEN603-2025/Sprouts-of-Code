@@ -1,7 +1,7 @@
 /* src/pages/studentOnboarding/MyApplications.css */
 
 .my-applications {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
   }
@@ -45,101 +45,55 @@
     gap: 32px;
   }
   
-  .application-group {
-    background-color: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .group-title {
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #eee;
-    font-size: 20px;
-    font-weight: 600;
-  }
-  
-  .group-title.pending {
-    color: #6c757d;
-    border-bottom-color: #6c757d;
-  }
-  
-  .group-title.finalized {
-    color: #0d6efd;
-    border-bottom-color: #0d6efd;
-  }
-  
-  .group-title.accepted {
-    color: #198754;
-    border-bottom-color: #198754;
-  }
-  
-  .group-title.rejected {
-    color: #dc3545;
-    border-bottom-color: #dc3545;
-  }
-  
-  .applications-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+  .applications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
   
   .application-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-left: 4px solid;
-    overflow: hidden;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(74, 144, 226, 0.04);
+    padding: 18px 20px 14px 20px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
   }
   
   .application-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(74, 144, 226, 0.10);
   }
   
-  .application-card.pending {
-    border-left-color: #6c757d;
-  }
-  
-  .application-card.finalized {
-    border-left-color: #0d6efd;
-  }
-  
-  .application-card.accepted {
-    border-left-color: #198754;
-  }
-  
-  .application-card.rejected {
-    border-left-color: #dc3545;
-  }
-  
-  .application-card.rejected .status-badge.rejected {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .card-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 20px;
-    border-bottom: 1px solid #e9ecef;
-  }
-  
-  .header-main {
+  .application-summary {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
-    margin-bottom: 15px;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 1.08rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    gap: 0;
   }
   
-  .header-main h3 {
-    font-size: 20px;
-    color: var(--primary-black);
-    margin: 0;
+  .application-position {
+    flex: 1 1 0;
+    text-align: left;
+    color: #1e293b;
     font-weight: 600;
-    letter-spacing: -0.5px;
+  }
+  
+  .application-company {
+    flex: 1 1 0;
+    text-align: center;
+    color: #4a90e2;
+    font-weight: 500;
   }
   
   .status-badge {
@@ -152,150 +106,172 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  .status-badge.pending {
-    background-color: white;
-    color: #6c757d;
+  .status-badge.applied {
+    background-color: #fef3c7;
+    color: #92400e;
   }
   
-  .status-badge.finalized {
-    background-color: white;
-    color: #0d6efd;
+  .status-badge.undergoing {
+    background-color: #dcfce7;
+    color: #166534;
   }
   
-  .status-badge.accepted {
-    background-color: white;
-    color: #198754;
+  .status-badge.completed {
+    background-color: #e0f2fe;
+    color: #0369a1;
   }
   
   .status-badge.rejected {
-    background-color: white;
-    color: #dc3545;
+    background-color: #fee2e2;
+    color: #991b1b;
   }
   
-  .header-details {
+  .view-more-btn {
+    flex: 1 1 0;
+    margin-left: 0;
+    margin-right: 0;
+    justify-self: flex-end;
+    text-align: center;
+    display: inline-block;
+    max-width: 130px;
+    margin-left: 100px;
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: white;
+    color: #4a90e2;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .view-more-btn:hover {
+    background: #4a90e2;
+    color: white;
+  }
+  
+  .application-details {
+    margin-top: 8px;
+    font-size: 0.98rem;
+    color: #334155;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .application-details > div {
+    margin-bottom: 4px;
+  }
+  
+  .application-details > div:last-child {
+    margin-bottom: 0;
+  }
+  
+  .action-buttons {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
   }
   
-  .company-info, .date-info {
+  .action-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
   }
   
-  .company-info i, .date-info i {
-    color: var(--dark-gray);
-    font-size: 14px;
-    width: 16px;
+  .action-btn i {
+    font-size: 1rem;
   }
   
-  .company {
-    color: var(--dark-gray);
-    font-size: 15px;
-    margin: 0;
-    font-weight: 500;
+  .evaluation-btn {
+    background: #28a745;
+    color: white;
   }
   
-  .date {
-    color: #777;
-    font-size: 13px;
-    margin: 0;
+  .evaluation-btn:hover {
+    background: #218838;
   }
   
-  .card-content {
-    padding: 20px;
+  .report-btn {
+    background: #28a745;
+    color: white;
+  }
+  
+  .report-btn:hover {
+    background: #218838;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background-color: white;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
   }
   
-  .main-info {
-    margin-bottom: 10px;
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
   }
   
-  .main-info h3 {
-    font-size: 18px;
-    color: var(--primary-black);
-    margin-bottom: 8px;
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0.5rem;
+    line-height: 1;
+    z-index: 1;
   }
   
-  .info-section {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 15px;
-    border: 1px solid #e9ecef;
-  }
-  
-  .info-section h4 {
-    color: var(--primary-black);
-    font-size: 14px;
-    margin-bottom: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  
-  .info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .info-item .label {
-    font-size: 12px;
-    color: var(--dark-gray);
-  }
-  
-  .info-item .value {
-    font-size: 14px;
-    color: var(--primary-black);
-    font-weight: 500;
-  }
-  
-  .requirements, .description {
-    font-size: 14px;
-    color: var(--text-dark);
-    line-height: 1.5;
-  }
-  
-  .card-footer {
-    margin-top: auto;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-  }
-  
-  .salary {
-    display: inline-block;
-    padding: 6px 12px;
-    background-color: #e9ecef;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
+  .modal-close:hover {
     color: var(--primary-black);
   }
   
-  /* Update the grid layout */
-  .applications-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 24px;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .applications-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 700px) {
+    .applications-list {
+      gap: 14px;
     }
-  
-    .info-grid {
-      grid-template-columns: 1fr;
+    
+    .application-card {
+      max-width: 100%;
+      min-width: 0;
+    }
+    
+    .application-summary {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    
+    .view-more-btn {
+      margin-left: 0;
+      width: 100%;
     }
   }
 

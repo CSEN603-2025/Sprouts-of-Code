@@ -7,6 +7,8 @@ import { useStudent } from '../../context/StudentContext'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import CallIcon from '@mui/icons-material/Call'
+import LogoutIcon from '@mui/icons-material/Logout'
+
 
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
@@ -170,48 +172,14 @@ const Navbar = ({ user, onLogout }) => {
           </Link>
         </div>
         
-        {user ? (
-          <div className="navbar-menu">
-            {/* Dynamic links based on user role */}
-            {user.role === 'student' && (
-              <>
-                <Link to="/student" className="nav-link">Dashboard</Link>
-                <Link to="/student/profile" className="nav-link">Profile</Link>
-                <Link to="/student/internships" className="nav-link">Internship</Link>
-              </>
-            )}
-            
-            {user.role === 'employer' && (
-              <>
-                <Link to="/employer" className="nav-link">Dashboard</Link>
-                <Link to="/employer/internships" className="nav-link">Job Postings</Link>
-              </>
-            )}
-            
-            {user.role === 'admin' && (
-              <>
-                <Link to="/admin" className="nav-link">Dashboard</Link>
-                <Link to="/admin/internships" className="nav-link">Internships</Link>
-                <Link to="/analytics" className="nav-link">Analytics</Link>
-              </>
-            )}
-            {user.role === 'FacultyAcademic' && (
-              <>
-                <Link to="/faculty" className="nav-link">Dashboard</Link>
-                <Link to="/faculty/students" className="nav-link">Students</Link>
-                <Link to="/faculty/reports" className="nav-link">Reports</Link>
-                <Link to="/faculty/appointments" className="nav-link">Appointments</Link>
-              </>
-            )}
-          </div>
-        ) : null}
-        
+
         <div className="navbar-right">
           {user && (
             <button 
               onClick={onLogout} 
-              className="btn btn-outline logout-btn"
+              className="btn logout-btn"
             >
+              <LogoutIcon style={{ fontSize: 20 }} />
               Logout
             </button>
           )}

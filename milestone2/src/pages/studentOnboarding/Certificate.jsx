@@ -1,7 +1,6 @@
 import React from 'react';
 import { Paper, Typography, Box, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import DownloadIcon from '@mui/icons-material/Download';
 import './Certificate.css';
 
 const CertificatePaper = styled(Paper)(({ theme }) => ({
@@ -61,6 +60,10 @@ const Certificate = ({ workshop, student, onDownload }) => {
           <Typography variant="body2" className="workshop-details">
             Date: {currentDate}
           </Typography>
+        </Box>
+
+        <Box className="certificate-footer">
+
         </Box>
       </Box>
     </CertificatePaper>

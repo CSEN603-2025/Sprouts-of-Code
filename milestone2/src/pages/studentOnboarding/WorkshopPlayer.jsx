@@ -125,7 +125,9 @@ const WorkshopPlayer = () => {
           <span className="back-arrow">←</span>
           <span className="back-text">Back to Workshops</span>
         </button>
-        <h1>{workshop.title}</h1>
+        <div className="page-header">
+          <h1>{workshop.title}</h1>
+        </div>
       </div>
 
       <div className="workshop-content">
