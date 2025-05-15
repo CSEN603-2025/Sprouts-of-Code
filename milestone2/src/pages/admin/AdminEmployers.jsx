@@ -1,5 +1,5 @@
 import { useCompany } from '../../context/CompanyContext';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminEmployers.css';
 
@@ -7,30 +7,24 @@ const AdminEmployers = () => {
   const { companies } = useCompany();
   const [selectedCompany, setSelectedCompany] = useState(null);
   const navigate = useNavigate();
-  const [industryFilter, setIndustryFilter] = useState('All');
-
-  const handleViewDetails = (company) => {
-    setSelectedCompany(company);
-  const [selectedEmployer, setSelectedEmployer] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState('All');
 
   // Get unique industries
   const industries = useMemo(() => {
-    const unique = new Set(approvedCompanies.map(c => c.industry));
+    const unique = new Set(companies.map(c => c.industry));
     return ['All', ...Array.from(unique)];
-  }, [approvedCompanies]);
+  }, [companies]);
 
   // Handle filtering
-  const filteredCompanies = approvedCompanies.filter(company => {
+  const filteredCompanies = companies.filter(company => {
     const matchesSearch = (company.name || '').toLowerCase().includes(searchText.toLowerCase());
-    const matchesIndustry = selectedIndustry === 'All' || (company.industry || '') === selectedIndustry;
+    const matchesIndustry = selectedIndustry === 'All' || (company.industry || '').toLowerCase() === selectedIndustry.toLowerCase();
     return matchesSearch && matchesIndustry;
   });
 
-  const handleViewDetails = (employer) => {
-    setSelectedEmployer(employer);
-
+  const handleViewDetails = (company) => {
+    setSelectedCompany(company);
   };
 
   const closeModal = () => {
@@ -38,13 +32,8 @@ const AdminEmployers = () => {
   };
 
   const handleFilterChange = (e) => {
-    setIndustryFilter(e.target.value);
+    setSelectedIndustry(e.target.value);
   };
-
-  const filteredCompanies = companies.filter(company => {
-    if (industryFilter === 'All') return true;
-    return company.industry.toLowerCase() === industryFilter.toLowerCase();
-  });
 
   return (
     <div className="admin-list-page">
@@ -57,17 +46,12 @@ const AdminEmployers = () => {
         <label htmlFor="industryFilter">Filter by Industry: </label>
         <select
           id="industryFilter"
-          value={industryFilter}
+          value={selectedIndustry}
           onChange={handleFilterChange}
         >
-          <option value="All">All</option>
-          <option value="Technology">Technology</option>
-          <option value="Finance">Finance</option>
-          <option value="Healthcare">Healthcare</option>
-          <option value="Education">Education</option>
-          <option value="Manufacturing">Manufacturing</option>
-          <option value="Retail">Retail</option>
-          <option value="Other">Other</option>
+          {industries.map(industry => (
+            <option key={industry} value={industry}>{industry}</option>
+          ))}
         </select>
       </div>
 

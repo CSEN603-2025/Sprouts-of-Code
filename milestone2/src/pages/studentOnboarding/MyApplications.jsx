@@ -65,11 +65,16 @@ const MyApplications = () => {
     { value: 'completed', label: 'Completed' },
     { value: 'rejected', label: 'Rejected' }
   ];
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
   const [expandedCompleted, setExpandedCompleted] = useState([]);
-  const [showEvaluation, setShowEvaluation] = useState(null);
-  const [showReport, setShowReport] = useState(null);
+
+  // Get completed internships
+  const completedInternships = applications.filter(app => app.status === 'completed');
+
+  const toggleCompletedExpand = (id) => {
+    setExpandedCompleted(prev =>
+      prev.includes(id) ? prev.filter(eid => eid !== id) : [...prev, id]
+    );
+  };
 
   // Filter applications based on search and status
   const filteredApplications = applications.filter(app => {
@@ -176,12 +181,11 @@ const MyApplications = () => {
               internshipId={showReport}
               onClose={() => setShowReport(null)}
             />
-
           </div>
-    
-
+        </div>
+      )}
       
-      {/* Completed Internships Section */}
+      {/* Completed Internships Section
       {completedInternships.length > 0 && (
         <div className="completed-internships-section">
           <h2>Completed Internships</h2>
@@ -200,15 +204,15 @@ const MyApplications = () => {
                 </div>
                 {expandedCompleted.includes(intern.id) && (
                   <>
-                  <div className="completed-details">
-                    <div><strong>Location:</strong> {intern.location}</div>
-                    <div><strong>Duration:</strong> {intern.duration}</div>
-                    <div><strong>Type:</strong> {intern.type}</div>
-                    <div><strong>Start Date:</strong> {intern.startDate}</div>
-                    <div><strong>Salary:</strong> {intern.salary}</div>
-                    <div><strong>Requirements:</strong> {intern.requirements}</div>
-                    <div><strong>Description:</strong> {intern.description}</div>
-                  </div>
+                    <div className="completed-details">
+                      <div><strong>Location:</strong> {intern.location}</div>
+                      <div><strong>Duration:</strong> {intern.duration}</div>
+                      <div><strong>Type:</strong> {intern.type}</div>
+                      <div><strong>Start Date:</strong> {intern.startDate}</div>
+                      <div><strong>Salary:</strong> {intern.salary}</div>
+                      <div><strong>Requirements:</strong> {intern.requirements}</div>
+                      <div><strong>Description:</strong> {intern.description}</div>
+                    </div>
                     <div className="action-buttons">
                       <button 
                         className="action-btn evaluation-btn"
@@ -231,7 +235,7 @@ const MyApplications = () => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Evaluation Modal */}
       {showEvaluation && (
