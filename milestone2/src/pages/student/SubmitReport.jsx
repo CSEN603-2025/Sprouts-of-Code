@@ -91,6 +91,15 @@ const SubmitReport = ({ internshipId }) => {
               <p>{existingReport.conclusion}</p>
             </div>
 
+            {(existingReport.status === 'flagged' || existingReport.status === 'rejected') && existingReport.adminComment && (
+              <div className="report-section admin-comment">
+                <h3>Faculty/Admin Comments</h3>
+                <div className={`comment-box ${existingReport.status}`}>
+                  <p>{existingReport.adminComment}</p>
+                </div>
+              </div>
+            )}
+
             <div className="report-status">
               <span className={`status-badge ${existingReport.status}`}>
                 {existingReport.status}

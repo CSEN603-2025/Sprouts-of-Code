@@ -239,7 +239,8 @@ export const StudentProvider = ({ children }) => {
     unregisterFromWorkshop,
     isRegisteredForWorkshop,
     addCertificate,
-    getStudentCertificates
+    getStudentCertificates,
+    addNotification
   }
 
   return (

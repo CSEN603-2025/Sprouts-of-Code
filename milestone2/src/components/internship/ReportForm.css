@@ -211,4 +211,42 @@ textarea {
   to {
     opacity: 0;
   }
+}
+
+.admin-comment {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.admin-comment label {
+  color: #dc3545;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.comment-box {
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: white;
+  border-left: 4px solid;
+  margin-top: 0.5rem;
+}
+
+.comment-box.flagged {
+  border-left-color: #ffc107;
+  background-color: #fff8e1;
+}
+
+.comment-box.rejected {
+  border-left-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.comment-box p {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
+  white-space: pre-wrap;
 } 

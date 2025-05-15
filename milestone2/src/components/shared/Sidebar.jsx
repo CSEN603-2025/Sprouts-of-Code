@@ -43,7 +43,7 @@ const Sidebar = ({ user }) => {
           { label: 'Internships', path: '/admin/internship-management', icon: '💼' },
           { label: 'CareerWorkshops', path: '/admin/workshops', icon: '🧑‍💻' },
           { label: 'Analytics', path: '/analytics', icon: '📈' },
-          { label: 'Statistics', path: '/analytics/reports', icon: '📊' },
+          { label: 'Real-time Statistics', path: '/analytics/reports', icon: '📊' },
           { label: 'Submitted Evaluations', path: '/admin/evaluations', icon: '📝' },
           { label: 'Submitted Reports', path: '/admin/submitted-reports', icon: '📄' },
           { label: 'Appointments', path: '/admin/appointments', icon: '📅' },
@@ -55,7 +55,6 @@ const Sidebar = ({ user }) => {
           { label: 'My Profile', path: '/faculty/profile', icon: '👤' },
           { label: 'Student List', path: '/faculty/students', icon: '👨‍🎓' },
           { label: 'Appointments', path: '/faculty/appointments', icon: '📅' },
-          { label: 'Reports', path: '/faculty/reports', icon: '📄' },
           { label: 'Submitted Reports', path: '/faculty/reports', icon: '📄' },
           // { label: 'Settings', path: '/faculty/settings', icon: '⚙️' },
         ];

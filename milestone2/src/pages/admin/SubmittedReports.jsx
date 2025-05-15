@@ -288,7 +288,6 @@ const SubmittedReports = () => {
                   <th>Major</th>
                   <th>Company</th>
                   <th>Internship</th>
-                  <th>Submission Date</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -300,7 +299,6 @@ const SubmittedReports = () => {
                     <td>{report.major}</td>
                     <td>{report.companyName}</td>
                     <td>{report.internshipTitle}</td>
-                    <td>{new Date(report.submissionDate).toLocaleDateString()}</td>
                     <td>
                       <span className={`status-badge ${report.status}`}>
                         {report.status}

@@ -76,6 +76,7 @@
   color: #222;
   transition: border 0.2s;
   outline: none;
+  width: 100%;
 }
 .status-select:focus {
   border: 1.5px solid #007bff;
@@ -92,6 +93,15 @@
   }
 }
 
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 150px;
+  justify-content: center;
+}
+
 .btn-download {
   background-color: #4CAF50;
   color: white;
@@ -99,16 +109,38 @@
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 8px;
   font-size: 14px;
+  width: auto;
 }
 
 .btn-download:hover {
   background-color: #45a049;
 }
 
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.btn-view {
+  padding: 6px 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: auto;
+}
+
+.btn-view:hover {
+  background-color: #1565c0;
+}
+
+.reports-table th:last-child,
+.reports-table td:last-child {
+  text-align: center;
+}
+
+.status-title {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+  display: block;
 } 
