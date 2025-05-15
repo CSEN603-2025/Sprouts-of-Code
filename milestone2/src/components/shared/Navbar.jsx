@@ -210,7 +210,7 @@ const Navbar = ({ user, onLogout }) => {
           {user && (
             <button 
               onClick={onLogout} 
-              className="btn btn-outline logout-btn"
+              className="btn logout-btn"
             >
               Logout
             </button>

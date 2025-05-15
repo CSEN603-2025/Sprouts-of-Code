@@ -106,7 +106,7 @@
 }
 
 .dropdown-item.logout {
-  color: var(--primary-red);
+  color: var(--primary-red) !important;
   border-top: 1px solid #eee;
 }
 

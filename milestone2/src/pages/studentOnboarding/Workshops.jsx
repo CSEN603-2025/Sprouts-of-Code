@@ -5,6 +5,7 @@ import { useStudent } from '../../context/StudentContext';
 import { useWorkshops } from '../../context/WorkshopContext';
 import { Dialog, DialogContent } from '@mui/material';
 import Certificate from './Certificate';
+import FilterBar from '../../components/shared/FilterBar';
 import './Workshops.css';
 
 const Workshops = () => {
@@ -20,6 +21,13 @@ const Workshops = () => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState(null);
+
+  const filterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'upcoming', label: 'Upcoming' },
+    { value: 'live', label: 'Live' },
+    { value: 'pre-recorded', label: 'Pre-recorded' }
+  ];
 
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
@@ -137,45 +145,17 @@ const Workshops = () => {
           </div>
         </div>
       )}
+
       <div className="page-header">
-        <h1>Career Workshops</h1>
-        <div className="filters-container">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search workshops..."
-              className="search-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="filter-buttons">
-            <button 
-              className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-              onClick={() => setFilter('all')}
-            >
-              All
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'upcoming' ? 'active' : ''}`}
-              onClick={() => setFilter('upcoming')}
-            >
-              Upcoming
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'live' ? 'active' : ''}`}
-              onClick={() => setFilter('live')}
-            >
-              Live
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'pre-recorded' ? 'active' : ''}`}
-              onClick={() => setFilter('pre-recorded')}
-            >
-              Pre-recorded
-            </button>
-          </div>
-        </div>
+        <h1>Workshops</h1>
+        <FilterBar
+          searchPlaceholder="Search workshops..."
+          searchValue={search}
+          onSearchChange={setSearch}
+          filterOptions={filterOptions}
+          activeFilter={filter}
+          onFilterChange={setFilter}
+        />
       </div>
 
       <div className="workshops-grid">
@@ -218,7 +198,7 @@ const Workshops = () => {
                 )}
                 {workshop.type === 'live' && (
                   <button 
-                    className="btn btn-primary"
+                    className="workshop-join-button"
                     onClick={() => handleStartWorkshop(workshop.id)}
                   >
                     Join Now

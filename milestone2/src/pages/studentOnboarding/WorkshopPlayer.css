@@ -39,7 +39,7 @@
 
 .workshop-content {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1fr 300px;
   gap: 2rem;
 }
 
@@ -55,6 +55,7 @@
   background: #000;
   border-radius: 12px;
   overflow: hidden;
+  max-height: 80vh;
 }
 
 .workshop-video {
