@@ -52,7 +52,7 @@ const Sidebar = ({ user }) => {
       case 'FacultyAcademic':
         return [
           { label: 'Dashboard', path: '/faculty', icon: '📊' },
-          { label: 'My Profile', path: '/faculty/profile', icon: '👤' },
+          //{ label: 'My Profile', path: '/faculty/profile', icon: '👤' },
           { label: 'Student List', path: '/faculty-academic/students', icon: '👨‍🎓' },
           //{ label: 'Appointments', path: '/faculty/appointments', icon: '📅' },
           { label: 'Submitted Reports', path: '/faculty/reports', icon: '📄' },
