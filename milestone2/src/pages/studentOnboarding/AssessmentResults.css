@@ -17,6 +17,14 @@
   color: var(--primary-black);
 }
 
+.results-header .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  height: 40px;
+}
+
 .results-summary {
   margin-bottom: 40px;
 }
@@ -180,7 +188,18 @@
 
 .post-score-section {
   margin-top: 20px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.post-score-section .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+  margin: 0 auto;
 }
 
 .posted-badge {

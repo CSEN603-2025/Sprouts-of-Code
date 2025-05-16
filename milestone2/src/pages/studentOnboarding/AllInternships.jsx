@@ -1,44 +1,84 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dummyInternships, dummyCompanies, applyForInternship } from '../../data/dummyData';
+import FilterBar from '../../components/shared/FilterBar';
+import { useAuth } from '../../context/AuthContext';
+import { useStudent } from '../../context/StudentContext';
 import './AllInternships.css';
 
 const AllInternships = () => {
+  const { user } = useAuth();
+  const { students } = useStudent();
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [salaryFilter, setSalaryFilter] = useState('All'); // Filter by paid/unpaid
-  const [durationFilter, setDurationFilter] = useState('All'); // Filter by duration
+  const [search, setSearch] = useState('');
+  const [salaryFilter, setSalaryFilter] = useState('all');
+  const [durationFilter, setDurationFilter] = useState('all');
+  const [industryFilter, setIndustryFilter] = useState('all');
   const navigate = useNavigate();
 
-  // Assuming studentId and studentCompanyId are stored in localStorage or context
-  const studentId = 1; // Replace with actual student ID from auth context
-  const studentCompanyId = 1; // Replace with actual company ID from the student context or localStorage
+  // Get the logged-in student using their email
+  const loggedInStudent = students?.find(student => student.email === user?.email);
+  const studentId = loggedInStudent?.id;
 
-  // Filter internships based on the salary and duration filters
-const filteredInternships = dummyInternships.filter((internship) => {
-  // Paid/Unpaid filter logic: unpaid if salary is '0', '0 EGP/month', or empty
-  const isUnpaid = !internship.salary || internship.salary.trim() === '0' || internship.salary.trim().toLowerCase() === '0 egp/month';
-  const isPaid = !isUnpaid;
-  const matchesPaid =
-    salaryFilter === 'All' ||
-    (salaryFilter === 'Paid' && isPaid) ||
-    (salaryFilter === 'Unpaid' && isUnpaid);
+  const salaryFilterOptions = [
+    { value: 'all', label: 'All Salaries' },
+    { value: 'paid', label: 'Paid' },
+    { value: 'unpaid', label: 'Unpaid' }
+  ];
 
-  // Extract numeric duration from the string (e.g. "2 months" → 2)
-  const durationMatch = internship.duration.match(/^(\d+)/);
-  const durationMonths = durationMatch ? parseInt(durationMatch[1], 10) : 0;
+  const durationFilterOptions = [
+    { value: 'all', label: 'All Durations' },
+    { value: '1-month', label: '1 Month' },
+    { value: '2-months', label: '2 Months' },
+    { value: '3-months', label: '3 Months' },
+    { value: 'more-than-3', label: 'More than 3 Months' }
+  ];
 
-  // Duration filter
-  const matchesDuration =
-    durationFilter === 'All' ||
-    (durationFilter === '1 month' && durationMonths === 1) ||
-    (durationFilter === '2 months' && durationMonths === 2) ||
-    (durationFilter === '3 months' && durationMonths === 3) ||
-    (durationFilter === 'More than 3' && durationMonths > 3);
+  const industryFilterOptions = [
+    { value: 'all', label: 'All Industries' },
+    { value: 'Software Development', label: 'Software Development' },
+    { value: 'Data Science', label: 'Data Science' },
+    { value: 'Web Development', label: 'Web Development' },
+    { value: 'Mobile Development', label: 'Mobile Development' },
+    { value: 'Design', label: 'Design' },
+    { value: 'Quality Assurance', label: 'Quality Assurance' },
+    { value: 'Backend Development', label: 'Backend Development' },
+    { value: 'DevOps', label: 'DevOps' },
+    { value: 'Full Stack Development', label: 'Full Stack Development' },
+    { value: 'Product Management', label: 'Product Management' },
+    { value: 'FinTech Development', label: 'FinTech Development' },
+    { value: 'Healthcare Technology', label: 'Healthcare Technology' },
+    { value: 'E-commerce Development', label: 'E-commerce Development' },
+    { value: 'Logistics Technology', label: 'Logistics Technology' }
+  ];
 
-  return matchesPaid && matchesDuration;
-});
+  // Filter internships based on search and filters
+  const filteredInternships = dummyInternships.filter((internship) => {
+    const matchesSearch = internship.position.toLowerCase().includes(search.toLowerCase()) ||
+                         dummyCompanies.find(c => c.id === internship.companyId)?.name.toLowerCase().includes(search.toLowerCase());
+
+    // Paid/Unpaid filter
+    const isUnpaid = !internship.salary || internship.salary.trim() === '0' || internship.salary.trim().toLowerCase() === '0 egp/month';
+    const matchesSalary = salaryFilter === 'all' ||
+                         (salaryFilter === 'paid' && !isUnpaid) ||
+                         (salaryFilter === 'unpaid' && isUnpaid);
+
+    // Duration filter
+    const durationMatch = internship.duration.match(/^(\d+)/);
+    const durationMonths = durationMatch ? parseInt(durationMatch[1], 10) : 0;
+    const matchesDuration = durationFilter === 'all' ||
+                           (durationFilter === '1-month' && durationMonths === 1) ||
+                           (durationFilter === '2-months' && durationMonths === 2) ||
+                           (durationFilter === '3-months' && durationMonths === 3) ||
+                           (durationFilter === 'more-than-3' && durationMonths > 3);
+
+    // Industry filter
+    const matchesIndustry = industryFilter === 'all' || internship.industry === industryFilter;
+
+    return matchesSearch && matchesSalary && matchesDuration && matchesIndustry;
+  });
 
   const handleViewDetails = (internship) => {
     setSelectedInternship(internship);
@@ -46,6 +86,12 @@ const filteredInternships = dummyInternships.filter((internship) => {
   };
 
   const handleApply = (internshipId) => {
+    if (!studentId) {
+      // Handle case where user is not logged in
+      navigate('/login');
+      return;
+    }
+
     const success = applyForInternship(studentId, internshipId);
     if (success) {
       setShowSuccessMessage(true);
@@ -58,38 +104,34 @@ const filteredInternships = dummyInternships.filter((internship) => {
 
   return (
     <div className="all-internships">
-      <h1>Available Internships</h1>
-
-      {/* Dropdown for Paid/Unpaid Filter */}
-     <div className="filters">
-  <div className="dropdown">
-    <label htmlFor="salaryFilter">Filter by Salary:</label>
-    <select
-      id="salaryFilter"
-      value={salaryFilter}
-      onChange={(e) => setSalaryFilter(e.target.value)}
-    >
-      <option value="All">All</option>
-      <option value="Paid">Paid</option>
-      <option value="Unpaid">Unpaid</option>
-    </select>
-  </div>
-
-  <div className="dropdown">
-    <label htmlFor="durationFilter">Filter by Duration:</label>
-    <select
-      id="durationFilter"
-      value={durationFilter}
-      onChange={(e) => setDurationFilter(e.target.value)}
-    >
-      <option value="All">All</option>
-      <option value="1 month">1 Month</option>
-      <option value="2 months">2 Months</option>
-      <option value="3 months">3 Months</option>
-      <option value="More than 3">More than 3 Months</option>
-    </select>
-  </div>
-</div>
+      <div className="page-header">
+        <h1>Available Internships</h1>
+        <div className="filters-section">
+          <label className="filters-label">Filter by</label>
+        <div className="filters-container">
+          <FilterBar
+            searchPlaceholder="Search internships..."
+            searchValue={search}
+            onSearchChange={setSearch}
+            filterOptions={salaryFilterOptions}
+            activeFilter={salaryFilter}
+            onFilterChange={setSalaryFilter}
+          />
+          <FilterBar
+            showSearch={false}
+            filterOptions={durationFilterOptions}
+            activeFilter={durationFilter}
+            onFilterChange={setDurationFilter}
+          />
+            <FilterBar
+              showSearch={false}
+              filterOptions={industryFilterOptions}
+              activeFilter={industryFilter}
+              onFilterChange={setIndustryFilter}
+            />
+          </div>
+        </div>
+      </div>
 
       <div className="internships-grid">
         {filteredInternships.length > 0 ? (
@@ -139,6 +181,7 @@ const filteredInternships = dummyInternships.filter((internship) => {
               <button
                 className="apply-btn"
                 onClick={() => handleApply(selectedInternship.id)}
+                aria-label="Apply Now"
               >
                 Apply Now
               </button>

@@ -3,8 +3,7 @@
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  width: 100%;
+  min-width: 850px;
 }
 
 .report-form h3 {
@@ -21,7 +20,8 @@
   display: block;
   margin-bottom: 0.5rem;
   color: var(--primary-black);
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 input[type="text"],
@@ -117,30 +117,26 @@ textarea {
 }
 
 .btn-primary {
-  background: var(--primary-color);
+  background: #28a745;
   color: white;
 }
 
 .btn-primary:hover {
-  background: var(--primary-color-dark);
+  background: #218838;
 }
 
 .btn-secondary {
-  background: #f5f5f5;
-  color: #666;
+  background: #dc3545;
+  color: white;
 }
 
 .btn-secondary:hover {
-  background: #e0e0e0;
+  background: #c82333;
 }
 
 .btn-danger {
   background: #dc3545;
   color: white;
-}
-
-.btn-danger:hover {
-  background: #c82333;
 }
 
 .btn-success {
@@ -211,4 +207,87 @@ textarea {
   to {
     opacity: 0;
   }
+}
+
+.admin-comment {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.admin-comment label {
+  color: #dc3545;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.comment-box {
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: white;
+  border-left: 4px solid;
+  margin-top: 0.5rem;
+}
+
+.comment-box.flagged {
+  border-left-color: #ffc107;
+  background-color: #fff8e1;
+}
+
+.comment-box.rejected {
+  border-left-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.comment-box p {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.custom-submit-btn {
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.custom-submit-btn:hover {
+  background: #1565c0;
+}
+
+.custom-cancel-btn-yellow {
+  background: #f7a102;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.custom-cancel-btn-yellow:hover {
+  background: #d48b03;
+}
+
+.custom-delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
 } 
+.custom-delete-btn:hover {
+  background: #b71c1c;
+}

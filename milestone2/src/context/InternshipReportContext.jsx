@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { dummyStudents, dummyInternships } from '../data/dummyData';
 
 const InternshipReportContext = createContext();
 
@@ -106,7 +107,9 @@ export const InternshipReportProvider = ({ children }) => {
 
   // Report functions
   const createReport = (userId, internshipId, report) => {
-    const { userReports } = getUserData(userId);
+    const { userReports, userSelectedCourses } = getUserData(userId);
+    const selectedCourseIds = userSelectedCourses[internshipId] || [];
+    
     setReports(prev => ({
       ...prev,
       [userId]: {
@@ -116,25 +119,38 @@ export const InternshipReportProvider = ({ children }) => {
           id: Date.now(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          status: 'draft'
+          status: 'draft',
+          courses: selectedCourseIds
         }
       }
     }));
   };
 
   const updateReport = (userId, internshipId, report) => {
-    const { userReports } = getUserData(userId);
-    setReports(prev => ({
-      ...prev,
-      [userId]: {
-        ...userReports,
-        [internshipId]: {
-          ...userReports[internshipId],
-          ...report,
-          updatedAt: new Date().toISOString()
+    const { userReports, userSelectedCourses } = getUserData(userId);
+    const selectedCourseIds = userSelectedCourses[internshipId] || [];
+    const currentReport = userReports[internshipId];
+    
+    setReports(prev => {
+      const updatedReports = {
+        ...prev,
+        [userId]: {
+          ...userReports,
+          [internshipId]: {
+            ...currentReport,
+            ...report,
+            updatedAt: new Date().toISOString(),
+            statusUpdateTime: report.status !== currentReport?.status ? new Date().toISOString() : currentReport?.statusUpdateTime,
+            courses: selectedCourseIds
+          }
         }
-      }
-    }));
+      };
+      
+      // Save to localStorage immediately
+      localStorage.setItem('internship_reports', JSON.stringify(updatedReports));
+      
+      return updatedReports;
+    });
   };
 
   const deleteReport = (userId, internshipId) => {
@@ -154,19 +170,31 @@ export const InternshipReportProvider = ({ children }) => {
     return userReports[internshipId];
   };
 
-  const submitReport = (userId, internshipId) => {
-    const { userReports } = getUserData(userId);
-    setReports(prev => ({
-      ...prev,
-      [userId]: {
-        ...userReports,
-        [internshipId]: {
-          ...userReports[internshipId],
-          status: 'submitted',
-          submittedAt: new Date().toISOString()
+
+  const submitReport = (userId, internshipId, reportData) => {
+    const newReport = {
+      id: Date.now(),
+      studentId: userId,
+      internshipId: internshipId,
+      ...reportData,
+      status: 'submitted',
+      submissionDate: new Date().toISOString(),
+      statusUpdateDate: null
+    };
+
+    setReports(prev => {
+      const updatedReports = {
+        ...prev,
+        [userId]: {
+          ...(prev[userId] || {}),
+          [internshipId]: newReport
         }
-      }
-    }));
+      };
+      
+      localStorage.setItem('internship_reports', JSON.stringify(updatedReports));
+      
+      return updatedReports;
+    });
   };
 
   // Course selection functions
@@ -188,6 +216,39 @@ export const InternshipReportProvider = ({ children }) => {
     return userSelectedCourses[internshipId] || [];
   };
 
+  const submitAppeal = (userId, internshipId, appealMessage) => {
+    const { userReports } = getUserData(userId);
+    const report = userReports[internshipId];
+    
+    if (!report || (report.status !== 'flagged' && report.status !== 'rejected')) {
+      return false;
+    }
+
+    const updatedReport = {
+      ...report,
+      appeal: {
+        message: appealMessage,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      }
+    };
+
+    setReports(prev => {
+      const updatedReports = {
+        ...prev,
+        [userId]: {
+          ...userReports,
+          [internshipId]: updatedReport
+        }
+      };
+      
+      localStorage.setItem('internship_reports', JSON.stringify(updatedReports));
+      return updatedReports;
+    });
+
+    return true;
+  };
+
   const value = {
     evaluations,
     reports,
@@ -202,7 +263,8 @@ export const InternshipReportProvider = ({ children }) => {
     getReport,
     submitReport,
     toggleCourseSelection,
-    getSelectedCourses
+    getSelectedCourses,
+    submitAppeal
   };
 
   return (

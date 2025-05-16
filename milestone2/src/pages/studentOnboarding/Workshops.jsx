@@ -5,6 +5,8 @@ import { useStudent } from '../../context/StudentContext';
 import { useWorkshops } from '../../context/WorkshopContext';
 import { Dialog, DialogContent } from '@mui/material';
 import Certificate from './Certificate';
+import FilterBar from '../../components/shared/FilterBar';
+import { jsPDF } from 'jspdf';
 import './Workshops.css';
 
 const Workshops = () => {
@@ -20,6 +22,22 @@ const Workshops = () => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState(null);
+  const [certificatesVersion, setCertificatesVersion] = useState(0);
+  const [notificationTrigger, setNotificationTrigger] = useState(0);
+
+
+  const filterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'upcoming', label: 'Upcoming' },
+    { value: 'live', label: 'Live' },
+    { value: 'pre-recorded', label: 'Pre-recorded' }
+  ];
+
+  useEffect(() => {
+    const handleStorage = () => setCertificatesVersion(v => v + 1);
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   // Filter workshops based on search and type
   const filteredWorkshops = workshops.filter(workshop => {
@@ -42,9 +60,55 @@ const Workshops = () => {
     setSelectedCertificate(null);
   };
 
-  const handleDownloadCertificate = () => {
-    // In a real app, this would generate and download a PDF
-    console.log('Downloading certificate...');
+  const handleDownloadCertificate = (certificate) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginLeft = 20;
+    const lineHeight = 6;
+    let cursorY = 20;
+
+    // Add certificate title
+    doc.setFontSize(24);
+    doc.setFont("Helvetica", "bold");
+    const title = "Certificate of Completion";
+    const titleWidth = doc.getTextWidth(title);
+    doc.text(title, (pageWidth - titleWidth) / 2, cursorY);
+    cursorY += 20;
+
+    // Add student name
+    doc.setFontSize(18);
+    doc.text(`This is to certify that`, marginLeft, cursorY);
+    cursorY += 15;
+    doc.setFontSize(24);
+    doc.text(user.name, (pageWidth - doc.getTextWidth(user.name)) / 2, cursorY);
+    cursorY += 20;
+
+    // Add workshop details
+    doc.setFontSize(14);
+    doc.text(`has successfully completed the workshop`, marginLeft, cursorY);
+    cursorY += 15;
+    doc.setFontSize(18);
+    doc.text(certificate.title, (pageWidth - doc.getTextWidth(certificate.title)) / 2, cursorY);
+    cursorY += 20;
+    
+    // Add completion date
+    doc.setFontSize(14);
+    const completionDate = new Date(certificate.date).toLocaleDateString();
+    doc.text(`Completed on: ${completionDate}`, (pageWidth - doc.getTextWidth(`Completed on: ${completionDate}`)) / 2, cursorY);
+    cursorY += 30;
+
+    // Add signature line
+    doc.setFontSize(12);
+    doc.text("Workshop Coordinator", pageWidth - 60, cursorY);
+    doc.line(pageWidth - 60, cursorY - 5, pageWidth - 20, cursorY - 5);
+
+    // Add footer
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text("The German University in Cairo", marginLeft, 290);
+
+    // Save the PDF
+    doc.save(`${certificate.title}-Certificate.pdf`);
   };
 
   const handleRegistration = async (workshopId, event) => {
@@ -62,14 +126,16 @@ const Workshops = () => {
       // Disable the button immediately
       button.disabled = true;
 
+
+
       if (isRegistered) {
         await unregisterFromWorkshop(user.id, workshopId, workshop.title);
       } else {
         await registerForWorkshop(user.id, workshopId, workshop.title);
       }
 
-      // Force a re-render by updating a local state
-      setSearch(prev => prev); // This is a hack to force re-render without changing the actual search value
+      // Trigger notification update
+      setNotificationTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Error handling registration:', error);
     } finally {
@@ -78,8 +144,18 @@ const Workshops = () => {
     }
   };
 
-  // Get student's certificates
-  const studentCertificates = getStudentCertificates(user.id);
+  // Get student's certificates (always for the logged-in user)
+  const studentCertificates = user ? getStudentCertificates(user.id) : [];
+
+  // Deduplicate certificates by workshopId (keep the most recent by date)
+  const uniqueCertificatesMap = new Map();
+  studentCertificates.forEach(cert => {
+    const existing = uniqueCertificatesMap.get(cert.workshopId);
+    if (!existing || new Date(cert.date) > new Date(existing.date)) {
+      uniqueCertificatesMap.set(cert.workshopId, cert);
+    }
+  });
+  const uniqueCertificates = Array.from(uniqueCertificatesMap.values());
 
   if (loading) {
     return <div className="loading">Loading workshops...</div>;
@@ -104,11 +180,11 @@ const Workshops = () => {
           )}
         </DialogContent>
       </Dialog>
-      {studentCertificates.length > 0 && (
+      {uniqueCertificates.length > 0 && (
         <div className="certificates-section">
           <h2>My Certificates</h2>
           <div className="certificates-grid">
-            {studentCertificates.map(certificate => {
+            {uniqueCertificates.map(certificate => {
               // Check if the workshop still exists
               const workshopExists = workshops.some(w => w.id === certificate.workshopId);
               
@@ -125,112 +201,109 @@ const Workshops = () => {
                       This workshop has been removed from the platform
                     </p>
                   )}
+                  <div className="certificate-actions">
                   <button
                     className="view-certificate-button"
-                    onClick={() => handleViewCertificate(certificate)}
+                      onClick={() => handleViewCertificate(certificate)}
                   >
                     View Certificate
                   </button>
+                    <button
+                      className="download-certificate-button"
+                      onClick={() => handleDownloadCertificate(certificate)}
+                    >
+                      Download
+                    </button>
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
       )}
+
       <div className="page-header">
-        <h1>Career Workshops</h1>
-        <div className="filters-container">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search workshops..."
-              className="search-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="filter-buttons">
-            <button 
-              className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-              onClick={() => setFilter('all')}
-            >
-              All
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'upcoming' ? 'active' : ''}`}
-              onClick={() => setFilter('upcoming')}
-            >
-              Upcoming
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'live' ? 'active' : ''}`}
-              onClick={() => setFilter('live')}
-            >
-              Live
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'pre-recorded' ? 'active' : ''}`}
-              onClick={() => setFilter('pre-recorded')}
-            >
-              Pre-recorded
-            </button>
-          </div>
-        </div>
+        <h1>Workshops</h1>
+        <FilterBar
+          searchPlaceholder="Search workshops..."
+          searchValue={search}
+          onSearchChange={setSearch}
+          filterOptions={filterOptions}
+          activeFilter={filter}
+          onFilterChange={setFilter}
+        />
       </div>
 
       <div className="workshops-grid">
         {filteredWorkshops.length > 0 ? (
           filteredWorkshops.map(workshop => (
-            <div key={workshop.id} className={`workshop-card ${workshop.type}`}>
-              <div className="workshop-header">
+            <div key={workshop.id} className={`workshop-card`}>
+              <div className="workshop-card-header">
                 <h3>{workshop.title}</h3>
-                <span className={`status-badge ${workshop.type}`}>
-                  {workshop.type.charAt(0).toUpperCase() + workshop.type.slice(1)}
-                </span>
+                <span className={`type-badge ${workshop.type}`}>{workshop.type}</span>
               </div>
               <div className="workshop-card-content">
-                <div className="speaker-info">
-                  <h4>{workshop.speaker}</h4>
-                  <p>{workshop.speakerTitle}</p>
+                <div className="workshop-info">
+                  <h4 className="workshop-title">{workshop.title}</h4>
+                  <p className="workshop-short-desc">{workshop.shortDescription}</p>
                 </div>
-                {workshop.type === 'upcoming' && (
-                  <div className="workshop-date">
-                    <i className="fas fa-calendar"></i>
-                    <span>{workshop.startDate} at {workshop.startTime}</span>
+                <div className="workshop-details">
+                  <div className="speaker-info">
+                    <p><strong>Speaker:</strong> {workshop.speaker}</p>
+                    <p><strong>Title:</strong> {workshop.speakerTitle}</p>
+                    {workshop.speakerBio && <p className="speaker-bio">{workshop.speakerBio}</p>}
                   </div>
-                )}
-                <p className="description">{workshop.shortDescription || workshop.description}</p>
-                <div className="topics">
-                  {workshop.topics.map((topic, index) => (
-                    <span key={index} className="topic-tag">{topic}</span>
-                  ))}
+                  <div className="workshop-schedule">
+                    <p><strong>Date:</strong> {workshop.startDate}</p>
+                    <p><strong>Time:</strong> {workshop.startTime} - {workshop.endTime}</p>
+                    <p><strong>Duration:</strong> {workshop.duration} hours</p>
+                  </div>
+                  <div className="workshop-description">
+                    <p><strong>Description:</strong></p>
+                    <p>{workshop.description}</p>
+                  </div>
+                  {workshop.agenda && workshop.agenda.length > 0 && (
+                    <div className="agenda-section">
+                      <p><strong>Agenda:</strong></p>
+                      <ul className="agenda-list">
+                        {workshop.agenda.map((item, index) => (
+                          <li key={index}>
+                            <span className="agenda-time">{item.time}</span>
+                            <span className="agenda-topic">{item.topic}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="workshop-footer">
-                {workshop.type === 'upcoming' && (
+              <div className="workshop-card-actions">
+                {workshop.type === 'live' ? (
                   <button 
-                    className={`btn ${isRegisteredForWorkshop(user.id, workshop.id) ? 'btn-secondary' : 'btn-primary'}`}
-                    onClick={(e) => handleRegistration(workshop.id, e)}
-                    data-workshop-id={workshop.id}
-                  >
-                    {isRegisteredForWorkshop(user.id, workshop.id) ? 'Unregister' : 'Register Now'}
-                  </button>
-                )}
-                {workshop.type === 'live' && (
-                  <button 
-                    className="btn btn-primary"
+                    className="join-btn"
                     onClick={() => handleStartWorkshop(workshop.id)}
+                    style={{ width: '100%' }}
                   >
                     Join Now
                   </button>
-                )}
-                {workshop.type === 'pre-recorded' && (
-                  <button 
-                    className="btn btn-primary"
-                    onClick={() => handleStartWorkshop(workshop.id)}
-                  >
-                    Watch Now
-                  </button>
+                ) : (
+                  isRegisteredForWorkshop(user.id, workshop.id) ? (
+                    <button
+                      className="unregister-btn"
+                      onClick={e => handleRegistration(workshop.id, e)}
+                      style={{ width: '100%' }}
+                    >
+                      Unregister
+                    </button>
+                  ) : (
+                    <button
+                      className="action-btn"
+                      onClick={() => handleStartWorkshop(workshop.id)}
+                      style={{ width: '100%' }}
+                    >
+                      {workshop.type === 'pre-recorded' ? 'Watch Now' : 'Register Now'}
+                    </button>
+                  )
                 )}
               </div>
             </div>

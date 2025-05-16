@@ -34,9 +34,15 @@ const EvaluationForm = ({ internshipId, onClose }) => {
     const company = companies?.find(c => c.id === internship?.companyId);
     
     if (existingEvaluation) {
-      updateEvaluation(user?.id, internshipId, evaluation);
+      updateEvaluation(user?.id, internshipId, {
+        ...evaluation,
+        companyId: internship?.companyId
+      });
     } else {
-      createEvaluation(user?.id, internshipId, evaluation);
+      createEvaluation(user?.id, internshipId, {
+        ...evaluation,
+        companyId: internship?.companyId
+      });
     }
     
     setShowSuccess(true);
@@ -153,20 +159,24 @@ const EvaluationForm = ({ internshipId, onClose }) => {
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="btn-primary">
-            {getEvaluation(user?.id, internshipId) ? 'Update Evaluation' : 'Submit Evaluation'}
-          </button>
-          {getEvaluation(user?.id, internshipId) && (
-            <button type="button" className="btn-danger" onClick={handleDelete}>
-              Delete Evaluation
+          <div className="button-group">
+            <button type="submit" className="custom-submit-btn">
+              {getEvaluation(user?.id, internshipId) ? 'Update Evaluation' : 'Submit Evaluation'}
             </button>
-          )}
-          <button type="button" className="btn-info" onClick={handleDownloadPDF}>
-              Download PDF
-          </button>
-          <button type="button" className="btn-secondary" onClick={onClose}>
-            Cancel
-          </button>
+            {getEvaluation(user?.id, internshipId) && (
+              <>
+                <button type="button" className="btn-danger" onClick={handleDelete}>
+                  Delete Evaluation
+                </button>
+                <button type="button" className="btn-info" onClick={handleDownloadPDF}>
+                  Download PDF
+                </button>
+              </>
+            )}
+            <button type="button" className="btn-secondary" onClick={onClose}>
+              Cancel
+            </button>
+          </div>
         </div>
       </form>
     </div>

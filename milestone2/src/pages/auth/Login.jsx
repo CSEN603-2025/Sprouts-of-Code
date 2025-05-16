@@ -113,7 +113,7 @@ const Login = () => {
 
           <button 
             type="submit" 
-            className="btn btn-primary login-button"
+            className="btn btn-primary login-button german-btn"
             disabled={isLoading}
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
@@ -123,7 +123,7 @@ const Login = () => {
         <div className="register-company">
           <p>Are you a company looking to post internships?</p>
           <button 
-            className="register-company-btn"
+            className="register-company-btn german-btn"
             onClick={() => navigate('/company-registration')}
           >
             Register Your Company

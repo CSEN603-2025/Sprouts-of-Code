@@ -36,10 +36,11 @@ const AdminDashboard = () => {
   
   return (
     <div className="admin-dashboard">
-      <div className="dashboard-header">
+      <div className="page-header">
         <h1>Admin Dashboard</h1>
         <p>Welcome back, Admin!</p>
       </div>
+      
       
       <div className="dashboard-stats">
         <div className="stat-card">

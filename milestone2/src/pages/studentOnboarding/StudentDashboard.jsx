@@ -30,7 +30,7 @@ import '../../components/shared/Navbar.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
-  const { students } = useStudent();
+  const { students, checkCycleForStudent } = useStudent();
   const { internships } = useInternships();
   const { companies } = useCompany();
   const { appointments } = useAppointments();
@@ -38,6 +38,13 @@ const StudentDashboard = () => {
 
   // Get the logged-in student from context data
   const student = students.find(s => s.email === user.email);
+  
+  // Debug log
+  console.log('Student data:', {
+    email: user.email,
+    major: student?.major,
+    videoPath: student?.major ? `/assets/videos/internship-requirements-${student.major.toLowerCase().replace(/\s+/g, '-')}.mp4` : 'No major'
+  });
 
   // Map appliedInternships to actual internship data
   const applications = (student?.appliedInternships || []).map(app => {
@@ -59,11 +66,13 @@ const StudentDashboard = () => {
       case 'applied':
         return 'Pending';
       case 'undergoing':
-        return 'Accepted';
+        return 'Undergoing';
       case 'completed':
         return 'Completed';
       case 'rejected':
         return 'Rejected';
+      case 'finalized':
+        return 'Finalized';
       default:
         return status.charAt(0).toUpperCase() + status.slice(1);
     }
@@ -185,29 +194,78 @@ const StudentDashboard = () => {
   // Load notifications from localStorage
   useEffect(() => {
     const loadNotifications = () => {
-      const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${user?.id}`) || '[]');
-      setNotifications(storedNotifications);
+      if (!student || !student.id) {
+        console.log('No student data available');
+        return;
+      }
+
+      // Ensure student.id is a string
+      const stringStudentId = student.id.toString();
+      console.log('Loading notifications for student:', { id: stringStudentId, email: student.email });
+      
+      try {
+        // Get notifications from localStorage
+        const storedNotifications = JSON.parse(localStorage.getItem(`notifications_${stringStudentId}`) || '[]');
+        console.log('Loaded notifications from localStorage:', storedNotifications);
+        
+        // Sort notifications by time (newest first)
+        const sortedNotifications = storedNotifications.sort((a, b) => b.id - a.id);
+        console.log('Sorted notifications:', sortedNotifications);
+        
+        setNotifications(sortedNotifications);
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+        setNotifications([]);
+      }
     };
     
+    // Load notifications immediately
     loadNotifications();
 
-    // Add event listener for storage changes
+    // Create a custom event for notification updates
+    const handleNotificationUpdate = () => {
+      console.log('Notification update event received');
+      loadNotifications();
+    };
+
+    // Add event listener for custom notification updates
+    window.addEventListener('notificationUpdate', handleNotificationUpdate);
+    
+    // Add event listener for storage changes (for cross-tab updates)
     const handleStorageChange = (e) => {
-      if (e.key === `notifications_${user?.id}`) {
+      if (!student || !student.id) return;
+      
+      const stringStudentId = student.id.toString();
+      console.log('Storage change detected:', { key: e.key, newValue: e.newValue });
+      
+      if (e.key === `notifications_${stringStudentId}`) {
+        console.log('Notifications changed, reloading');
         loadNotifications();
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [user?.id]);
+    
+    return () => {
+      window.removeEventListener('notificationUpdate', handleNotificationUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [student?.id]);
 
   const handleBellClick = (event) => {
     setAnchorEl(event.currentTarget);
     // Mark all notifications as read
     setNotifications(prev => {
       const updatedNotifications = prev.map(n => ({ ...n, read: true }));
-      localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updatedNotifications));
+      if (student?.id) {
+        const stringStudentId = student.id.toString();
+        console.log('Saving updated notifications:', updatedNotifications);
+        try {
+          localStorage.setItem(`notifications_${stringStudentId}`, JSON.stringify(updatedNotifications));
+        } catch (error) {
+          console.error('Error saving updated notifications:', error);
+        }
+      }
       return updatedNotifications;
     });
   };
@@ -215,6 +273,13 @@ const StudentDashboard = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // Add effect to check cycle notifications on mount
+  useEffect(() => {
+    if (user?.id) {
+      checkCycleForStudent(user.id);
+    }
+  }, [user?.id, checkCycleForStudent]);
 
   return (
     <div className="student-dashboard">
@@ -295,15 +360,46 @@ const StudentDashboard = () => {
           <h3>Duration Completed</h3>
           <div className="stat-number">{calculateTotalDuration()}</div>
         </div>
-        <div className="stat-card">
+        {/* <div className="stat-card">
           <h3>Upcoming Interviews</h3>
           <div className="stat-number">{upcomingInterviews}</div>
-        </div>
+        </div> */}
         <div className="stat-card">
           <h3>Active Internships</h3>
           <div className="stat-number">{activeInternships.length}</div>
         </div>
       </div>
+
+      {/* Internship Requirement Video Section */}
+      <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Internship Requirements for {student?.major}
+        </Typography>
+        <div className="video-container">
+          <video 
+            controls
+            className="requirement-video"
+            onError={(e) => {
+              console.error('Video Error:', e.target.error);
+              console.log('Attempted video source:', `/assets/videos/internship-requirements-${student?.major?.toLowerCase().replace(/\s+/g, '-')}.mp4`);
+            }}
+          >
+            <source 
+              src={`/assets/videos/internship-requirements-${student?.major?.toLowerCase().replace(/\s+/g, '-')}.mp4`} 
+              type="video/mp4" 
+            />
+            Your browser does not support the video tag.
+          </video>
+          {!student?.major && (
+            <Typography variant="body2" color="error">
+              No major selected. Please update your profile.
+            </Typography>
+          )}
+        </div>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Learn about the types of internships that count towards your internship requirements.
+        </Typography>
+      </Paper>
 
           <Paper elevation={3} sx={{ margin: '16px 0', padding: 2 }}>
       <Typography variant="h6" gutterBottom>
