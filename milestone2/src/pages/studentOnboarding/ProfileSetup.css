@@ -1,14 +1,15 @@
 .profile-setup {
     max-width: 800px;
     margin: 0 auto;
+    padding: 32px 0 48px 0;
   }
   
   .profile-completion-card {
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    padding: 20px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    padding: 32px 32px 24px 32px;
+    margin-bottom: 32px;
   }
   
   .progress-text {
@@ -33,11 +34,15 @@
   }
   
   .profile-form-container {
-    margin-bottom: 32px;
+    margin-bottom: 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 32px 32px 24px 32px;
   }
   
   .profile-form {
-    padding: 20px;
+    padding: 0;
   }
   
   .profile-avatar {
@@ -61,19 +66,22 @@
   }
   
   .form-section {
-    margin-bottom: 24px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .form-section h3 {
-    margin-bottom: 16px;
-    color: var(--primary-black);
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1.5px solid #eee;
   }
   
   .form-section:last-child {
     border-bottom: none;
     padding-bottom: 0;
+  }
+  
+  .form-section h3 {
+    margin-bottom: 18px;
+    color: var(--primary-black);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
   }
   
   .form-row {
@@ -88,72 +96,124 @@
     margin-top: 4px;
   }
   
-  .form-actions {
-    margin-top: 32px;
+  .file-upload-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
   }
   
-  @media (max-width: 768px) {
-    .form-row {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-    
-    .profile-avatar {
-      flex-direction: column;
-    }
-  }
-
-  .file-upload-container {
-    margin-top: 8px;
-  }
-
   .file-upload-container input[type="file"] {
     width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: #f9f9f9;
     cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 6px;
   }
-
-  .file-upload-container input[type="file"]:hover {
-    background-color: #f0f0f0;
-  }
-
+  
   .file-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 8px;
-    padding: 8px 12px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    border: 1px solid #eee;
+    padding: 12px 18px;
+    background-color: #f7f7fa;
+    border-radius: 8px;
+    border: 1.5px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    transition: all 0.2s ease;
+    gap: 18px;
   }
-
+  
+  .file-info:hover {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+  }
+  
   .file-info span {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--primary-black);
-    max-width: 70%;
+    max-width: 320px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1 1 0;
+    align-items: center;
+    display: flex;
   }
-
+  
+  .file-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
   .btn-sm {
-    padding: 4px 8px;
-    font-size: 12px;
+    padding: 8px 18px;
+    font-size: 14px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    min-width: 110px;
+    justify-content: center;
   }
-
+  
+  .btn-sm i {
+    font-size: 13px;
+  }
+  
+  .btn-primary {
+    background-color: var(--german-yellow);
+    color: var(--german-black);
+    border: 1px solid var(--german-yellow);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--german-red);
+    color: white;
+    border-color: var(--german-red);
+  }
+  
+  .btn-danger {
+    background-color: white;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+  }
+  
+  .btn-danger:hover {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn-download-blue {
+    background-color: #1976d2 !important;
+    color: #fff !important;
+    border: 1.5px solid #1976d2 !important;
+    font-weight: 500;
+    transition: background 0.2s, border 0.2s;
+  }
+  
+  .btn-download-blue:hover,
+  .btn-download-blue:focus {
+    background-color: #1565c0 !important;
+    border-color: #1565c0 !important;
+    color: #fff !important;
+  }
+  
   .additional-documents-list {
-    margin-top: 12px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
-
+  
   .change-photo-btn {
     border: 1.5px solid #dc3545;
     color: #dc3545;
@@ -165,9 +225,79 @@
     cursor: pointer;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
     margin-left: 12px;
+    min-width: 140px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    box-sizing: border-box;
   }
   .change-photo-btn:hover {
     background: #dc3545;
     color: #fff;
     border-color: #dc3545;
+  }
+  
+  @media (max-width: 700px) {
+    .profile-setup, .profile-form-container, .profile-completion-card {
+      padding: 12px 2vw 18px 2vw;
+    }
+    .file-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 8px;
+    }
+    .file-actions {
+      width: 100%;
+      flex-direction: row;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+    .btn-sm {
+      width: 100%;
+      min-width: 0;
+      margin-bottom: 4px;
+    }
+    .file-info span {
+      max-width: 90vw;
+    }
+  }
+  
+  .form-actions {
+    margin-top: 36px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  
+  .dynamic-entry hr {
+    margin: 18px 0;
+  }
+  
+  .card-header {
+    margin-bottom: 24px;
+  }
+  
+  .card-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-black);
+    margin-bottom: 0;
+  }
+  
+  .btn-primary.save-profile-btn {
+    background-color: #28a745 !important;
+    color: #fff !important;
+    border: 1.5px solid #28a745 !important;
+    font-weight: 600;
+    transition: background 0.2s, border 0.2s;
+  }
+  
+  .btn-primary.save-profile-btn:hover,
+  .btn-primary.save-profile-btn:focus {
+    background-color: #218838 !important;
+    border-color: #218838 !important;
+    color: #fff !important;
   }

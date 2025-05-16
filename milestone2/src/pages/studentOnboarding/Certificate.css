@@ -56,17 +56,17 @@
   margin-top: 2rem;
 }
 
-/* .download-button {
+.download-button {
   background-color: #ffd700 !important;
   color: #000 !important;
   padding: 0.75rem 1.5rem !important;
   font-weight: 600 !important;
   text-transform: none !important;
-} */
+}
 
-/* .download-button:hover {
+.download-button:hover {
   background-color: #e6c200 !important;
-} */
+}
 
 /* Certificate Modal Styles */
 .certificate-modal {

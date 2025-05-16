@@ -1,16 +1,25 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useCompany } from '../../context/CompanyContext'
 import { usePendingCompany } from '../../context/PendingCompanyContext'
 import { useInternships } from '../../context/InternshipContext'
+import { useInternshipReport } from '../../context/InternshipReportContext'
+import { useStudent } from '../../context/StudentContext'
+import ReportStatusSection from '../../components/reports/ReportStatusSection'
+import TopCoursesSection from '../../components/reports/TopCoursesSection'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
-import Chart from 'chart.js/auto'
+import { Chart, registerables } from 'chart.js'
 import './Reports.css'
+
+// Register Chart.js components
+Chart.register(...registerables)
 
 const Reports = () => {
   const { companies } = useCompany()
   const { pendingCompanies } = usePendingCompany()
   const { internships } = useInternships()
+  const { reports } = useInternshipReport()
+  const { students } = useStudent()
 
   const [reportType, setReportType] = useState('internship')
   const [timeFrame, setTimeFrame] = useState('past-12-months')
@@ -31,152 +40,231 @@ const Reports = () => {
 
   // Load saved reports from localStorage on component mount
   const [savedReports, setSavedReports] = useState(() => {
-    const saved = localStorage.getItem('savedReports')
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 1,
-        name: 'Internship Performance Q2 2023',
-        type: 'internship',
-        date: '2023-07-01',
-        format: 'pdf',
-        size: '2.4 MB',
-        major: 'Computer Science',
-        status: 'approved',
-        details: {
-          totalInternships: 45,
-          activeInternships: 30,
-          completedInternships: 15,
-          averageDuration: '3.5 months',
-          successRate: '92%',
-          feedback: {
-            positive: 85,
-            neutral: 10,
-            negative: 5
+    try {
+      const saved = localStorage.getItem('savedReports')
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 1,
+          name: 'Internship Performance Q2 2023',
+          type: 'internship',
+          date: '2023-07-01',
+          format: 'pdf',
+          size: '2.4 MB',
+          major: 'Computer Science',
+          status: 'approved',
+          details: {
+            totalInternships: 45,
+            activeInternships: 30,
+            completedInternships: 15,
+            averageDuration: '3.5 months',
+            successRate: '92%',
+            feedback: {
+              positive: 85,
+              neutral: 10,
+              negative: 5
+            }
+          }
+        },
+        {
+          id: 2,
+          name: 'Employer Engagement Report',
+          type: 'employer',
+          date: '2023-06-15',
+          format: 'excel',
+          size: '1.8 MB',
+          major: 'Business',
+          status: 'pending',
+          details: {
+            totalEmployers: 25,
+            activeEmployers: 20,
+            newEmployers: 5,
+            engagementRate: '85%',
+            industries: {
+              'Technology': 10,
+              'Finance': 8,
+              'Healthcare': 7
+            }
+          }
+        },
+        {
+          id: 3,
+          name: 'Student Placement Analysis',
+          type: 'student',
+          date: '2023-05-30',
+          format: 'pdf',
+          size: '3.2 MB',
+          major: 'Engineering',
+          status: 'flagged',
+          details: {
+            totalStudents: 150,
+            placedStudents: 120,
+            placementRate: '80%',
+            averageSalary: '$45,000',
+            topSkills: ['JavaScript', 'Python', 'Data Analysis']
           }
         }
-      },
-      {
-        id: 2,
-        name: 'Employer Engagement Report',
-        type: 'employer',
-        date: '2023-06-15',
-        format: 'excel',
-        size: '1.8 MB',
-        major: 'Business',
-        status: 'pending',
-        details: {
-          totalEmployers: 25,
-          activeEmployers: 20,
-          newEmployers: 5,
-          engagementRate: '85%',
-          industries: {
-            'Technology': 10,
-            'Finance': 8,
-            'Healthcare': 7
-          }
-        }
-      },
-      {
-        id: 3,
-        name: 'Student Placement Analysis',
-        type: 'student',
-        date: '2023-05-30',
-        format: 'pdf',
-        size: '3.2 MB',
-        major: 'Engineering',
-        status: 'flagged',
-        details: {
-          totalStudents: 150,
-          placedStudents: 120,
-          placementRate: '80%',
-          averageSalary: '$45,000',
-          topSkills: ['JavaScript', 'Python', 'Data Analysis']
-        }
-      }
-    ]
+      ]
+    } catch (error) {
+      console.error('Error loading saved reports:', error)
+      return []
+    }
   })
 
   // Save reports to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('savedReports', JSON.stringify(savedReports))
+    try {
+      localStorage.setItem('savedReports', JSON.stringify(savedReports))
+    } catch (error) {
+      console.error('Error saving reports:', error)
+    }
   }, [savedReports])
 
   // Render charts for each report type when modal opens
   useEffect(() => {
-    chartInstances.current.forEach(chart => chart && chart.destroy())
-    chartInstances.current = []
+    let charts = []
+
+    const cleanupCharts = () => {
+      charts.forEach(chart => {
+        if (chart && typeof chart.destroy === 'function') {
+          try {
+            chart.destroy()
+          } catch (error) {
+            console.error('Error destroying chart:', error)
+          }
+        }
+      })
+      charts = []
+    }
+
+    // Cleanup previous charts
+    cleanupCharts()
+
     if (!selectedReport) return
-    if (selectedReport.type === 'student') {
-      // Pie chart for placement
-      if (studentPieRef.current) {
-        const data = selectedReport.details
-        chartInstances.current.push(new Chart(studentPieRef.current, {
-          type: 'pie',
-          data: {
-            labels: ['Placed', 'Not Placed'],
-            datasets: [{
-              data: [
-                parseInt(data.placedStudents || 0),
-                parseInt((data.totalStudents || 0) - (data.placedStudents || 0))
-              ],
-              backgroundColor: ['#4caf50', '#e0e0e0']
-            }]
-          },
-          options: { plugins: { legend: { display: true, position: 'bottom' } } }
-        }))
-      }
-      // Bar chart for top skills
-      if (studentBarRef.current && selectedReport.details.topSkills) {
-        chartInstances.current.push(new Chart(studentBarRef.current, {
-          type: 'bar',
-          data: {
-            labels: selectedReport.details.topSkills,
-            datasets: [{
-              label: 'Top Skills',
-              data: selectedReport.details.topSkills.map(() => 1),
-              backgroundColor: '#1976d2'
-            }]
-          },
-          options: { plugins: { legend: { display: false } } }
-        }))
-      }
-    } else if (selectedReport.type === 'internship') {
-      // Bar chart for internships by company
-      if (internshipBarRef.current && selectedReport.details.internshipsByCompany) {
-        chartInstances.current.push(new Chart(internshipBarRef.current, {
-          type: 'bar',
-          data: {
-            labels: selectedReport.details.internshipsByCompany.map(i => i.company),
-            datasets: [{
-              label: 'Internships',
-              data: selectedReport.details.internshipsByCompany.map(i => i.count),
-              backgroundColor: '#43a047'
-            }]
-          },
-          options: { plugins: { legend: { display: false } } }
-        }))
-      }
-    } else if (selectedReport.type === 'employer') {
-      // Bar chart for employers by industry
-      if (employerBarRef.current && selectedReport.details.industries) {
-        const industries = selectedReport.details.industries
-        chartInstances.current.push(new Chart(employerBarRef.current, {
-          type: 'bar',
-          data: {
-            labels: Object.keys(industries),
-            datasets: [{
-              label: 'Employers',
-              data: Object.values(industries),
-              backgroundColor: '#ffa000'
-            }]
-          },
-          options: { plugins: { legend: { display: false } } }
-        }))
+
+    const createChart = (canvas, config) => {
+      if (!canvas) return null
+      try {
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return null
+        return new Chart(ctx, config)
+      } catch (error) {
+        console.error('Error creating chart:', error)
+        return null
       }
     }
+
+    // Small delay to ensure canvas is ready
+    const timeoutId = setTimeout(() => {
+      try {
+        if (selectedReport.type === 'student') {
+          // Pie chart for placement
+          if (studentPieRef.current) {
+            const data = selectedReport.details
+            const pieChart = createChart(studentPieRef.current, {
+              type: 'pie',
+              data: {
+                labels: ['Placed', 'Not Placed'],
+                datasets: [{
+                  data: [
+                    parseInt(data.placedStudents || 0),
+                    parseInt((data.totalStudents || 0) - (data.placedStudents || 0))
+                  ],
+                  backgroundColor: ['#4caf50', '#e0e0e0']
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: true, position: 'bottom' },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (pieChart) charts.push(pieChart)
+          }
+
+          // Bar chart for top skills
+          if (studentBarRef.current && selectedReport.details.topSkills) {
+            const barChart = createChart(studentBarRef.current, {
+              type: 'bar',
+              data: {
+                labels: selectedReport.details.topSkills,
+                datasets: [{
+                  label: 'Top Skills',
+                  data: selectedReport.details.topSkills.map(() => 1),
+                  backgroundColor: '#1976d2'
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: false },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (barChart) charts.push(barChart)
+          }
+        } else if (selectedReport.type === 'internship') {
+          // Bar chart for internships by company
+          if (internshipBarRef.current && selectedReport.details.internshipsByCompany) {
+            const barChart = createChart(internshipBarRef.current, {
+              type: 'bar',
+              data: {
+                labels: selectedReport.details.internshipsByCompany.map(i => i.company),
+                datasets: [{
+                  label: 'Internships',
+                  data: selectedReport.details.internshipsByCompany.map(i => i.count),
+                  backgroundColor: '#43a047'
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: false },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (barChart) charts.push(barChart)
+          }
+        } else if (selectedReport.type === 'employer') {
+          // Bar chart for employers by industry
+          if (employerBarRef.current && selectedReport.details.industries) {
+            const industries = selectedReport.details.industries
+            const barChart = createChart(employerBarRef.current, {
+              type: 'bar',
+              data: {
+                labels: Object.keys(industries),
+                datasets: [{
+                  label: 'Employers',
+                  data: Object.values(industries),
+                  backgroundColor: '#ffa000'
+                }]
+              },
+              options: { 
+                plugins: { 
+                  legend: { display: false },
+                  tooltip: { enabled: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            })
+            if (barChart) charts.push(barChart)
+          }
+        }
+      } catch (error) {
+        console.error('Error rendering charts:', error)
+      }
+    }, 100)
+
     return () => {
-      chartInstances.current.forEach(chart => chart && chart.destroy())
-      chartInstances.current = []
+      clearTimeout(timeoutId)
+      cleanupCharts()
     }
   }, [selectedReport])
 
@@ -189,6 +277,35 @@ const Reports = () => {
       let reportName = ''
 
       switch (reportType) {
+        case 'real-time':
+          reportData = {
+            reportStatus: {
+              accepted: savedReports.filter(r => r.status === 'approved').length,
+              rejected: savedReports.filter(r => r.status === 'rejected').length,
+              flagged: savedReports.filter(r => r.status === 'flagged').length
+            },
+            averageReviewTime: calculateAverageReviewTime,
+            topCourses: Object.entries(realTimeStats.frequentCourses)
+              .sort(([,a], [,b]) => b - a)
+              .slice(0, 5)
+              .map(([course, count]) => ({
+                course,
+                count
+              })),
+            topCompanies: {
+              topRated: topRatedCompanies.map(company => ({
+                name: company.name,
+                rating: company.averageRating.toFixed(1)
+              })),
+              mostInternships: companiesWithMostInternships.map(company => ({
+                name: company.name,
+                count: company.count
+              }))
+            }
+          }
+          reportName = 'Real-time Statistics Report'
+          break
+
         case 'internship':
           reportData = {
             totalInternships: internships.length,
@@ -229,13 +346,13 @@ const Reports = () => {
       }
 
       const newReport = {
-        id: Date.now(), // Use timestamp as unique ID
+        id: Date.now(),
         name: `${reportName} ${new Date().toLocaleDateString()}`,
         type: reportType,
         date: new Date().toISOString().split('T')[0],
         format: format,
         size: `${(Math.random() * 5).toFixed(1)} MB`,
-        major: 'Computer Science', // This would be dynamic in a real app
+        major: 'Computer Science',
         status: 'pending',
         details: reportData
       }
@@ -264,6 +381,17 @@ const Reports = () => {
   }
 
   const handleCloseReport = () => {
+    // Cleanup charts before closing
+    chartInstances.current.forEach(chart => {
+      if (chart && typeof chart.destroy === 'function') {
+        try {
+          chart.destroy()
+        } catch (error) {
+          console.error('Error destroying chart:', error)
+        }
+      }
+    })
+    chartInstances.current = []
     setSelectedReport(null)
   }
 
@@ -282,8 +410,75 @@ const Reports = () => {
     doc.text(`Size: ${report.size}`, 10, 46)
     doc.text(`Status: ${report.status}`, 10, 54)
     doc.text('---', 10, 60)
-    // Analytics
     let y = 70
+
+    // Real-time statistics report
+    if (report.type === 'real-time' && report.details) {
+      // Report Status
+      doc.setFontSize(14)
+      doc.text('Report Status Counts', 10, y)
+      y += 8
+      doc.setFontSize(12)
+      doc.text(`Accepted: ${report.details.reportStatus?.accepted ?? 0}`, 12, y)
+      y += 7
+      doc.text(`Rejected: ${report.details.reportStatus?.rejected ?? 0}`, 12, y)
+      y += 7
+      doc.text(`Flagged: ${report.details.reportStatus?.flagged ?? 0}`, 12, y)
+      y += 10
+
+      // Average Review Time
+      doc.setFontSize(14)
+      doc.text('Average Review Time', 10, y)
+      y += 8
+      doc.setFontSize(12)
+      const avg = report.details.averageReviewTime || { hours: 0, minutes: 0, seconds: 0 }
+      doc.text(`Time: ${avg.hours}h ${avg.minutes}m ${avg.seconds}s`, 12, y)
+      y += 10
+
+      // Top Courses
+      if (Array.isArray(report.details.topCourses)) {
+        doc.setFontSize(14)
+        doc.text('Top Courses', 10, y)
+        y += 8
+        doc.setFontSize(12)
+        report.details.topCourses.forEach((course, idx) => {
+          doc.text(`#${idx + 1} ${course.course}: ${course.count} reports`, 12, y)
+          y += 7
+        })
+        y += 3
+      }
+
+      // Top Companies
+      if (report.details.topCompanies) {
+        doc.setFontSize(14)
+        doc.text('Top Companies', 10, y)
+        y += 8
+        doc.setFontSize(12)
+        // Top Rated
+        if (Array.isArray(report.details.topCompanies.topRated)) {
+          doc.text('Top Rated:', 12, y)
+          y += 7
+          report.details.topCompanies.topRated.forEach((company, idx) => {
+            doc.text(`#${idx + 1} ${company.name}: ${company.rating} / 5`, 16, y)
+            y += 7
+          })
+          y += 3
+        }
+        // Most Internships
+        if (Array.isArray(report.details.topCompanies.mostInternships)) {
+          doc.text('Most Internships:', 12, y)
+          y += 7
+          report.details.topCompanies.mostInternships.forEach((company, idx) => {
+            doc.text(`#${idx + 1} ${company.name}: ${company.count} internships`, 16, y)
+            y += 7
+          })
+        }
+      }
+      doc.save(`${report.name.replace(/\s+/g, '_')}.pdf`)
+      return
+    }
+
+    // Analytics (default for other report types)
     if (report.details) {
       Object.entries(report.details).forEach(([key, value]) => {
         if (typeof value !== 'object') {
@@ -324,10 +519,188 @@ const Reports = () => {
     doc.save(`${report.name.replace(/\s+/g, '_')}.pdf`)
   }
 
+  // Calculate top rated companies based on student evaluations
+  const topRatedCompanies = useMemo(() => {
+    if (!reports) return [];
+    
+    const companyRatings = {};
+    
+    // Transform nested evaluations object into flat array
+    const allEvaluations = Object.entries(reports).flatMap(([userId, userReports]) => 
+      Object.entries(userReports).map(([internshipId, evaluation]) => ({
+        ...evaluation,
+        studentId: parseInt(userId),
+        internshipId: parseInt(internshipId)
+      }))
+    );
+    
+    // Get all evaluations
+    allEvaluations.forEach(evaluation => {
+      if (evaluation.companyId && evaluation.rating) {
+        if (!companyRatings[evaluation.companyId]) {
+          companyRatings[evaluation.companyId] = {
+            totalRating: 0,
+            count: 0
+          };
+        }
+        companyRatings[evaluation.companyId].totalRating += evaluation.rating;
+        companyRatings[evaluation.companyId].count += 1;
+      }
+    });
+
+    // Calculate average ratings and sort
+    return Object.entries(companyRatings)
+      .map(([companyId, data]) => ({
+        id: companyId,
+        name: companies.find(c => c.id === parseInt(companyId))?.name || 'Unknown Company',
+        averageRating: data.totalRating / data.count
+      }))
+      .sort((a, b) => b.averageRating - a.averageRating)
+      .slice(0, 5);
+  }, [reports, companies]);
+
+  // Calculate companies with most internships based on student applications
+  const companiesWithMostInternships = useMemo(() => {
+    if (!students || !Array.isArray(students)) return [];
+    
+    const internshipCounts = {};
+    
+    // Count internships per company from student applications
+    students.forEach(student => {
+      if (student.appliedInternships) {
+        student.appliedInternships.forEach(application => {
+          const internship = internships.find(i => i.id === application.internshipId);
+          if (internship?.companyId) {
+            internshipCounts[internship.companyId] = (internshipCounts[internship.companyId] || 0) + 1;
+          }
+        });
+      }
+    });
+
+    // Convert to array and sort
+    return Object.entries(internshipCounts)
+      .map(([companyId, count]) => ({
+        id: companyId,
+        name: companies.find(c => c.id === parseInt(companyId))?.name || 'Unknown Company',
+        count
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  }, [students, internships, companies]);
+
+  // Calculate average review time
+  const calculateAverageReviewTime = useMemo(() => {
+    const reportsWithStatus = Object.entries(reports).flatMap(([userId, userReports]) => 
+      Object.values(userReports).filter(report => 
+        report.status !== 'pending' && report.submissionTime && report.statusUpdateTime
+      )
+    );
+
+    if (reportsWithStatus.length === 0) {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+
+    const totalTimeMs = reportsWithStatus.reduce((total, report) => {
+      const submissionTime = new Date(report.submissionTime).getTime();
+      const statusUpdateTime = new Date(report.statusUpdateTime).getTime();
+      return total + (statusUpdateTime - submissionTime);
+    }, 0);
+
+    const averageTimeMs = totalTimeMs / reportsWithStatus.length;
+    const hours = Math.floor(averageTimeMs / (1000 * 60 * 60));
+    const minutes = Math.floor((averageTimeMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((averageTimeMs % (1000 * 60)) / 1000);
+
+    return { hours, minutes, seconds };
+  }, [reports]);
+
+  // Update the realTimeStats object to include the average review time
+  const realTimeStats = {
+    // Report status counts
+    reportStatus: {
+      accepted: savedReports.filter(r => r.status === 'approved').length,
+      rejected: savedReports.filter(r => r.status === 'rejected').length,
+      flagged: savedReports.filter(r => r.status === 'flagged').length
+    },
+    // Average review time (in days)
+    averageReviewTime: calculateAverageReviewTime,
+    // Most frequent courses in internships
+    frequentCourses: internships.reduce((acc, internship) => {
+      const course = internship.course || 'Other'
+      acc[course] = (acc[course] || 0) + 1
+      return acc
+    }, {}),
+    // Top rated companies (based on student evaluations)
+    topRatedCompanies: topRatedCompanies,
+    // Top companies by internship count
+    topCompaniesByInternships: companiesWithMostInternships
+  }
+
   return (
     <div className="reports-page">
       <div className="page-header">
         <h1>Reports</h1>
+      </div>
+
+      <div className="real-time-stats">
+        <ReportStatusSection />
+
+        <div className="stats-section">
+          <h2>Review Metrics</h2>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <h3>Average Review Time</h3>
+              <div className="stat-value">
+                3.5 days
+              </div>
+              <div className="stat-label">Time to Review</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="stats-section">
+          <h2>Top Courses</h2>
+          <div className="stats-grid">
+            {realTimeStats.frequentCourses && Object.entries(realTimeStats.frequentCourses)
+              .sort(([,a], [,b]) => b - a)
+              .slice(0, 5)
+              .map(([course, count], index) => (
+                <div key={course} className="stat-card">
+                  <h3>#{index + 1} {course}</h3>
+                  <div className="stat-number">{count}</div>
+                  <div className="stat-label">Reports</div>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        <div className="stats-section">
+          <h2>Top Companies</h2>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <h3>Top Rated</h3>
+              <div className="company-list">
+                {topRatedCompanies.map((company, index) => (
+                  <div key={company.id} className="company-item">
+                    <span className="rank">#{index + 1}</span>
+                    <span className="name">{company.name}</span>
+              </div>
+            ))}
+          </div>
+            </div>
+            <div className="stat-card">
+              <h3>Most Internships</h3>
+              <div className="company-list">
+                {companiesWithMostInternships.map((company, index) => (
+                  <div key={company.id} className="company-item">
+                    <span className="rank">#{index + 1}</span>
+                    <span className="name">{company.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="reports-container">
@@ -344,6 +717,7 @@ const Reports = () => {
                 value={reportType}
                 onChange={(e) => setReportType(e.target.value)}
               >
+                <option value="real-time">Real-time Statistics</option>
                 <option value="internship">Internship Performance</option>
                 <option value="student">Student Analytics</option>
                 <option value="employer">Employer Engagement</option>
@@ -367,23 +741,9 @@ const Reports = () => {
                 <option value="custom">Custom Range</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="format">Format</label>
-              <select
-                id="format"
-                value={format}
-                onChange={(e) => setFormat(e.target.value)}
-              >
-                <option value="pdf">PDF</option>
-                <option value="excel">Excel</option>
-                <option value="csv">CSV</option>
-              </select>
-            </div>
-
             <div className="form-actions">
               <button
-                className="btn btn-primary"
+                className="btn btn-primary custom-generate-btn"
                 onClick={handleGenerateReport}
                 disabled={isGenerating}
               >

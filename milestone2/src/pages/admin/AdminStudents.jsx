@@ -1,64 +1,60 @@
 import { useStudent } from '../../context/StudentContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FilterBar from '../../components/shared/FilterBar';
 import './AdminStudents.css';
 
 const AdminStudents = () => {
   const { students } = useStudent();
   const [selectedStudent, setSelectedStudent] = useState(null);
   const navigate = useNavigate();
-  const [internshipStatusFilter, setInternshipStatusFilter] = useState('All');
+  const [filter, setFilter] = useState('all');
 
   const handleViewDetails = (student) => {
     setSelectedStudent(student);
   };
 
-
   const closeModal = () => {
     setSelectedStudent(null);
   };
 
-  const handleFilterChange = (e) => {
-    setInternshipStatusFilter(e.target.value);
-  };
+  const filterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'applied', label: 'Applied' },
+    { value: 'undergoing', label: 'Undergoing' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'rejected', label: 'Rejected' }
+  ];
 
   const filteredStudents = students.filter(student => {
-    if (internshipStatusFilter === 'All') return true;
-
-    return student.appliedInternships.some(internship =>
-      internship.status.toLowerCase() === internshipStatusFilter.toLowerCase()
+    if (filter === 'all') return true;
+    return student.appliedInternships?.some(internship =>
+      internship.status.toLowerCase() === filter.toLowerCase()
     );
   });
 
   return (
     <div className="admin-list-page">
-      <h1>All Students</h1>
-      <p>Total Students: <strong>{students.length}</strong></p>
-
-      {/* Internship status filter dropdown */}
-      <div className="filter-bar">
-        <label htmlFor="statusFilter">Filter by Internship Status: </label>
-        <select
-          id="statusFilter"
-          value={internshipStatusFilter}
-          onChange={handleFilterChange}
-        >
-          <option value="All">All</option>
-          <option value="applied">Applied</option>
-          <option value="undergoing">Undergoing</option>
-          <option value="completed">Completed</option>
-          <option value="rejected">Rejected</option>
-        </select>
+      <div className="page-header">
+        <h1>All Students</h1>
+        <p>Total Students: <strong>{students.length}</strong></p>
       </div>
+
+      <FilterBar
+        filterOptions={filterOptions}
+        activeFilter={filter}
+        onFilterChange={setFilter}
+        showSearch={false}
+      />
 
       <div className="student-cards">
         {filteredStudents.length > 0 ? (
           filteredStudents.map(student => (
             <div key={student.id} className="student-card">
-              <h3>{student.name}</h3>
+              <h3>{student.name}</h3>   
               <p>{student.email}</p>
               <button className="btn btn-outline" onClick={() => handleViewDetails(student)}>View Details</button>
-              <button className="btn btn-outline"  onClick={() => navigate(`/admin/students/${student.id}`)}>View Profile</button>
+              <button className="btn btn-outline" onClick={() => navigate(`/admin/students/${student.id}`)}>View Profile</button>
             </div>
           ))
         ) : (

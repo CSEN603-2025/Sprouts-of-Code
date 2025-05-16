@@ -34,7 +34,7 @@ const EmployerApplications = () => {
     if (!internship) return [];
 
     return internship.applicants
-      .filter(applicant => applicant.status === "applied")
+      .filter(applicant => applicant.status === "applied" || applicant.status === "pending")
       .map(applicant => {
         const student = students.find(s => s.id === applicant.studentId);
         return {
@@ -96,7 +96,7 @@ const EmployerApplications = () => {
           <div key={internship.id} className="internship-card">
             <h2>{internship.position}</h2>
             <p className="applicant-count">
-              {internship.applicants.filter(applicant => applicant.status === "applied").length} {internship.applicants.filter(applicant => applicant.status === "applied").length === 1 ? 'applicant' : 'applicants'}
+              {internship.applicants.filter(applicant => applicant.status === "applied" || applicant.status === "pending").length} {internship.applicants.filter(applicant => applicant.status === "applied" || applicant.status === "pending").length === 1 ? 'applicant' : 'applicants'}
             </p>
             
             {getApplicationsForInternship(internship.id).length === 0 ? (

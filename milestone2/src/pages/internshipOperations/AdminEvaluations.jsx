@@ -109,7 +109,7 @@ const AdminEvaluations = () => {
                           <div><strong>Internship Start:</strong> {internship?.startDate}</div>
                           <div><strong>Internship End:</strong> {internship?.endDate}</div>
                           <div><strong>Supervisor:</strong> {ev.supervisor}</div>
-                          <button className="btn btn-primary" onClick={() => handleViewEval(ev)}>
+                          <button className="custom-view-eval-btn" onClick={() => handleViewEval(ev)}>
                             View Evaluation
                           </button>
                         </div>

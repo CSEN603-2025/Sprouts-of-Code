@@ -131,18 +131,18 @@ const TakeAssessment = () => {
           <div className="modal-content">
             <h2>Confirm Submission</h2>
             <p>Are you sure you want to submit your assessment? This action cannot be undone.</p>
-            <div className="modal-actions">
+            <div className="modal-actions"> 
               <button
-                className="btn btn-outline"
-                onClick={() => setShowConfirmSubmit(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-primary"
+                className="btn btn-primary custom-submit-btn"
                 onClick={confirmSubmit}
               >
                 Submit
+              </button>
+              <button
+                className="btn btn-outline custom-cancel-btn"
+                onClick={() => setShowConfirmSubmit(false)}
+              >
+                Cancel
               </button>
             </div>
           </div>

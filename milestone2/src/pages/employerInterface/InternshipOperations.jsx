@@ -306,18 +306,15 @@ const InternshipOperations = () => {
             />
           </div>
           <div className="filter-buttons">
-            <button 
-              className={`filter-btn ${showAll ? 'active' : ''}`}
-              onClick={() => setShowAll(true)}
+            <select
+              className="filter-select"
+              value={showAll ? 'all' : 'company'}
+              onChange={e => setShowAll(e.target.value === 'all')}
+              style={{ marginRight: '1rem' }}
             >
-              All Internships
-            </button>
-            <button 
-              className={`filter-btn ${!showAll ? 'active' : ''}`}
-              onClick={() => setShowAll(false)}
-            >
-              My Company's Internships
-            </button>
+              <option value="all">All Internships</option>
+              <option value="company">My Company's Internships</option>
+            </select>
             <div className="filters">
               {/* Paid/Unpaid Filter */}
               <select

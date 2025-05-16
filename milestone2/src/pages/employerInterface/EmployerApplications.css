@@ -252,4 +252,34 @@
 
 .finalize-btn:hover {
   background: #219150;
+}
+
+.custom-save-btn {
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.9rem 2.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.custom-save-btn:hover {
+  background: #1565c0;
+}
+
+.custom-cancel-btn-orange {
+  background: #f7a102;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.9rem 2.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.custom-cancel-btn-orange:hover {
+  background: #d48b03;
 } 
