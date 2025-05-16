@@ -298,7 +298,7 @@ const Workshops = () => {
                   ) : (
                     <button
                       className="action-btn"
-                      onClick={e => handleRegistration(workshop.id, e)}
+                      onClick={() => handleStartWorkshop(workshop.id)}
                       style={{ width: '100%' }}
                     >
                       {workshop.type === 'pre-recorded' ? 'Watch Now' : 'Register Now'}

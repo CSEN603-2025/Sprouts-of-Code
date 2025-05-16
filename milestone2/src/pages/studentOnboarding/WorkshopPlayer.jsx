@@ -191,13 +191,13 @@ const WorkshopPlayer = () => {
 
         <div className="side-panels">
           {workshop.type === 'live' && (
-            <div className="chat-panel">
+            <div className="chat-panel-workshop">
               <div className="panel-header">
                 <h3>Live Chat {unreadMessages > 0 && <span className="unread-badge">{unreadMessages}</span>}</h3>
               </div>
-              <div className="chat-messages">
+              <div className="chat-messages-workshop">
                 {chatMessages.map(msg => (
-                  <div key={msg.id} className="chat-message">
+                  <div key={msg.id} className="chat-message-workshop">
                     <div className="message-header">
                       <span className="user">{msg.user}</span>
                       <span className="time">{msg.time}</span>
@@ -207,7 +207,7 @@ const WorkshopPlayer = () => {
                 ))}
                 <div ref={chatEndRef} />
               </div>
-              <form onSubmit={handleSendMessage} className="chat-input">
+              <form onSubmit={handleSendMessage} className="chat-input-workshop">
                 <input
                   type="text"
                   value={newMessage}

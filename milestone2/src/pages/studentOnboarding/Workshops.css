@@ -336,3 +336,18 @@
 .unregister-btn:hover {
   background-color: #ffea00;
 } 
+
+.download-certificate-button {
+  background-color: #1976d2;
+  color: #fff;
+  border: 1.5px solid #1976d2;
+  font-weight: 500;
+  transition: background 0.2s, border 0.2s;
+}
+
+.download-certificate-button:hover,
+.download-certificate-button:focus {
+  background-color: #1565c0;
+  border-color: #1565c0;
+  color: #fff;
+}
