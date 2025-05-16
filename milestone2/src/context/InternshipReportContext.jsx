@@ -107,7 +107,9 @@ export const InternshipReportProvider = ({ children }) => {
 
   // Report functions
   const createReport = (userId, internshipId, report) => {
-    const { userReports } = getUserData(userId);
+    const { userReports, userSelectedCourses } = getUserData(userId);
+    const selectedCourseIds = userSelectedCourses[internshipId] || [];
+    
     setReports(prev => ({
       ...prev,
       [userId]: {
@@ -117,34 +119,29 @@ export const InternshipReportProvider = ({ children }) => {
           id: Date.now(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          status: 'draft'
+          status: 'draft',
+          courses: selectedCourseIds
         }
       }
     }));
   };
 
   const updateReport = (userId, internshipId, report) => {
-    const { userReports } = getUserData(userId);
-    setReports(prev => ({
-      ...prev,
-      [userId]: {
-        ...userReports,
-        [internshipId]: {
-          ...userReports[internshipId],
-          ...report,
-          updatedAt: new Date().toISOString()
-        }
-      }
-    }));
+    const { userReports, userSelectedCourses } = getUserData(userId);
+    const selectedCourseIds = userSelectedCourses[internshipId] || [];
+    const currentReport = userReports[internshipId];
+    
     setReports(prev => {
       const updatedReports = {
         ...prev,
         [userId]: {
           ...userReports,
           [internshipId]: {
-            ...userReports[internshipId],
+            ...currentReport,
             ...report,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
+            statusUpdateTime: report.status !== currentReport?.status ? new Date().toISOString() : currentReport?.statusUpdateTime,
+            courses: selectedCourseIds
           }
         }
       };
@@ -181,7 +178,8 @@ export const InternshipReportProvider = ({ children }) => {
       internshipId: internshipId,
       ...reportData,
       status: 'submitted',
-      submissionDate: new Date().toISOString()
+      submissionDate: new Date().toISOString(),
+      statusUpdateDate: null
     };
 
     setReports(prev => {

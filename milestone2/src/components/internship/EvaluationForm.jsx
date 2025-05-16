@@ -34,9 +34,15 @@ const EvaluationForm = ({ internshipId, onClose }) => {
     const company = companies?.find(c => c.id === internship?.companyId);
     
     if (existingEvaluation) {
-      updateEvaluation(user?.id, internshipId, evaluation);
+      updateEvaluation(user?.id, internshipId, {
+        ...evaluation,
+        companyId: internship?.companyId
+      });
     } else {
-      createEvaluation(user?.id, internshipId, evaluation);
+      createEvaluation(user?.id, internshipId, {
+        ...evaluation,
+        companyId: internship?.companyId
+      });
     }
     
     setShowSuccess(true);

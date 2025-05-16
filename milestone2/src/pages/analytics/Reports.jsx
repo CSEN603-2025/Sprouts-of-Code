@@ -1,7 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useCompany } from '../../context/CompanyContext'
 import { usePendingCompany } from '../../context/PendingCompanyContext'
 import { useInternships } from '../../context/InternshipContext'
+import { useInternshipReport } from '../../context/InternshipReportContext'
+import { useStudent } from '../../context/StudentContext'
+import ReportStatusSection from '../../components/reports/ReportStatusSection'
+import TopCoursesSection from '../../components/reports/TopCoursesSection'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { Chart, registerables } from 'chart.js'
@@ -14,6 +18,8 @@ const Reports = () => {
   const { companies } = useCompany()
   const { pendingCompanies } = usePendingCompany()
   const { internships } = useInternships()
+  const { reports } = useInternshipReport()
+  const { students } = useStudent()
 
   const [reportType, setReportType] = useState('internship')
   const [timeFrame, setTimeFrame] = useState('past-12-months')
@@ -417,6 +423,75 @@ const Reports = () => {
     doc.save(`${report.name.replace(/\s+/g, '_')}.pdf`)
   }
 
+  // Calculate top rated companies based on student evaluations
+  const topRatedCompanies = useMemo(() => {
+    if (!reports) return [];
+    
+    const companyRatings = {};
+    
+    // Transform nested evaluations object into flat array
+    const allEvaluations = Object.entries(reports).flatMap(([userId, userReports]) => 
+      Object.entries(userReports).map(([internshipId, evaluation]) => ({
+        ...evaluation,
+        studentId: parseInt(userId),
+        internshipId: parseInt(internshipId)
+      }))
+    );
+    
+    // Get all evaluations
+    allEvaluations.forEach(evaluation => {
+      if (evaluation.companyId && evaluation.rating) {
+        if (!companyRatings[evaluation.companyId]) {
+          companyRatings[evaluation.companyId] = {
+            totalRating: 0,
+            count: 0
+          };
+        }
+        companyRatings[evaluation.companyId].totalRating += evaluation.rating;
+        companyRatings[evaluation.companyId].count += 1;
+      }
+    });
+
+    // Calculate average ratings and sort
+    return Object.entries(companyRatings)
+      .map(([companyId, data]) => ({
+        id: companyId,
+        name: companies.find(c => c.id === parseInt(companyId))?.name || 'Unknown Company',
+        averageRating: data.totalRating / data.count
+      }))
+      .sort((a, b) => b.averageRating - a.averageRating)
+      .slice(0, 5);
+  }, [reports, companies]);
+
+  // Calculate companies with most internships based on student applications
+  const companiesWithMostInternships = useMemo(() => {
+    if (!students || !Array.isArray(students)) return [];
+    
+    const internshipCounts = {};
+    
+    // Count internships per company from student applications
+    students.forEach(student => {
+      if (student.appliedInternships) {
+        student.appliedInternships.forEach(application => {
+          const internship = internships.find(i => i.id === application.internshipId);
+          if (internship?.companyId) {
+            internshipCounts[internship.companyId] = (internshipCounts[internship.companyId] || 0) + 1;
+          }
+        });
+      }
+    });
+
+    // Convert to array and sort
+    return Object.entries(internshipCounts)
+      .map(([companyId, count]) => ({
+        id: companyId,
+        name: companies.find(c => c.id === parseInt(companyId))?.name || 'Unknown Company',
+        count
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  }, [students, internships, companies]);
+
   // Real-time statistics data
   const realTimeStats = {
     // Report status counts
@@ -429,27 +504,41 @@ const Reports = () => {
     averageReviewTime: 3.5,
     // Most frequent courses in internships
     frequentCourses: internships.reduce((acc, internship) => {
-      const course = internship.course || 'Other';
-      acc[course] = (acc[course] || 0) + 1;
-      return acc;
+      const course = internship.course || 'Other'
+      acc[course] = (acc[course] || 0) + 1
+      return acc
     }, {}),
     // Top rated companies (based on student evaluations)
-    topRatedCompanies: companies
-      .map(company => ({
-        name: company.name,
-        rating: company.rating || 0
-      }))
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 3),
+    topRatedCompanies: topRatedCompanies,
     // Top companies by internship count
-    topCompaniesByInternships: companies
-      .map(company => ({
-        name: company.name,
-        count: internships.filter(i => i.companyId === company.id).length
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 3)
+    topCompaniesByInternships: companiesWithMostInternships
   }
+
+  // Calculate average review time
+  const calculateAverageReviewTime = useMemo(() => {
+    const reportsWithStatus = Object.entries(reports).flatMap(([userId, userReports]) => 
+      Object.values(userReports).filter(report => 
+        report.status !== 'submitted' && report.submissionTime && report.statusUpdateTime
+      )
+    );
+
+    if (reportsWithStatus.length === 0) {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+
+    const totalTimeMs = reportsWithStatus.reduce((total, report) => {
+      const submissionTime = new Date(report.submissionTime).getTime();
+      const statusUpdateTime = new Date(report.statusUpdateTime).getTime();
+      return total + (statusUpdateTime - submissionTime);
+    }, 0);
+
+    const averageTimeMs = totalTimeMs / reportsWithStatus.length;
+    const hours = Math.floor(averageTimeMs / (1000 * 60 * 60));
+    const minutes = Math.floor((averageTimeMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((averageTimeMs % (1000 * 60)) / 1000);
+
+    return { hours, minutes, seconds };
+  }, [reports]);
 
   return (
     <div className="reports-page">
@@ -458,49 +547,32 @@ const Reports = () => {
       </div>
 
       <div className="real-time-stats">
-        <div className="stats-section">
-          <h2>Report Status per Cycle</h2>
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h3>Accepted Reports</h3>
-              <div className="stat-number">{realTimeStats.reportStatus.accepted}</div>
-              <div className="stat-label">Approved</div>
-            </div>
-            <div className="stat-card">
-              <h3>Rejected Reports</h3>
-              <div className="stat-number">{realTimeStats.reportStatus.rejected}</div>
-              <div className="stat-label">Not Approved</div>
-            </div>
-            <div className="stat-card">
-              <h3>Flagged Reports</h3>
-              <div className="stat-number">{realTimeStats.reportStatus.flagged}</div>
-              <div className="stat-label">Under Review</div>
-            </div>
-          </div>
-        </div>
+        <ReportStatusSection />
 
         <div className="stats-section">
           <h2>Review Metrics</h2>
           <div className="stats-grid">
             <div className="stat-card">
               <h3>Average Review Time</h3>
-              <div className="stat-number">{realTimeStats.averageReviewTime}</div>
-              <div className="stat-label">Days</div>
+              <div className="stat-value">
+                {calculateAverageReviewTime.hours}h {calculateAverageReviewTime.minutes}m {calculateAverageReviewTime.seconds}s
+              </div>
+              <div className="stat-label">Time to Review</div>
             </div>
           </div>
         </div>
 
         <div className="stats-section">
-          <h2>Most Popular Courses</h2>
+          <h2>Top Courses</h2>
           <div className="stats-grid">
-            {Object.entries(realTimeStats.frequentCourses)
+            {realTimeStats.frequentCourses && Object.entries(realTimeStats.frequentCourses)
               .sort(([,a], [,b]) => b - a)
-              .slice(0, 3)
-              .map(([course, count]) => (
+              .slice(0, 5)
+              .map(([course, count], index) => (
                 <div key={course} className="stat-card">
-                  <h3>{course}</h3>
+                  <h3>#{index + 1} {course}</h3>
                   <div className="stat-number">{count}</div>
-                  <div className="stat-label">Internships</div>
+                  <div className="stat-label">Reports</div>
                 </div>
               ))}
           </div>
@@ -509,22 +581,28 @@ const Reports = () => {
         <div className="stats-section">
           <h2>Top Companies</h2>
           <div className="stats-grid">
-            {realTimeStats.topRatedCompanies.map((company, index) => (
-              <div key={company.name} className="stat-card">
-                <h3>Top Rated #{index + 1}</h3>
-                <div className="stat-number">{company.name}</div>
-                <div className="stat-label">Rating: {company.rating.toFixed(1)}</div>
+            <div className="stat-card">
+              <h3>Top Rated</h3>
+              <div className="company-list">
+                {topRatedCompanies.map((company, index) => (
+                  <div key={company.id} className="company-item">
+                    <span className="rank">#{index + 1}</span>
+                    <span className="name">{company.name}</span>
               </div>
             ))}
           </div>
-          <div className="stats-grid">
-            {realTimeStats.topCompaniesByInternships.map((company, index) => (
-              <div key={company.name} className="stat-card">
-                <h3>Most Internships #{index + 1}</h3>
-                <div className="stat-number">{company.name}</div>
-                <div className="stat-label">{company.count} Internships</div>
+            </div>
+            <div className="stat-card">
+              <h3>Most Internships</h3>
+              <div className="company-list">
+                {companiesWithMostInternships.map((company, index) => (
+                  <div key={company.id} className="company-item">
+                    <span className="rank">#{index + 1}</span>
+                    <span className="name">{company.name}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>

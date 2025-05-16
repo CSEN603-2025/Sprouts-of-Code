@@ -95,7 +95,7 @@
 }
 
 .login-button{
-  color: var(--german-black) !important;
+  color: white !important;
   font-weight: 600 !important;
 }
 
@@ -111,7 +111,7 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
   transform: translateY(-2px) scale(1.03);
   background: var(--german-yellow);
-  color: var(--german-black);
+  color: white;
   cursor: pointer;
   
 }
@@ -165,7 +165,7 @@
 
 .register-company-btn,.login-button {
   background: var(--german-yellow);
-  color: var(--german-black);
+  color: white;
   border: var(--german-yellow) 2px solid;
   box-shadow: 0 2px 8px rgba(221,0,0,0.08);
 }
