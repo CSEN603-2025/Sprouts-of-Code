@@ -277,6 +277,35 @@ const Reports = () => {
       let reportName = ''
 
       switch (reportType) {
+        case 'real-time':
+          reportData = {
+            reportStatus: {
+              accepted: savedReports.filter(r => r.status === 'approved').length,
+              rejected: savedReports.filter(r => r.status === 'rejected').length,
+              flagged: savedReports.filter(r => r.status === 'flagged').length
+            },
+            averageReviewTime: calculateAverageReviewTime,
+            topCourses: Object.entries(realTimeStats.frequentCourses)
+              .sort(([,a], [,b]) => b - a)
+              .slice(0, 5)
+              .map(([course, count]) => ({
+                course,
+                count
+              })),
+            topCompanies: {
+              topRated: topRatedCompanies.map(company => ({
+                name: company.name,
+                rating: company.averageRating.toFixed(1)
+              })),
+              mostInternships: companiesWithMostInternships.map(company => ({
+                name: company.name,
+                count: company.count
+              }))
+            }
+          }
+          reportName = 'Real-time Statistics Report'
+          break
+
         case 'internship':
           reportData = {
             totalInternships: internships.length,
@@ -317,13 +346,13 @@ const Reports = () => {
       }
 
       const newReport = {
-        id: Date.now(), // Use timestamp as unique ID
+        id: Date.now(),
         name: `${reportName} ${new Date().toLocaleDateString()}`,
         type: reportType,
         date: new Date().toISOString().split('T')[0],
         format: format,
         size: `${(Math.random() * 5).toFixed(1)} MB`,
-        major: 'Computer Science', // This would be dynamic in a real app
+        major: 'Computer Science',
         status: 'pending',
         details: reportData
       }
@@ -381,8 +410,75 @@ const Reports = () => {
     doc.text(`Size: ${report.size}`, 10, 46)
     doc.text(`Status: ${report.status}`, 10, 54)
     doc.text('---', 10, 60)
-    // Analytics
     let y = 70
+
+    // Real-time statistics report
+    if (report.type === 'real-time' && report.details) {
+      // Report Status
+      doc.setFontSize(14)
+      doc.text('Report Status Counts', 10, y)
+      y += 8
+      doc.setFontSize(12)
+      doc.text(`Accepted: ${report.details.reportStatus?.accepted ?? 0}`, 12, y)
+      y += 7
+      doc.text(`Rejected: ${report.details.reportStatus?.rejected ?? 0}`, 12, y)
+      y += 7
+      doc.text(`Flagged: ${report.details.reportStatus?.flagged ?? 0}`, 12, y)
+      y += 10
+
+      // Average Review Time
+      doc.setFontSize(14)
+      doc.text('Average Review Time', 10, y)
+      y += 8
+      doc.setFontSize(12)
+      const avg = report.details.averageReviewTime || { hours: 0, minutes: 0, seconds: 0 }
+      doc.text(`Time: ${avg.hours}h ${avg.minutes}m ${avg.seconds}s`, 12, y)
+      y += 10
+
+      // Top Courses
+      if (Array.isArray(report.details.topCourses)) {
+        doc.setFontSize(14)
+        doc.text('Top Courses', 10, y)
+        y += 8
+        doc.setFontSize(12)
+        report.details.topCourses.forEach((course, idx) => {
+          doc.text(`#${idx + 1} ${course.course}: ${course.count} reports`, 12, y)
+          y += 7
+        })
+        y += 3
+      }
+
+      // Top Companies
+      if (report.details.topCompanies) {
+        doc.setFontSize(14)
+        doc.text('Top Companies', 10, y)
+        y += 8
+        doc.setFontSize(12)
+        // Top Rated
+        if (Array.isArray(report.details.topCompanies.topRated)) {
+          doc.text('Top Rated:', 12, y)
+          y += 7
+          report.details.topCompanies.topRated.forEach((company, idx) => {
+            doc.text(`#${idx + 1} ${company.name}: ${company.rating} / 5`, 16, y)
+            y += 7
+          })
+          y += 3
+        }
+        // Most Internships
+        if (Array.isArray(report.details.topCompanies.mostInternships)) {
+          doc.text('Most Internships:', 12, y)
+          y += 7
+          report.details.topCompanies.mostInternships.forEach((company, idx) => {
+            doc.text(`#${idx + 1} ${company.name}: ${company.count} internships`, 16, y)
+            y += 7
+          })
+        }
+      }
+      doc.save(`${report.name.replace(/\s+/g, '_')}.pdf`)
+      return
+    }
+
+    // Analytics (default for other report types)
     if (report.details) {
       Object.entries(report.details).forEach(([key, value]) => {
         if (typeof value !== 'object') {
@@ -555,7 +651,7 @@ const Reports = () => {
             <div className="stat-card">
               <h3>Average Review Time</h3>
               <div className="stat-value">
-                {calculateAverageReviewTime.hours}h {calculateAverageReviewTime.minutes}m {calculateAverageReviewTime.seconds}s
+                3.5 days
               </div>
               <div className="stat-label">Time to Review</div>
             </div>
@@ -621,6 +717,7 @@ const Reports = () => {
                 value={reportType}
                 onChange={(e) => setReportType(e.target.value)}
               >
+                <option value="real-time">Real-time Statistics</option>
                 <option value="internship">Internship Performance</option>
                 <option value="student">Student Analytics</option>
                 <option value="employer">Employer Engagement</option>
@@ -644,20 +741,6 @@ const Reports = () => {
                 <option value="custom">Custom Range</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="format">Format</label>
-              <select
-                id="format"
-                value={format}
-                onChange={(e) => setFormat(e.target.value)}
-              >
-                <option value="pdf">PDF</option>
-                <option value="excel">Excel</option>
-                <option value="csv">CSV</option>
-              </select>
-            </div>
-
             <div className="form-actions">
               <button
                 className="btn btn-primary"

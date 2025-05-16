@@ -134,16 +134,28 @@
 .view-details-btn {
   width: 100%;
   padding: 0.75rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 4px;
+  background-color: var(--primary-color, #1976d2) !important; /* fallback to blue */
+  color: #fff !important;
+  border: 2px solid #1976d2 !important;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+  display: block;
+  z-index: 2;
 }
 
-.view-details-btn:hover {
-  background-color: var(--primary-color-dark);
+.view-details-btn:hover,
+.view-details-btn:focus {
+  background-color: #1565c0 !important;
+  color: #fff !important;
+  border-color: #1565c0 !important;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
+  outline: none;
 }
 
 /* Modal styles */

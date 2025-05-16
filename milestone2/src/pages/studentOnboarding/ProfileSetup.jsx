@@ -674,7 +674,7 @@ const ProfileSetup = () => {
                     <span title={profile.documents.cv.name}>{profile.documents.cv.name}</span>
                     <div className="file-actions">
                       <button
-                        className="btn btn-sm btn-primary"
+                        className="btn btn-sm btn-download-blue"
                         onClick={() => handleDownload(profile.documents.cv, profile.documents.cv.name)}
                         title="Download CV"
                       >
@@ -708,7 +708,7 @@ const ProfileSetup = () => {
                       <span title={doc.name}>{doc.name}</span>
                       <div className="file-actions">
                         <button
-                          className="btn btn-sm btn-primary"
+                          className="btn btn-sm btn-download-blue"
                           onClick={() => handleDownload(doc, doc.name)}
                           title="Download Document"
                         >
@@ -730,7 +730,7 @@ const ProfileSetup = () => {
           </div>
           
           <div className="form-actions">
-            <button type="submit" className="btn btn-primary">Save Profile</button>
+            <button type="submit" className="btn btn-primary save-profile-btn">Save Profile</button>
           </div>
         </form>
       </div>

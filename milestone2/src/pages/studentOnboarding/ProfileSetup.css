@@ -192,6 +192,21 @@
     color: white;
   }
   
+  .btn-download-blue {
+    background-color: #1976d2 !important;
+    color: #fff !important;
+    border: 1.5px solid #1976d2 !important;
+    font-weight: 500;
+    transition: background 0.2s, border 0.2s;
+  }
+  
+  .btn-download-blue:hover,
+  .btn-download-blue:focus {
+    background-color: #1565c0 !important;
+    border-color: #1565c0 !important;
+    color: #fff !important;
+  }
+  
   .additional-documents-list {
     margin-top: 10px;
     display: flex;
@@ -270,4 +285,19 @@
     font-weight: 700;
     color: var(--primary-black);
     margin-bottom: 0;
+  }
+  
+  .btn-primary.save-profile-btn {
+    background-color: #28a745 !important;
+    color: #fff !important;
+    border: 1.5px solid #28a745 !important;
+    font-weight: 600;
+    transition: background 0.2s, border 0.2s;
+  }
+  
+  .btn-primary.save-profile-btn:hover,
+  .btn-primary.save-profile-btn:focus {
+    background-color: #218838 !important;
+    border-color: #218838 !important;
+    color: #fff !important;
   }
