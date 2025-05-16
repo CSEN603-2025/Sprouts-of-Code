@@ -28,10 +28,34 @@
   grid-column: 2;
 }
 
-.report-form {
-  padding: 16px;
-  max-width: 100%;
+.generate-report-card.card {
+  width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-form {
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.report-form .form-group,
+.report-form input,
+.report-form select,
+.report-form button,
+.report-form .form-actions {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.report-form .form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .form-actions {
