@@ -30,6 +30,8 @@
 
 .report-form {
   padding: 16px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .form-actions {
