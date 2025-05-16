@@ -175,14 +175,35 @@ const ProfileSetup = () => {
     }
   };
 
-  const removeDocument = (index) => {
-    setProfile(prev => ({
-      ...prev,
-      documents: {
-        ...prev.documents,
-        additionalDocuments: prev.documents.additionalDocuments.filter((_, i) => i !== index)
-      }
-    }));
+  const handleDownload = (file, fileName) => {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const removeDocument = (type, index) => {
+    if (type === 'cv') {
+      setProfile(prev => ({
+        ...prev,
+        documents: {
+          ...prev.documents,
+          cv: null
+        }
+      }));
+    } else {
+      setProfile(prev => ({
+        ...prev,
+        documents: {
+          ...prev.documents,
+          additionalDocuments: prev.documents.additionalDocuments.filter((_, i) => i !== index)
+        }
+      }));
+    }
   };
   
   const handleSubmit = (e) => {
@@ -638,67 +659,73 @@ const ProfileSetup = () => {
             </div>
           </div>
           
-          <div className="form-section">
-            <h3>Documents</h3>
-            
-            <div className="form-group">
-              <label htmlFor="cv">CV/Resume *</label>
-              <div className="file-upload-container">
-                {!profile.documents.cv ? (
-                  <input
-                    type="file"
-                    id="cv"
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => handleFileUpload(e, 'cv')}
-                    required
-                  />
-                ) : (
-                  <div className="file-info">
-                    <span>{profile.documents.cv.name}</span>
-                    <button 
-                      type="button" 
-                      className="btn btn-outline btn-sm"
-                      onClick={() => setProfile(prev => ({
-                        ...prev,
-                        documents: { ...prev.documents, cv: null }
-                      }))}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="form-hint">Upload your CV/Resume (PDF or Word format, max 5MB)</div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="additionalDocuments">Additional Documents</label>
+          <div className="form-section">            
+            <div className="form-section">
+              <h3>CV/Resume</h3>
               <div className="file-upload-container">
                 <input
                   type="file"
-                  id="additionalDocuments"
+                  onChange={(e) => handleFileUpload(e, 'cv')}
                   accept=".pdf,.doc,.docx"
-                  onChange={(e) => handleFileUpload(e, 'additional')}
+                  id="cv-upload"
                 />
-                <div className="form-hint">Upload certificates, cover letters, or other relevant documents</div>
+                {profile.documents.cv && (
+                  <div className="file-info">
+                    <span title={profile.documents.cv.name}>{profile.documents.cv.name}</span>
+                    <div className="file-actions">
+                      <button
+                        className="btn btn-sm btn-primary"
+                        onClick={() => handleDownload(profile.documents.cv, profile.documents.cv.name)}
+                        title="Download CV"
+                      >
+                        <i className="fas fa-download"></i> Download
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => removeDocument('cv')}
+                        title="Remove CV"
+                      >
+                        <i className="fas fa-trash"></i> Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              
-              {profile.documents.additionalDocuments.length > 0 && (
+            </div>
+
+            <div className="form-section">
+              <h3>Additional Documents</h3>
+              <div className="file-upload-container">
+                <input
+                  type="file"
+                  onChange={(e) => handleFileUpload(e, 'additional')}
+                  accept=".pdf,.doc,.docx"
+                  id="additional-upload"
+                />
                 <div className="additional-documents-list">
                   {profile.documents.additionalDocuments.map((doc, index) => (
                     <div key={index} className="file-info">
-                      <span>{doc.name}</span>
-                      <button 
-                        type="button" 
-                        className="btn btn-outline btn-sm"
-                        onClick={() => removeDocument(index)}
-                      >
-                        Remove
-                      </button>
+                      <span title={doc.name}>{doc.name}</span>
+                      <div className="file-actions">
+                        <button
+                          className="btn btn-sm btn-primary"
+                          onClick={() => handleDownload(doc, doc.name)}
+                          title="Download Document"
+                        >
+                          <i className="fas fa-download"></i> Download
+                        </button>
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => removeDocument('additional', index)}
+                          title="Remove Document"
+                        >
+                          <i className="fas fa-trash"></i> Remove
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
-              )}
+              </div>
             </div>
           </div>
           
