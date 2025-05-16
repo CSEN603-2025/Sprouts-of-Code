@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCompany } from '../../context/CompanyContext'
 import { useInternships } from '../../context/InternshipContext'
+import { useStudent } from '../../context/StudentContext'
 import './EmployerDashboard.css'
 
 const EmployerDashboard = () => {
   const { user } = useAuth()
   const { companies } = useCompany()
   const { internships } = useInternships()
+  const { students } = useStudent()
   
   // Get company data
   const company = companies.find(c => c.email === user.email)
@@ -21,7 +23,7 @@ const EmployerDashboard = () => {
   const stats = {
     totalInternships: companyInternships.length,
     applications: companyInternships.reduce((total, internship) => {
-      return total + internship.applicants.filter(applicant => applicant.status === "applied").length;
+      return total + internship.applicants.filter(applicant => applicant.status === "applied" || applicant.status === "pending").length;
     }, 0),
     interns: companyInternships.reduce((total, internship) => {
       return total + internship.applicants.filter(applicant => applicant.status === "undergoing").length;
@@ -32,12 +34,20 @@ const EmployerDashboard = () => {
   const previewApplications = companyInternships
     .flatMap(internship =>
       internship.applicants
-        .filter(applicant => applicant.status === 'applied')
-        .map(applicant => ({
-          ...applicant,
-          internshipPosition: internship.position,
-          internshipId: internship.id
-        }))
+        .filter(applicant => applicant.status === 'applied' || applicant.status === 'pending')
+        .map(applicant => {
+          const student = students.find(s => s.id === applicant.studentId);
+          return {
+            ...applicant,
+            studentName: student?.name,
+            studentEmail: student?.email,
+            studentUniversity: student?.university,
+            studentMajor: student?.major,
+            graduationYear: student?.graduationYear,
+            internshipPosition: internship.position,
+            internshipId: internship.id
+          };
+        })
     )
     .slice(0, 3);
 
