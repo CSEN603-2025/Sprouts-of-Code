@@ -113,10 +113,14 @@ const SubmittedReports = () => {
 
       const updatedReport = {
         ...selectedReport,
-        adminComment: comment
+        adminClarification: comment
       };
 
-      updateReport(selectedReport.studentId, selectedReport.internshipId, updatedReport);
+      updateReport(
+        Number(selectedReport.studentId),
+        Number(selectedReport.internshipId),
+        updatedReport
+      );
       setSelectedReport(null);
       setComment('');
     }
@@ -357,13 +361,13 @@ const SubmittedReports = () => {
                 <form onSubmit={handleCommentSubmit} className="comment-form">
                   <div className="form-group">
                     <label htmlFor="comment">
-                      {selectedReport.status === 'rejected' ? 'Rejection' : 'Flag'} Comment (Required):
+                      Clarification Comment:
                     </label>
                     <textarea
                       id="comment"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
-                      placeholder="Enter a comment explaining why this report is being rejected or flagged..."
+                      placeholder="Enter a clarification explaining why this report is flagged or rejected..."
                       rows="4"
                       required
                     />

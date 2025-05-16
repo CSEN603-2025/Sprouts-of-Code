@@ -30,7 +30,7 @@ import '../../components/shared/Navbar.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
-  const { students } = useStudent();
+  const { students, checkCycleForStudent } = useStudent();
   const { internships } = useInternships();
   const { companies } = useCompany();
   const { appointments } = useAppointments();
@@ -66,11 +66,13 @@ const StudentDashboard = () => {
       case 'applied':
         return 'Pending';
       case 'undergoing':
-        return 'Accepted';
+        return 'Undergoing';
       case 'completed':
         return 'Completed';
       case 'rejected':
         return 'Rejected';
+      case 'finalized':
+        return 'Finalized';
       default:
         return status.charAt(0).toUpperCase() + status.slice(1);
     }
@@ -272,6 +274,13 @@ const StudentDashboard = () => {
     setAnchorEl(null);
   };
 
+  // Add effect to check cycle notifications on mount
+  useEffect(() => {
+    if (user?.id) {
+      checkCycleForStudent(user.id);
+    }
+  }, [user?.id, checkCycleForStudent]);
+
   return (
     <div className="student-dashboard">
       <div className="dashboard-header">
@@ -351,10 +360,10 @@ const StudentDashboard = () => {
           <h3>Duration Completed</h3>
           <div className="stat-number">{calculateTotalDuration()}</div>
         </div>
-        <div className="stat-card">
+        {/* <div className="stat-card">
           <h3>Upcoming Interviews</h3>
           <div className="stat-number">{upcomingInterviews}</div>
-        </div>
+        </div> */}
         <div className="stat-card">
           <h3>Active Internships</h3>
           <div className="stat-number">{activeInternships.length}</div>

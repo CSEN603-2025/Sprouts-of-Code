@@ -165,6 +165,13 @@
     cursor: pointer;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
     margin-left: 12px;
+    min-width: 140px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    box-sizing: border-box;
   }
   .change-photo-btn:hover {
     background: #dc3545;

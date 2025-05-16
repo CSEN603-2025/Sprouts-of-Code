@@ -159,6 +159,31 @@ export const StudentProvider = ({ children }) => {
     });
   };
 
+  // New function to check cycle for a specific student
+  const checkCycleForStudent = (studentId) => {
+    const reportStartDate = localStorage.getItem('reportStartDate');
+    if (!reportStartDate) return;
+
+    const startDate = new Date(reportStartDate);
+    const now = new Date();
+    const diffTime = startDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const stringStudentId = studentId.toString();
+    const cycleNotificationKey = `cycle_notification_${stringStudentId}_${reportStartDate}`;
+    const hasNotified = localStorage.getItem(cycleNotificationKey);
+
+    if (!hasNotified) {
+      if (diffDays === 0) {
+        addNotification(stringStudentId, 'A new internship cycle begins today! Check the available internships.');
+        localStorage.setItem(cycleNotificationKey, 'true');
+      } else if (diffDays > 0 && diffDays <= 7) {
+        addNotification(stringStudentId, `A new internship cycle will begin in ${diffDays} days. Start preparing your applications!`);
+        localStorage.setItem(cycleNotificationKey, 'true');
+      }
+    }
+  };
+
   // Initialize notifications for existing data
   useEffect(() => {
     console.log('Initializing notifications for existing data');
@@ -320,7 +345,8 @@ export const StudentProvider = ({ children }) => {
     addCertificate,
     getStudentCertificates,
     addNotification,
-    checkInternshipCycle
+    checkInternshipCycle,
+    checkCycleForStudent
   }
 
   return (

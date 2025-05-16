@@ -237,37 +237,38 @@ const Workshops = () => {
       <div className="workshops-grid">
         {filteredWorkshops.length > 0 ? (
           filteredWorkshops.map(workshop => (
-            <div key={workshop.id} className={`workshop-card ${workshop.type}`}>
-              <div className="workshop-header">
+            <div key={workshop.id} className={`workshop-card`}>
+              <div className="workshop-card-header">
                 <h3>{workshop.title}</h3>
-                <span className={`status-badge ${workshop.type}`}>
-                  {workshop.type.charAt(0).toUpperCase() + workshop.type.slice(1)}
-                </span>
+                <span className={`type-badge ${workshop.type}`}>{workshop.type}</span>
               </div>
               <div className="workshop-card-content">
-                <div className="speaker-info">
-                  <h4>Speaker</h4>
-                  <p className="speaker-name">{workshop.speaker}</p>
-                  <p className="speaker-title">{workshop.speakerTitle}</p>
-                  {workshop.speakerBio && (
-                    <p className="speaker-bio">{workshop.speakerBio}</p>
-                  )}
+                <div className="workshop-info">
+                  <h4 className="workshop-title">{workshop.title}</h4>
+                  <p className="workshop-short-desc">{workshop.shortDescription}</p>
                 </div>
                 <div className="workshop-details">
-                  <h4>Workshop Details</h4>
-                  <p className="description">{workshop.shortDescription || workshop.description}</p>
-                <div className="topics">
-                  {workshop.topics.map((topic, index) => (
-                    <span key={index} className="topic-tag">{topic}</span>
-                  ))}
+                  <div className="speaker-info">
+                    <p><strong>Speaker:</strong> {workshop.speaker}</p>
+                    <p><strong>Title:</strong> {workshop.speakerTitle}</p>
+                    {workshop.speakerBio && <p className="speaker-bio">{workshop.speakerBio}</p>}
+                  </div>
+                  <div className="workshop-schedule">
+                    <p><strong>Date:</strong> {workshop.startDate}</p>
+                    <p><strong>Time:</strong> {workshop.startTime} - {workshop.endTime}</p>
+                    <p><strong>Duration:</strong> {workshop.duration} hours</p>
+                  </div>
+                  <div className="workshop-description">
+                    <p><strong>Description:</strong></p>
+                    <p>{workshop.description}</p>
                   </div>
                   {workshop.agenda && workshop.agenda.length > 0 && (
                     <div className="agenda-section">
-                      <h4>Agenda:</h4>
+                      <p><strong>Agenda:</strong></p>
                       <ul className="agenda-list">
                         {workshop.agenda.map((item, index) => (
-                          <li key={index} className="agenda-item">
-                            <span className="agenda-time">{item.time || `${item.startTime || ''}${item.endTime ? ' - ' + item.endTime : ''}`}</span>
+                          <li key={index}>
+                            <span className="agenda-time">{item.time}</span>
                             <span className="agenda-topic">{item.topic}</span>
                           </li>
                         ))}
@@ -276,33 +277,33 @@ const Workshops = () => {
                   )}
                 </div>
               </div>
-              <div className="workshop-footer">
-                {workshop.type === 'upcoming' && (
+              <div className="workshop-card-actions">
+                {workshop.type === 'live' ? (
                   <button 
-                    className={`btn ${isRegisteredForWorkshop(user.id, workshop.id) ? 'btn-secondary' : 'btn-primary'}`}
-                    onClick={(e) => handleRegistration(workshop.id, e)}
-                    data-workshop-id={workshop.id}
-                  >
-                    {isRegisteredForWorkshop(user.id, workshop.id) ? 'Unregister' : 'Register Now'}
-                  </button>
-                )}
-                {workshop.type === 'live' && (
-                  <button 
-                    className="workshop-join-button red"
-                    style={{ minWidth: '160px', fontSize: '1rem', padding: '0.75rem 1.5rem' }}
+                    className="join-btn"
                     onClick={() => handleStartWorkshop(workshop.id)}
+                    style={{ width: '100%' }}
                   >
                     Join Now
                   </button>
-                )}
-                {workshop.type === 'pre-recorded' && (
-                  <button 
-                    className="btn btn-primary"
-                    style={{ minWidth: '160px', fontSize: '1rem', padding: '0.75rem 1.5rem' }}
-                    onClick={() => handleStartWorkshop(workshop.id)}
-                  >
-                    Watch Now
-                  </button>
+                ) : (
+                  isRegisteredForWorkshop(user.id, workshop.id) ? (
+                    <button
+                      className="unregister-btn"
+                      onClick={e => handleRegistration(workshop.id, e)}
+                      style={{ width: '100%' }}
+                    >
+                      Unregister
+                    </button>
+                  ) : (
+                    <button
+                      className="action-btn"
+                      onClick={e => handleRegistration(workshop.id, e)}
+                      style={{ width: '100%' }}
+                    >
+                      {workshop.type === 'pre-recorded' ? 'Watch Now' : 'Register Now'}
+                    </button>
+                  )
                 )}
               </div>
             </div>

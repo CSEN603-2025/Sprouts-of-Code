@@ -41,7 +41,7 @@ const Sidebar = ({ user }) => {
           { label: 'Students', path: '/admin/students', icon: '👨‍🎓' },
           { label: 'Employers', path: '/admin/employers', icon: '🏢' },
           { label: 'Internships', path: '/admin/internship-management', icon: '💼' },
-          { label: 'CareerWorkshops', path: '/admin/workshops', icon: '🧑‍💻' },
+          { label: 'Career Workshops', path: '/admin/workshops', icon: '🧑‍💻' },
           { label: 'Analytics', path: '/analytics', icon: '📈' },
           { label: 'Real-time Statistics', path: '/analytics/reports', icon: '📊' },
           { label: 'Submitted Evaluations', path: '/admin/evaluations', icon: '📝' },

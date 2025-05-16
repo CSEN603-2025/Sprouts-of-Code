@@ -12,6 +12,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 
 // Logo placeholder
 import logo from '../../assets/Sprouts of Code.png'
+import pfp from '../../assets/pfp.jpeg'
 
 // Modal style for call notification
 const modalStyle = {
@@ -248,9 +249,9 @@ const Navbar = ({ user, onLogout }) => {
                   />
                 ) : (
                   <img
-                    src={user.profilePic || 'https://via.placeholder.com/40'}
-                    alt="Profile"
-                    className="profile-image"
+                  src={pfp} // Use imported pfp variable
+                  alt="Profile"
+                  className="profile-image"
                   />
                 )}
                 <span className="profile-name">{user.name}</span>

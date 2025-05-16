@@ -20,193 +20,185 @@
 .workshops-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  gap: 1.5rem;
 }
 
 .workshop-card {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s;
 }
 
 .workshop-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
-.workshop-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.workshop-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 0.5rem 0;
-}
-
-.workshop-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.workshop-type {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.workshop-type.upcoming {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.workshop-type.live {
-  background-color: var(--success-color);
-  color: white;
-}
-
-.workshop-type.pre-recorded {
-  background-color: var(--info-color);
-  color: white;
-}
-
-.workshop-content {
-  padding: 1.5rem;
-}
-
-.workshop-description {
-  color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-  line-height: 1.5;
-}
-
-.workshop-topics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.topic-tag {
-  background-color: var(--background-light);
-  color: var(--text-secondary);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-}
-
-.workshop-footer {
-  padding: 1.5rem;
-  border-top: 1px solid var(--border-color);
+.workshop-card-header {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.workshop-join-button {
-  background-color: #2A9D8F !important;
-  color: white !important;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.workshop-card-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-dark);
 }
 
-.workshop-join-button:hover {
-  background-color: #238b7f !important;
+.type-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.type-badge.upcoming {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+.type-badge.live {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+.type-badge.pre-recorded {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
 }
 
-.workshop-join-button:disabled {
-  background-color: var(--border-color) !important;
-  cursor: not-allowed;
+.workshop-card-content {
+  padding: 1rem;
 }
 
-.workshop-join-button.red {
-  background-color: #e53935 !important;
-  color: white !important;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  font-size: 1rem;
-  min-width: 160px;
-  display: inline-block;
+.workshop-info {
+  margin-bottom: 1rem;
+}
+.workshop-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+.workshop-short-desc {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
 }
 
-.workshop-join-button.red:hover {
-  background-color: #b71c1c !important;
+.workshop-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-
-/* Ensure all action buttons are the same size */
-.btn, .workshop-join-button, .workshop-join-button.red, .btn-primary, .btn-secondary {
-  min-width: 160px;
-  font-size: 1rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 500;
-  display: inline-block;
-}
-
-/* Agenda styling for clarity and consistency */
-.agenda-section {
-  margin-top: 1.5rem;
+.speaker-info {
   padding: 1rem;
   background-color: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 4px;
 }
-
-.agenda-section h4 {
-  color: #333;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
+.speaker-info p {
+  margin: 0.25rem 0;
 }
-
+.speaker-bio {
+  margin-top: 0.5rem !important;
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+}
+.workshop-schedule {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+.workshop-schedule p {
+  margin: 0;
+}
+.workshop-description {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+.workshop-description p {
+  margin: 0.25rem 0;
+}
+.workshop-description p:first-child {
+  margin-bottom: 0.5rem;
+}
+.agenda-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
 .agenda-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0.5rem 0 0 0;
 }
-
-.agenda-item {
+.agenda-list li {
   display: flex;
-  align-items: flex-start;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+  gap: 1rem;
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
 }
-
-.agenda-item:last-child {
-  border-bottom: none;
-}
-
 .agenda-time {
-  min-width: 120px;
-  font-weight: 500;
   color: #666;
-  font-size: 0.95rem;
+  min-width: 80px;
 }
-
 .agenda-topic {
-  flex: 1;
-  color: #333;
-  font-size: 0.98rem;
+  color: var(--text-dark);
 }
 
+/* --- Action Buttons --- */
+.workshop-card-actions {
+  padding: 1rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.join-btn {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.join-btn:hover {
+  background-color: #1b5e20;
+}
+
+.action-btn {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.action-btn:hover {
+  background-color: #b71c1c;
+}
+
+/* --- Remove/override old styles that conflict --- */
+.workshop-footer, .workshop-join-button {
+  display: none !important;
+}
+
+/* --- No Workshops --- */
 .no-workshops {
   grid-column: 1 / -1;
   text-align: center;
@@ -214,8 +206,7 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
+}
 .no-workshops p {
   color: var(--text-secondary);
   font-size: 1.1rem;
@@ -328,4 +319,20 @@
   font-size: 0.9rem;
   margin: 0.5rem 0;
   font-style: italic;
+}
+
+.unregister-btn {
+  background-color: #ffd600;
+  color: #222;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.unregister-btn:hover {
+  background-color: #ffea00;
 } 
