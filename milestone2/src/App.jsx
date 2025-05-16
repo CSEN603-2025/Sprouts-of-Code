@@ -59,6 +59,7 @@ import Reports from './pages/analytics/Reports'
 
 import FacultyDashboard from './pages/FacultyAcademics/FacultyDashboard'
 import FacultyReports from './pages/FacultyAcademics/FacultyReports'
+import FacultyStudents from './pages/FacultyAcademics/FacultyStudents'
 
 import CallMeeting from './pages/call/CallMeeting'
 
@@ -87,7 +88,7 @@ const DefaultRedirect = () => {
       user?.role === 'admin' ? '/admin' :
         user?.role === 'employer' ? '/employer' :
           user?.role === 'student' ? '/student' :
-            user?.role === 'FacultyAcademic' ? '/faculty' :
+            user?.role === 'FacultyAcademic' ? '/faculty-academic/students' :
             '/login'
     } />
   );
@@ -404,6 +405,24 @@ const App = () => {
                             <Route
                               path="/call"
                               element={<CallMeeting />}
+                            />
+
+                            {/* Faculty Academic Routes */}
+                            <Route
+                              path="/faculty-academic/students"
+                              element={
+                                <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                                  <FacultyStudents />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/faculty-academic/students/:studentId"
+                              element={
+                                <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                                  <ViewStudentProfile />
+                                </ProtectedRoute>
+                              }
                             />
 
                             {/* Default Route */}
