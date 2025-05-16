@@ -24,15 +24,18 @@ const FilterBar = ({
         </div>
       )}
       <div className="status-filters">
-        {filterOptions.map((option) => (
-          <button
-            key={option.value}
-            className={`status-filter ${activeFilter === option.value ? 'active' : ''}`}
-            onClick={() => onFilterChange(option.value)}
-          >
-            {option.label}
-          </button>
-        ))}
+        <select
+          className="filter-dropdown"
+          value={activeFilter}
+          onChange={e => onFilterChange(e.target.value)}
+          aria-label="Filter options"
+        >
+          {filterOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );

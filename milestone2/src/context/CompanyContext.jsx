@@ -1,10 +1,18 @@
 import { createContext, useContext, useState } from 'react';
-import { dummyData } from '../data/dummyData';
+import { dummyCompanies } from '../data/dummyData';
 
 const CompanyContext = createContext();
 
+export const useCompany = () => {
+  const context = useContext(CompanyContext);
+  if (!context) {
+    throw new Error('useCompany must be used within a CompanyProvider');
+  }
+  return context;
+};
+
 export const CompanyProvider = ({ children }) => {
-  const [companies, setCompanies] = useState(dummyData.companies);
+  const [companies, setCompanies] = useState(dummyCompanies);
 
   const addApprovedCompany = (company) => {
     setCompanies(prev => [...prev, company]);
@@ -28,12 +36,4 @@ export const CompanyProvider = ({ children }) => {
       {children}
     </CompanyContext.Provider>
   );
-};
-
-export const useCompany = () => {
-  const context = useContext(CompanyContext);
-  if (!context) {
-    throw new Error('useCompany must be used within a CompanyProvider');
-  }
-  return context;
 }; 

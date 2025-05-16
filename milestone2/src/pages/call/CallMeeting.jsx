@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import MicIcon from '@mui/icons-material/Mic';
@@ -7,6 +7,9 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import StopScreenShareIcon from '@mui/icons-material/StopScreenShare';
 import CallEndIcon from '@mui/icons-material/CallEnd';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ChatIcon from '@mui/icons-material/Chat';
+import PeopleIcon from '@mui/icons-material/People';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import './CallMeeting.css';
@@ -26,12 +29,17 @@ const modalStyle = {
 };
 
 const CallMeeting = () => {
+  const location = useLocation();
+  const otherPartyName = location.state?.otherPartyName || 'SCAD';
   const [seconds, setSeconds] = useState(0);
   const [cameraOn, setCameraOn] = useState(true);
   const [micOn, setMicOn] = useState(true);
   const [screenSharing, setScreenSharing] = useState(false);
   const [scadLeft, setScadLeft] = useState(false);
   const [showScadLeftModal, setShowScadLeftModal] = useState(false);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
   const navigate = useNavigate();
   const timerRef = useRef();
   const videoRef = useRef();
@@ -163,75 +171,170 @@ const CallMeeting = () => {
   };
 
   return (
-    <div className="call-meeting-container">
-      <div className="call-header">
-        <h2>Video Call with <span style={{ color: '#1976d2' }}>SCAD</span></h2>
-        <div className="call-timer">{formatTime(seconds)}</div>
-      </div>
-      <div className="call-participants">
-        <div className="participant self">
-          <div className="video-preview" style={{ background: cameraOn || screenSharing ? '#222' : '#888' }}>
-            {(cameraOn || screenSharing) ? (
-              <video
-                ref={videoRef}
-                className="video-element"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }}
-                autoPlay
-                muted
-                playsInline
-              />
-            ) : (
-              <span className="video-off">Camera Off</span>
-            )}
-          </div>
-          <div className="participant-label">You (Student)</div>
+    <div className="zoom-meeting-container">
+      <div className="meeting-header">
+        <div className="meeting-info">
+          <div className="meeting-title">Meeting with {otherPartyName}</div>
+          <div className="meeting-timer">{formatTime(seconds)}</div>
         </div>
-        <div className="participant scad">
-          <div className="video-preview" style={{ background: scadLeft ? '#888' : '#222' }}>
-            {scadLeft ? (
-              <span className="video-off">SCAD Left</span>
-            ) : (
-              <span className="video-on">SCAD</span>
-            )}
-          </div>
-          <div className="participant-label">SCAD</div>
+        <div className="meeting-controls">
+          <button className="header-btn" onClick={() => setShowParticipants(!showParticipants)}>
+            <PeopleIcon />
+            <span>Participants</span>
+          </button>
+          <button className="header-btn" onClick={() => setShowChat(!showChat)}>
+            <ChatIcon />
+            <span>Chat</span>
+          </button>
+          <button className="header-btn">
+            <MoreVertIcon />
+          </button>
         </div>
       </div>
-      <div className="call-controls">
-        <button
-          className={`call-btn ${cameraOn ? '' : 'off'}`}
-          aria-label={cameraOn ? 'Turn camera off' : 'Turn camera on'}
-          onClick={() => setCameraOn(c => !c)}
-          disabled={screenSharing}
-        >
-          {cameraOn ? <VideocamIcon /> : <VideocamOffIcon />}
-        </button>
-        <button
-          className={`call-btn ${micOn ? '' : 'off'}`}
-          aria-label={micOn ? 'Mute mic' : 'Unmute mic'}
-          onClick={() => setMicOn(m => !m)}
-        >
-          {micOn ? <MicIcon /> : <MicOffIcon />}
-        </button>
-        <button
-          className={`call-btn ${screenSharing ? 'on' : ''}`}
-          aria-label={screenSharing ? 'Stop screen sharing' : 'Share screen'}
-          onClick={handleScreenShareToggle}
-        >
-          {screenSharing ? <StopScreenShareIcon /> : <ScreenShareIcon />}
-        </button>
-        <button
-          className="call-btn leave"
-          aria-label="Leave call"
-          onClick={handleLeave}
-        >
-          <CallEndIcon />
-        </button>
+
+      <div className="meeting-content">
+        <div className="video-grid">
+          <div className="video-container main">
+            <div className="video-wrapper">
+              {scadLeft ? (
+                <div className="video-placeholder">
+                  <span>{otherPartyName} Left</span>
+                </div>
+              ) : (
+                <div className="video-placeholder">
+                  <span>{otherPartyName}</span>
+                </div>
+              )}
+            </div>
+            <div className="participant-info">
+              <span className="participant-name">{otherPartyName}</span>
+              <div className="status-indicators">
+                <span className={`status-indicator ${!scadLeft ? 'online' : 'offline'}`}>
+                  <span className="status-dot"></span>
+                  {!scadLeft ? 'Online' : 'Offline'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="video-container">
+            <div className="video-wrapper">
+              {(cameraOn || screenSharing) ? (
+                <video
+                  ref={videoRef}
+                  className="video-element"
+                  autoPlay
+                  muted
+                  playsInline
+                />
+              ) : (
+                <div className="video-placeholder">
+                  <span>Camera Off</span>
+                </div>
+              )}
+            </div>
+            <div className="participant-info">
+              <span className="participant-name">You (Student)</span>
+              <div className="status-indicators">
+                {!cameraOn && <span className="status-indicator">Camera Off</span>}
+                {!micOn && <span className="status-indicator">Muted</span>}
+                <span className={`status-indicator ${isOnline ? 'online' : 'offline'}`}>
+                  <span className="status-dot"></span>
+                  {isOnline ? 'Online' : 'Offline'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {showParticipants && (
+          <div className="participants-panel">
+            <div className="panel-header">
+              <h3>Participants (2)</h3>
+              <button className="close-panel" onClick={() => setShowParticipants(false)}>×</button>
+            </div>
+            <div className="participants-list">
+              <div className="participant-item">
+                <div className="participant-info-panel">
+                  <span className="participant-name">You (Student)</span>
+                  <span className="participant-role">Host</span>
+                </div>
+                <span className={`status-indicator ${isOnline ? 'online' : 'offline'}`}>
+                  <span className="status-dot"></span>
+                  {isOnline ? 'Online' : 'Offline'}
+                </span>
+              </div>
+              <div className="participant-item">
+                <div className="participant-info-panel">
+                  <span className="participant-name">{otherPartyName}</span>
+                  <span className="participant-role">Participant</span>
+                </div>
+                <span className={`status-indicator ${!scadLeft ? 'online' : 'offline'}`}>
+                  <span className="status-dot"></span>
+                  {!scadLeft ? 'Online' : 'Offline'}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showChat && (
+          <div className="chat-panel">
+            <div className="panel-header">
+              <h3>Meeting Chat</h3>
+              <button className="close-panel" onClick={() => setShowChat(false)}>×</button>
+            </div>
+            <div className="chat-messages">
+              <div className="message">
+                <span className="message-sender">{otherPartyName}</span>
+                <span className="message-time">10:00 AM</span>
+                <p className="message-content">Hello! How can I help you today?</p>
+              </div>
+            </div>
+            <div className="chat-input">
+              <input type="text" placeholder="Type a message..." />
+              <button className="send-btn">Send</button>
+            </div>
+          </div>
+        )}
       </div>
-      {/* SCAD left notification modal */}
+
+      <div className="meeting-footer">
+        <div className="footer-left">
+          <button
+            className={`control-btn ${cameraOn ? '' : 'off'}`}
+            onClick={() => setCameraOn(c => !c)}
+            disabled={screenSharing}
+          >
+            {cameraOn ? <VideocamIcon /> : <VideocamOffIcon />}
+            <span>{cameraOn ? 'Stop Video' : 'Start Video'}</span>
+          </button>
+          <button
+            className={`control-btn ${micOn ? '' : 'off'}`}
+            onClick={() => setMicOn(m => !m)}
+          >
+            {micOn ? <MicIcon /> : <MicOffIcon />}
+            <span>{micOn ? 'Mute' : 'Unmute'}</span>
+          </button>
+          <button
+            className={`control-btn ${screenSharing ? 'on' : ''}`}
+            onClick={handleScreenShareToggle}
+          >
+            {screenSharing ? <StopScreenShareIcon /> : <ScreenShareIcon />}
+            <span>{screenSharing ? 'Stop Sharing' : 'Share Screen'}</span>
+          </button>
+        </div>
+        <div className="footer-right">
+          <button className="control-btn leave" onClick={handleLeave}>
+            <CallEndIcon />
+            <span>Leave</span>
+          </button>
+        </div>
+      </div>
+
       <Modal open={showScadLeftModal} onClose={() => setShowScadLeftModal(false)}>
         <Box sx={modalStyle}>
-          <h2>SCAD has left the call</h2>
+          <h2>{otherPartyName} has left the call</h2>
           <p>The other participant has left the meeting.</p>
           <button className="btn btn-primary" onClick={() => setShowScadLeftModal(false)}>
             OK

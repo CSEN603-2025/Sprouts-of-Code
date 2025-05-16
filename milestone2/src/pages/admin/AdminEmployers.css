@@ -39,6 +39,11 @@
   color: #007bff !important;
 }
 
+.btn-outline:hover {
+  background: #007bff !important;
+  color: #fff !important;
+}
+
 .filter-bar select {
   padding: 0.5rem;
   border: 1px solid #ddd;

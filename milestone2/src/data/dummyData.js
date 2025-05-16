@@ -258,15 +258,14 @@ export const dummyData = {
       appliedInternships: [
         { internshipId: 1, status: "completed" },
         { internshipId: 3, status: "completed" },
-        { internshipId: 5, status: "completed" },
-        { internshipId: 7, status: "applied" }
+        { internshipId: 5, status: "finalized" },
+        { internshipId: 7, status: "pending" }
       ]
     },
     {
       id: 2,
       name: "Mariam Sayed",
-      // Original email: mariam.sayed@student.guc.edu.eg
-      email: "mariam.sayedmohamed@student.guc.edu.eg",
+      email: "mariam.sayed@student.guc.edu.eg",
       university: "German University in Cairo",
       major: "Computer Engineering",
       graduationYear: 2025,
@@ -304,7 +303,7 @@ export const dummyData = {
       appliedInternships: [
         { internshipId: 3, status: "completed" },
         { internshipId: 5, status: "rejected" },
-        { internshipId: 7, status: "applied" }
+        { internshipId: 7, status: "pending" }
       ]
     },
     {
@@ -319,7 +318,7 @@ export const dummyData = {
       appliedInternships: [
         { internshipId: 1, status: "completed" },
         { internshipId: 2, status: "completed" },
-        { internshipId: 3, status: "applied" },
+        { internshipId: 3, status: "pending" },
         { internshipId: 8, status: "undergoing" }
       ]
     },
@@ -333,8 +332,8 @@ export const dummyData = {
       isPro: false,
       completedInternships: [],
       appliedInternships: [
-        { internshipId: 9, status: "applied" },
-        { internshipId: 10, status: "applied" }
+        { internshipId: 9, status: "pending" },
+        { internshipId: 10, status: "pending" }
       ]
     },
     {
@@ -391,8 +390,8 @@ export const dummyData = {
       isPro: false,
       completedInternships: [],
       appliedInternships: [
-        { internshipId: 14, status: "applied" },
-        { internshipId: 15, status: "applied" }
+        { internshipId: 14, status: "pending" },
+        { internshipId: 15, status: "pending" }
       ]
     },
     {
@@ -449,8 +448,8 @@ export const dummyData = {
       isPro: false,
       completedInternships: [],
       appliedInternships: [
-        { internshipId: 19, status: "applied" },
-        { internshipId: 20, status: "applied" }
+        { internshipId: 19, status: "pending" },
+        { internshipId: 20, status: "pending" }
       ]
     },
     {
@@ -471,7 +470,7 @@ export const dummyData = {
     {
       id: 16,
       name: "Abdelrahman Waleed",
-      email: "abdelrahman.waleed@student.guc.edu.eg",
+      email: "abdelrahmanwalid@student.guc.edu.eg",
       university: "German University in Cairo",
       major: "Computer Science",
       graduationYear: 2025,
@@ -507,8 +506,8 @@ export const dummyData = {
       isPro: false,
       completedInternships: [],
       appliedInternships: [
-        { internshipId: 24, status: "applied" },
-        { internshipId: 25, status: "applied" }
+        { internshipId: 24, status: "pending" },
+        { internshipId: 25, status: "pending" }
       ]
     },
     {
@@ -564,7 +563,7 @@ export const dummyData = {
       status: "active",
       applicants: [
         { studentId: 1, status: "completed" },
-        { studentId: 2, status: "applied" }
+        { studentId: 2, status: "pending" }
       ]
     },
     {
@@ -2158,13 +2157,13 @@ export const applyForInternship = (studentId, internshipId) => {
     // Add to student's applied internships
     student.appliedInternships.push({
       internshipId,
-      status: "applied"
+      status: "pending"
     });
     
     // Add to internship's applicants
     internship.applicants.push({
       studentId,
-      status: "applied"
+      status: "pending"
     });
     
     return true;
@@ -2241,10 +2240,7 @@ dummyData.students.forEach(student => {
       totalMonths += getInternshipDurationMonths(internship);
     }
   });
-  // Don't override Mariam's isPro status
-  if (student.email !== "mariam.sayedmohamed@student.guc.edu.eg") {
-    student.isPro = totalMonths >= 3;
-  }
+
 });
 
 // Add workshop-related helper functions

@@ -46,7 +46,7 @@
 
 .dashboard-sections {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /*grid-template-columns: 1fr 1fr;*/
   gap: 20px;
 }
 
@@ -60,6 +60,8 @@
   background-color: white;
   border-radius: 8px;
   padding: 20px;
+  width: 100%;
+  max-width: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -170,6 +172,8 @@
   color: var(--dark-gray);
   margin-bottom: 4px;
 }
+/*i want the card to be the same wiwdth as the suggest companies*/
+
 
 .internship-dates {
   font-size: 13px;
@@ -208,4 +212,22 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+/* Video Section Styles */
+.video-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.requirement-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16/9;
+  object-fit: cover;
 }

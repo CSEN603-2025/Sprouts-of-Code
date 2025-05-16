@@ -74,8 +74,10 @@ const WorkshopPlayer = () => {
       const hasCertificate = studentCertificates.some(cert => cert.workshopId === workshop.id);
       
       if (!hasCertificate) {
-        // Add certificate to student's profile
+        // Add certificate to logged-in student's profile
         addCertificate(user.id, workshop);
+        // Force a refresh by updating localStorage (Workshops.jsx will pick up the change)
+        window.dispatchEvent(new Event('storage'));
       }
     setShowCertificate(true);
     }
@@ -126,7 +128,7 @@ const WorkshopPlayer = () => {
           <span className="back-text">Back to Workshops</span>
         </button>
         <div className="page-header">
-          <h1>{workshop.title}</h1>
+        <h1>{workshop.title}</h1>
         </div>
       </div>
 
@@ -172,11 +174,11 @@ const WorkshopPlayer = () => {
               </div>
               {workshop.agenda && workshop.agenda.length > 0 && (
                 <div className="agenda-section">
-                  <h4>Agenda</h4>
+                  <h4>Agenda:</h4>
                   <ul className="agenda-list">
                     {workshop.agenda.map((item, index) => (
-                      <li key={index}>
-                        <span className="agenda-time">{item.startTime} - {item.endTime}</span>
+                      <li key={index} className="agenda-item">
+                        <span className="agenda-time">{item.time || `${item.startTime || ''}${item.endTime ? ' - ' + item.endTime : ''}`}</span>
                         <span className="agenda-topic">{item.topic}</span>
                       </li>
                     ))}

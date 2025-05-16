@@ -200,12 +200,12 @@ const EmployerInterns = () => {
                     <h3>{intern.name}</h3>
                     <button 
                       className="finalize-btn" 
-                      style={{ background: '#1976d2', marginRight: '0.5rem' }}
+                      style={{ background: '#1976d2', marginRight: '0.5rem', marginLeft: '0.5rem' , marginTop: '0rem', alignSelf: 'center' }}
                       onClick={() => toggleCardExpansion(intern.id)}
                     >
                       {expandedCardId === intern.id ? 'Hide Details' : 'View Details'}
                     </button>
-                    <button className="finalize-btn" onClick={() => handleFinalize(intern.id, intern.internshipId)}>
+                    <button className="finalize-btn" style={{ background: '#2A9D8F', marginRight: '0.5rem', marginLeft: '0.5rem' , marginTop: '0rem', alignSelf: 'center' }} onClick={() => handleFinalize(intern.id, intern.internshipId)}>
                       Finalize
                     </button>
                   </div>
@@ -239,13 +239,13 @@ const EmployerInterns = () => {
                       <div>
                         <button 
                           className="finalize-btn" 
-                          style={{ background: '#1976d2', marginRight: '0.5rem' }}
+                          style={{ background: '#1976d2', marginRight: '0.5rem', marginLeft: '0.5rem' , marginTop: '0rem', alignSelf: 'center' }}
                           onClick={() => toggleCardExpansion(intern.id)}
                         >
                           {expandedCardId === intern.id ? 'Hide Details' : 'View Details'}
                         </button>
                         {!evaluation ? (
-                          <button className="finalize-btn" style={{background:'#1976d2'}} onClick={() => openEvalModal(intern, 'create')}>
+                          <button className="finalize-btn" style={{ background: '#1976d2', marginRight: '0.5rem', marginLeft: '0.5rem' , marginTop: '0rem', alignSelf: 'center' }} onClick={() => openEvalModal(intern, 'create')}>
                             Create Evaluation
                           </button>
                         ) : (
@@ -329,11 +329,9 @@ const EmployerInterns = () => {
                   </div>
                 </div>
               ))}
-              <div style={{display:'flex', justifyContent:'flex-end', gap:'1rem', marginTop:'2rem'}}>
-                <button type="button" className="finalize-btn" style={{background:'#888'}} onClick={closeEvalModal}>Cancel</button>
-                <button type="submit" className="finalize-btn" style={{background:'#1976d2'}}>
-                  Save
-                </button>
+              <div style={{display:'flex', justifyContent:'flex-end', gap:'1rem', marginTop:'2rem', flexDirection:'row-reverse'}}>
+                <button type="button" className="custom-cancel-btn-orange" onClick={closeEvalModal}>Cancel</button>
+                <button type="submit" className="custom-save-btn">Save</button>
               </div>
               {showIncompleteMsg && (
                 <div style={{color:'#c62828', textAlign:'center', marginTop:'1rem', fontWeight:500}}>

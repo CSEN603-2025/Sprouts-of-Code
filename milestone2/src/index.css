@@ -20,6 +20,11 @@
   --text-light: #A8DADC;
   --text-white: #FFFFFF;
   
+  /* German flag colors */
+  --german-black: #000000;
+  --german-red: #DD0000;
+  --german-yellow: #FFCE00;
+  
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5;
   font-weight: 400;

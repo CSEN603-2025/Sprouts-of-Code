@@ -26,6 +26,7 @@ import InternshipManagement from './pages/internshipOperations/InternshipManagem
 import AdminEvaluations from './pages/internshipOperations/AdminEvaluations'
 import AdminAppointments from './pages/admin/AdminAppointments'
 import WorkshopManagement from './pages/admin/WorkshopManagement'
+import SubmittedReports from './pages/admin/SubmittedReports'
 
 // Employer Pages
 import EmployerDashboard from './pages/employerInterface/EmployerDashboard'
@@ -50,6 +51,7 @@ import WorkshopPlayer from './pages/studentOnboarding/WorkshopPlayer'
 import Appointments from './pages/studentOnboarding/Appointments'
 import TakeAssessment from './pages/studentOnboarding/TakeAssessment'
 import AssessmentResults from './pages/studentOnboarding/AssessmentResults'
+import SubmitReport from './pages/student/SubmitReport'
 
 // Analytics Pages
 import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard'
@@ -57,6 +59,7 @@ import Reports from './pages/analytics/Reports'
 
 import FacultyDashboard from './pages/FacultyAcademics/FacultyDashboard'
 import FacultyReports from './pages/FacultyAcademics/FacultyReports'
+import FacultyStudents from './pages/FacultyAcademics/FacultyStudents'
 
 import CallMeeting from './pages/call/CallMeeting'
 
@@ -85,7 +88,7 @@ const DefaultRedirect = () => {
       user?.role === 'admin' ? '/admin' :
         user?.role === 'employer' ? '/employer' :
           user?.role === 'student' ? '/student' :
-            user?.role === 'FacultyAcademic' ? '/faculty' :
+            user?.role === 'FacultyAcademic' ? '/faculty-academic/students' :
             '/login'
     } />
   );
@@ -191,6 +194,15 @@ const App = () => {
                               element={
                                 <ProtectedRoute allowedRoles={['admin']}>
                                   <WorkshopManagement />
+                                </ProtectedRoute>
+                              }
+                            />
+
+                            <Route
+                              path="/admin/submitted-reports"
+                              element={
+                                <ProtectedRoute allowedRoles={['admin']}>
+                                  <SubmittedReports />
                                 </ProtectedRoute>
                               }
                             />
@@ -335,11 +347,20 @@ const App = () => {
                               }
                             />
 
+
                             <Route
                               path="/student/appointments"
                               element={
                                 <ProtectedRoute allowedRoles={['student']}>
                                   <Appointments />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/student/submit-report/:internshipId"
+                              element={
+                                <ProtectedRoute allowedRoles={['student']}>
+                                  <SubmitReport />
                                 </ProtectedRoute>
                               }
                             />
@@ -384,6 +405,24 @@ const App = () => {
                             <Route
                               path="/call"
                               element={<CallMeeting />}
+                            />
+
+                            {/* Faculty Academic Routes */}
+                            <Route
+                              path="/faculty-academic/students"
+                              element={
+                                <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                                  <FacultyStudents />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
+                              path="/faculty-academic/students/:studentId"
+                              element={
+                                <ProtectedRoute allowedRoles={['FacultyAcademic']}>
+                                  <ViewStudentProfile />
+                                </ProtectedRoute>
+                              }
                             />
 
                             {/* Default Route */}

@@ -9,9 +9,11 @@ import { useInternshipReport } from '../../context/InternshipReportContext';
 import EvaluationForm from '../../components/internship/EvaluationForm';
 import ReportForm from '../../components/internship/ReportForm';
 import FilterBar from '../../components/shared/FilterBar';
+import AppealModal from '../../components/internship/AppealModal';
 
 import './MyApplications.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Link } from 'react-router-dom';
 
 const MyApplications = () => {
   const { user } = useAuth();
@@ -30,6 +32,8 @@ const MyApplications = () => {
   const [filter, setFilter] = useState('all');
   const [showEvaluation, setShowEvaluation] = useState(null);
   const [showReport, setShowReport] = useState(null);
+  const [showAppeal, setShowAppeal] = useState(null);
+  const [dateFilter, setDateFilter] = useState('');
 
   useEffect(() => {
     if (loggedInStudent?.appliedInternships) {
@@ -59,29 +63,38 @@ const MyApplications = () => {
 
   const filterOptions = [
     { value: 'all', label: 'All' },
-    { value: 'applied', label: 'Pending' },
-    { value: 'undergoing', label: 'Accepted' },
     { value: 'completed', label: 'Completed' },
-    { value: 'rejected', label: 'Rejected' }
+    { value: 'undergoing', label: 'Current' }
   ];
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
   const [expandedCompleted, setExpandedCompleted] = useState([]);
-  const [showEvaluation, setShowEvaluation] = useState(null);
-  const [showReport, setShowReport] = useState(null);
+
+  // Get completed internships
+  const completedInternships = applications.filter(app => app.status === 'completed');
+
+  const toggleCompletedExpand = (id) => {
+    setExpandedCompleted(prev =>
+      prev.includes(id) ? prev.filter(eid => eid !== id) : [...prev, id]
+    );
+  };
 
   // Filter applications based on search and status
   const filteredApplications = applications.filter(app => {
     const matchesSearch = (app.company?.toLowerCase() || '').includes(search.toLowerCase()) ||
                          (app.position?.toLowerCase() || '').includes(search.toLowerCase());
     const matchesStatus = filter === 'all' || app.status === filter;
-    return matchesSearch && matchesStatus;
+    const matchesDate = !dateFilter || (app.startDate && app.startDate.slice(0, 10) === dateFilter);
+    return matchesSearch && matchesStatus && matchesDate;
   });
 
   const toggleExpand = (id) => {
     setExpandedApplications(prev =>
       prev.includes(id) ? prev.filter(eid => eid !== id) : [...prev, id]
     );
+  };
+
+  const getStatusDisplay = (status) => {
+    if (status === 'undergoing') return 'Accepted';
+    return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
   return (
@@ -96,6 +109,16 @@ const MyApplications = () => {
           activeFilter={filter}
           onFilterChange={setFilter}
         />
+        <div style={{ marginTop: 12 }}>
+          <label htmlFor="dateFilter" style={{ marginRight: 8, fontWeight: 500 }}>Filter by Start Date:</label>
+          <input
+            type="date"
+            id="dateFilter"
+            value={dateFilter}
+            onChange={e => setDateFilter(e.target.value)}
+            style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #e2e8f0' }}
+          />
+        </div>
       </div>
 
       <div className="applications-container">
@@ -107,7 +130,7 @@ const MyApplications = () => {
                   <span className="application-position">{app.position}</span>
                   <span className="application-company">{app.company}</span>
                   <span className={`status-badge ${app.status}`}>
-                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                    {getStatusDisplay(app.status)}
                   </span>
                   <button 
                     className="view-more-btn" 
@@ -128,21 +151,30 @@ const MyApplications = () => {
                       <div><strong>Description:</strong> {app.description}</div>
                     </div>
                     {(app.status === 'completed' || app.status === 'finalized') && (
-                      <div className="action-buttons">
+                      <div className="action-buttons-row">
                         <button 
-                          className="action-btn evaluation-btn"
+                          className="btn btn-blue"
                           onClick={() => setShowEvaluation(app.id)}
                         >
                           <i className="fas fa-star"></i>
                           {getEvaluation(user?.id, app.id) ? 'View/Edit Evaluation' : 'Create Evaluation'}
                         </button>
                         <button 
-                          className="action-btn report-btn"
+                          className="btn btn-blue"
                           onClick={() => setShowReport(app.id)}
                         >
                           <i className="fas fa-file-alt"></i>
                           {getReport(user?.id, app.id) ? 'View/Edit Report' : 'Create Report'}
                         </button>
+                        {/* Appeal Report button for completed & flagged/rejected, now in expanded details */}
+                        {getReport(user?.id, app.id)?.status === 'flagged' || getReport(user?.id, app.id)?.status === 'rejected' ? (
+                          <button 
+                            className="appeal-btn"
+                            onClick={() => setShowAppeal(app.id)}
+                          >
+                            Appeal Report
+                          </button>
+                        ) : null}
                       </div>
                     )}
                   </>
@@ -175,30 +207,17 @@ const MyApplications = () => {
               internshipId={showReport}
               onClose={() => setShowReport(null)}
             />
-
           </div>
         </div>
       )}
 
-      {/* Evaluation Modal */}
-      {showEvaluation && (
+      {/* Appeal Modal */}
+      {showAppeal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <EvaluationForm
-              internshipId={showEvaluation}
-              onClose={() => setShowEvaluation(null)}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Report Modal */}
-      {showReport && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <ReportForm
-              internshipId={showReport}
-              onClose={() => setShowReport(null)}
+            <AppealModal
+              internshipId={showAppeal}
+              onClose={() => setShowAppeal(null)}
             />
           </div>
         </div>
