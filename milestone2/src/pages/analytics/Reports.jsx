@@ -492,33 +492,11 @@ const Reports = () => {
       .slice(0, 5);
   }, [students, internships, companies]);
 
-  // Real-time statistics data
-  const realTimeStats = {
-    // Report status counts
-    reportStatus: {
-      accepted: savedReports.filter(r => r.status === 'approved').length,
-      rejected: savedReports.filter(r => r.status === 'rejected').length,
-      flagged: savedReports.filter(r => r.status === 'flagged').length
-    },
-    // Average review time (in days)
-    averageReviewTime: 3.5,
-    // Most frequent courses in internships
-    frequentCourses: internships.reduce((acc, internship) => {
-      const course = internship.course || 'Other'
-      acc[course] = (acc[course] || 0) + 1
-      return acc
-    }, {}),
-    // Top rated companies (based on student evaluations)
-    topRatedCompanies: topRatedCompanies,
-    // Top companies by internship count
-    topCompaniesByInternships: companiesWithMostInternships
-  }
-
   // Calculate average review time
   const calculateAverageReviewTime = useMemo(() => {
     const reportsWithStatus = Object.entries(reports).flatMap(([userId, userReports]) => 
       Object.values(userReports).filter(report => 
-        report.status !== 'submitted' && report.submissionTime && report.statusUpdateTime
+        report.status !== 'pending' && report.submissionTime && report.statusUpdateTime
       )
     );
 
@@ -539,6 +517,28 @@ const Reports = () => {
 
     return { hours, minutes, seconds };
   }, [reports]);
+
+  // Update the realTimeStats object to include the average review time
+  const realTimeStats = {
+    // Report status counts
+    reportStatus: {
+      accepted: savedReports.filter(r => r.status === 'approved').length,
+      rejected: savedReports.filter(r => r.status === 'rejected').length,
+      flagged: savedReports.filter(r => r.status === 'flagged').length
+    },
+    // Average review time (in days)
+    averageReviewTime: calculateAverageReviewTime,
+    // Most frequent courses in internships
+    frequentCourses: internships.reduce((acc, internship) => {
+      const course = internship.course || 'Other'
+      acc[course] = (acc[course] || 0) + 1
+      return acc
+    }, {}),
+    // Top rated companies (based on student evaluations)
+    topRatedCompanies: topRatedCompanies,
+    // Top companies by internship count
+    topCompaniesByInternships: companiesWithMostInternships
+  }
 
   return (
     <div className="reports-page">

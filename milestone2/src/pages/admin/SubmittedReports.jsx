@@ -92,7 +92,8 @@ const SubmittedReports = () => {
 
     const updatedReport = {
       ...report,
-      status: newStatus
+      status: newStatus,
+      statusUpdateTime: new Date().toISOString()
     };
 
     updateReport(userId, internshipId, updatedReport);

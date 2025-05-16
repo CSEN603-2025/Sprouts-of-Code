@@ -53,7 +53,11 @@ const SubmitReport = ({ internshipId }) => {
       setIsEditing(false);
       alert('Report updated successfully!');
     } else {
-      submitReport(user.id, internshipId, reportData);
+      submitReport(user.id, internshipId, {
+        ...reportData,
+        submissionTime: new Date().toISOString(),
+        status: 'pending'
+      });
       alert('Report submitted successfully!');
     }
   };
