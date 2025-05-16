@@ -265,7 +265,6 @@ export const dummyData = {
     {
       id: 2,
       name: "Mariam Sayed",
-      // Original email: mariam.sayed@student.guc.edu.eg
       email: "mariam.sayed@student.guc.edu.eg",
       university: "German University in Cairo",
       major: "Computer Engineering",

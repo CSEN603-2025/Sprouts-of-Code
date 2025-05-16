@@ -189,4 +189,19 @@
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.custom-view-eval-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.7rem 1.7rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.custom-view-eval-btn:hover {
+  background: #1565c0;
 } 

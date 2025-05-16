@@ -130,34 +130,34 @@
   justify-content: flex-end;
 }
 
-.submit-button {
-  padding: 10px 20px;
-  background-color: #dc3545;
+.custom-submit-btn {
+  background: #1976d2;
   color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background 0.2s;
 }
 
-.submit-button:hover {
-  background-color: #c82333;
+.custom-submit-btn:hover {
+  background: #1565c0;
 }
 
-.cancel-button {
-  padding: 10px 20px;
-  background-color: #f8f9fa;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
+.custom-cancel-btn-yellow {
+  background: #f7a102;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background 0.2s;
 }
 
-.cancel-button:hover {
-  background-color: #e9ecef;
+.custom-cancel-btn-yellow:hover {
+  background: #d48b03;
 } 

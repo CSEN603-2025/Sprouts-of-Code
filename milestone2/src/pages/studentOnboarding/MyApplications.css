@@ -225,16 +225,19 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    padding: 1rem;
+    padding: 0.2rem;
   }
   
   .modal-content {
     background: white;
     border-radius: 12px;
-    max-width: 90%;
-    max-height: 90vh;
+    min-width: 1100px;
+    max-width: 1200px;
+    max-height: 97vh;
     overflow-y: auto;
     position: relative;
+    justify-content: center;
+    align-items: center;
   }
   
   .modal-close {
@@ -461,8 +464,9 @@
 .modal-content {
   background: white;
   border-radius: 12px;
-  max-width: 90%;
-  max-height: 90vh;
+  min-width: 950px;
+  max-width: 1000px;
+  max-height: 95vh;
   overflow-y: auto;
   position: relative;
 }
@@ -563,7 +567,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   text-align: center;
-  max-width: 130px;
+  width: 30%;
   margin-left: 0;
   margin-right: 0;
   height: 38px;
@@ -591,6 +595,8 @@
   gap: 1rem;
   margin-top: 1rem;
   justify-content: center;
+  align-self: center;
+  width: 100%;
 }
 
 .btn-blue {
@@ -606,6 +612,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 30%;
 }
 
 .btn-blue:hover,

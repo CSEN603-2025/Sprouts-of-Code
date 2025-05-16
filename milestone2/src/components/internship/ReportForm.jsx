@@ -243,12 +243,12 @@ const ReportForm = ({ internshipId, onClose }) => {
         )}
 
         <div className="form-actions">
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="custom-submit-btn">
             {getReport(user?.id, internshipId) ? 'Update Report' : 'Submit Report'}
           </button>
           {getReport(user?.id, internshipId) && (
             <>
-              <button type="button" className="btn-danger" onClick={handleDelete}>
+              <button type="button" className="custom-delete-btn" onClick={handleDelete}>
                 Delete Report
               </button>
               <button type="button" className="btn-info" onClick={handleDownloadPDF}>
@@ -256,7 +256,7 @@ const ReportForm = ({ internshipId, onClose }) => {
               </button>
             </>
           )}
-          <button type="button" className="btn-secondary" onClick={onClose}>
+          <button type="button" className="custom-cancel-btn-yellow" onClick={onClose}>
             Cancel
           </button>
         </div>

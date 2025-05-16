@@ -160,7 +160,7 @@ const EvaluationForm = ({ internshipId, onClose }) => {
 
         <div className="form-actions">
           <div className="button-group">
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="custom-submit-btn">
               {getEvaluation(user?.id, internshipId) ? 'Update Evaluation' : 'Submit Evaluation'}
             </button>
             {getEvaluation(user?.id, internshipId) && (

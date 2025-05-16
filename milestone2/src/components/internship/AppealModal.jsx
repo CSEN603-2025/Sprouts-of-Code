@@ -67,10 +67,10 @@ const AppealModal = ({ internshipId, onClose }) => {
             {success && <div className="success-message">Appeal submitted successfully!</div>}
 
             <div className="form-actions">
-              <button type="submit" className="submit-button">
+              <button type="submit" className="custom-submit-btn">
                 Submit Appeal
               </button>
-              <button type="button" className="cancel-button" onClick={onClose}>
+              <button type="button" className="custom-cancel-btn-yellow" onClick={onClose}>
                 Cancel
               </button>
             </div>
