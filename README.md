@@ -68,7 +68,7 @@ Our development process focused on:
 - **Masry**
 - **Ahmed Tamer**
 - **Farida Slim**
-- **Mariem El Sayed**
+- **Mariam Sayed**
 
 ---
 
