@@ -74,12 +74,23 @@ Our development process focused on:
 
 ## 📸 Screenshots
 
-<!-- Add screenshots here -->
-1. Login Page
-2. Company Dashboard
-3. Internship Listings
-4. Application Status Tracker
-5. Report Submission Page
+### 🔐 Login Page
+![Login Page](./screenshots/Login%20Page.png)
+
+### 🎓 Student Dashboard
+![Student Dashboard](./screenshots/Student%20Dashboard.png)
+
+### 🏢 Companies List
+![Companies List](./screenshots/Companies%20List.png)
+
+### 🗂️ Internships List
+![Internships List](./screenshots/Intenships%20List.png)
+
+### 🧾 Company Dashboard
+![Company Dashboard](./screenshots/Company%20Dashboard.png)
+
+### 🛠️ Admin Dashboard
+![Admin Dashboard](./screenshots/Admin%20Dashboard.png)
 
 > 📌 *Please upload screenshots to your repo in a `screenshots/` folder and link them above.*
 
